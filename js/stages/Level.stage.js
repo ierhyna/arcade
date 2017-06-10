@@ -45,7 +45,6 @@ export const Level = {
         player.body.velocity.x = -150;
       } else if (cursors.right.isDown) {
         player.body.velocity.x = 150;
-        console.log(game.time.now)
       }
 
       if (cursors.up.isDown && player.body.onFloor() && game.time.now > jumpTimer) {
