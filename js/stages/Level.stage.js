@@ -18,6 +18,8 @@ const timer = {
   jump: 0
 }
 
+const sound = {};
+
 export const Level = {
 
   preload: function () {
@@ -26,6 +28,9 @@ export const Level = {
     game.load.image('bullet', 'sprites/bullet.png');
     game.load.image('blobby', 'sprites/blobby.png');
     game.load.spritesheet('hero', 'sprites/char.gif');
+    game.load.audio('mobHit', 'sounds/mob_hit.wav');
+    game.load.audio('gunShot', 'sounds/gun_shot.mp3');
+    game.load.audio('ricochet', 'sounds/ricochet.wav');
   },
 
   create: function () {
@@ -60,6 +65,12 @@ export const Level = {
     cursors = game.input.keyboard.createCursorKeys();
     fire = this.input.keyboard.addKey(Phaser.KeyCode.ONE);
 
+    sound.gunShot = game.add.audio('gunShot');
+    sound.mobHit = game.add.audio('mobHit');
+    sound.ricochet = game.add.audio('ricochet');
+    sound.gunShot.allowMultiple = true;
+    sound.mobHit.allowMultiple = true;
+    sound.ricochet.allowMultiple = true;
 
     enemyGroup.blobs = game.add.group();
     let e = enemyGroup.blobs;
@@ -78,13 +89,15 @@ export const Level = {
     game.physics.arcade.collide(enemyGroup.blobs, walls);
     game.physics.arcade.collide(enemyGroup.blobs, verticalWalls);
 
-    game.physics.arcade.collide(player, walls);
-    game.physics.arcade.collide(bullets, walls, function (bullet) {
-      bullet.kill()
+    game.physics.arcade.collide(player, [walls, verticalWalls]);
+    game.physics.arcade.collide(bullets, [walls, verticalWalls], function (bullet) {
+      bullet.kill();
+      sound.ricochet.play();
     });
     game.physics.arcade.collide(bullets, enemyGroup.blobs, (bullet, enemy) => {
       bullet.kill();
-      enemy.kill()
+      enemy.kill();
+      sound.mobHit.play();
     });
     player.body.velocity.x = 0;
 
@@ -107,13 +120,14 @@ export const Level = {
   fireBasicWeapon: function () {
     if (game.time.now > timer.basicBullet) {
       const BULLET_SPEED = 600;
-      const BULLET_SPACING = 250;
+      const BULLET_SPACING = 100;
       const bullet = bullets.getFirstExists(false);
       if (bullet) {
         bullet.reset(player.x + 16, player.y + 16);
         bullet.body.velocity.x = BULLET_SPEED * playerDirection;
         bullet.body.allowGravity = false;
         timer.basicBullet = game.time.now + BULLET_SPACING;
+        sound.gunShot.play();
       }
     }
   }
