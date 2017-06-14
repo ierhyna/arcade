@@ -3,12 +3,15 @@ import game from "../game";
 let map,
   bg,
   walls,
+  verticalWalls,
   fire,
   player,
   cursors,
   bullets,
   playerDirection = 1,
   jumpTimer = 0;
+
+const enemyGroup = {};
 
 const timer = {
   basicBullet: 0,
@@ -21,6 +24,7 @@ export const Level = {
     game.load.tilemap('level1', 'maps/level1.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('tileset', 'maps/tilea2.png');
     game.load.image('bullet', 'sprites/bullet.png');
+    game.load.image('blobby', 'sprites/blobby.png');
     game.load.spritesheet('hero', 'sprites/char.gif');
   },
 
@@ -30,7 +34,9 @@ export const Level = {
     map.addTilesetImage('tilea2', 'tileset');
     bg = map.createLayer('bg');
     walls = map.createLayer('walls');
+    verticalWalls = map.createLayer('vertical');
     map.setCollision([49, 63, 109], true, walls);
+    map.setCollision([55], true, verticalWalls);
     bg.resizeWorld();
 
     game.physics.arcade.gravity.y = 1000;
@@ -53,9 +59,25 @@ export const Level = {
 
     cursors = game.input.keyboard.createCursorKeys();
     fire = this.input.keyboard.addKey(Phaser.KeyCode.ONE);
+
+    
+    enemyGroup.blobs = game.add.group();
+    let e = enemyGroup.blobs;
+    e.enableBody = true;
+    e.physicsBodyType = Phaser.Physics.ARCADE;
+    e.createMultiple(50, 'blobby');
+    e.setAll('anchor.x', 0.5);
+    e.setAll('anchor.y', 0.5);
+    e.setAll('outOfBoundsKill', true);
+    e.setAll('checkWorldBounds', true);
+
+    launchEnemy();
   },
 
   update: function () {
+    game.physics.arcade.collide(enemyGroup.blobs, walls);
+    game.physics.arcade.collide(enemyGroup.blobs, verticalWalls, enemy => enemy.body.velocity.x *= -1);
+    
     game.physics.arcade.collide(player, walls);
     game.physics.arcade.collide(bullets, walls, function (bullet) {
       bullet.kill()
@@ -92,3 +114,16 @@ export const Level = {
     }
   }
 };
+
+function launchEnemy() {
+  const spacing = 1400;
+  const speed = 80;
+
+  let enemy = enemyGroup.blobs.getFirstExists(false);
+  if (enemy){
+    enemy.reset(600, 100);
+    enemy.body.velocity.x = speed;
+    game.physics.enable(enemy, Phaser.Physics.ARCADE);
+  }
+  game.time.events.add(spacing, launchEnemy)
+}
