@@ -76,7 +76,7 @@ export const Level = {
 
   update: function () {
     game.physics.arcade.collide(enemyGroup.blobs, walls);
-    game.physics.arcade.collide(enemyGroup.blobs, verticalWalls, enemy => enemy.body.velocity.x *= -1);
+    game.physics.arcade.collide(enemyGroup.blobs, verticalWalls);
     
     game.physics.arcade.collide(player, walls);
     game.physics.arcade.collide(bullets, walls, function (bullet) {
@@ -124,6 +124,7 @@ function launchEnemy() {
     enemy.reset(600, 100);
     enemy.body.velocity.x = speed;
     game.physics.enable(enemy, Phaser.Physics.ARCADE);
+    enemy.body.bounce.setTo(1, 0)
   }
   game.time.events.add(spacing, launchEnemy)
 }
