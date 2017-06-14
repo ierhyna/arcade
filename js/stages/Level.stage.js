@@ -46,7 +46,7 @@ export const Level = {
 
     player.body.collideWorldBounds = true;
     player.body.bounce.y = 0.25;
-    player.scale.setTo(0.4, 0.4);
+    player.scale.setTo(0.2, 0.2);
 
     bullets = game.add.group();
     bullets.enableBody = true;
@@ -60,7 +60,7 @@ export const Level = {
     cursors = game.input.keyboard.createCursorKeys();
     fire = this.input.keyboard.addKey(Phaser.KeyCode.ONE);
 
-    
+
     enemyGroup.blobs = game.add.group();
     let e = enemyGroup.blobs;
     e.enableBody = true;
@@ -77,10 +77,14 @@ export const Level = {
   update: function () {
     game.physics.arcade.collide(enemyGroup.blobs, walls);
     game.physics.arcade.collide(enemyGroup.blobs, verticalWalls);
-    
+
     game.physics.arcade.collide(player, walls);
     game.physics.arcade.collide(bullets, walls, function (bullet) {
       bullet.kill()
+    });
+    game.physics.arcade.collide(bullets, enemyGroup.blobs, (bullet, enemy) => {
+      bullet.kill();
+      enemy.kill()
     });
     player.body.velocity.x = 0;
 
@@ -120,7 +124,7 @@ function launchEnemy() {
   const speed = 80;
 
   let enemy = enemyGroup.blobs.getFirstExists(false);
-  if (enemy){
+  if (enemy) {
     enemy.reset(600, 100);
     enemy.body.velocity.x = speed;
     game.physics.enable(enemy, Phaser.Physics.ARCADE);
