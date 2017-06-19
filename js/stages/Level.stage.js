@@ -58,7 +58,6 @@ export const Level = {
     game.physics.enable(player, Phaser.Physics.ARCADE);
 
     player.body.collideWorldBounds = true;
-    player.body.bounce.y = 0.25;
     player.scale.setTo(0.2, 0.2);
 
     bullets = game.add.group();
