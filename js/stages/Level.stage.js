@@ -1,4 +1,5 @@
 import game from "../game";
+import {CombatText} from "../combatText";
 
 let map,
   bg,
@@ -10,6 +11,8 @@ let map,
   bullets,
   playerDirection = 1,
   jumpTimer = 0;
+
+let waveCounter = 40;
 
 const enemyGroup = {};
 
@@ -94,11 +97,14 @@ export const Level = {
       bullet.kill();
       sound.ricochet.play();
     });
+
     game.physics.arcade.collide(bullets, enemyGroup.blobs, (bullet, enemy) => {
+      CombatText(game, enemy, 50);
       bullet.kill();
       enemy.kill();
       sound.mobHit.play();
     });
+    
     player.body.velocity.x = 0;
 
     if (cursors.left.isDown) {
@@ -119,8 +125,8 @@ export const Level = {
 
   fireBasicWeapon: function () {
     if (game.time.now > timer.basicBullet) {
-      const BULLET_SPEED = 600;
-      const BULLET_SPACING = 100;
+      const BULLET_SPEED = 1200;
+      const BULLET_SPACING = 750;
       const bullet = bullets.getFirstExists(false);
       if (bullet) {
         bullet.reset(player.x + 16, player.y + 16);
@@ -134,13 +140,16 @@ export const Level = {
 };
 
 function launchEnemy() {
-  const spacing = 1400;
+  const spacing = 1800;
   const speed = 80;
+
+  waveCounter -=1;
+  if (waveCounter === 0) return;
 
   let enemy = enemyGroup.blobs.getFirstExists(false);
   if (enemy) {
     enemy.reset(600, 100);
-    enemy.body.velocity.x = speed;
+    enemy.body.velocity.x = speed * (waveCounter % 2 ? 1 : -1);
     game.physics.enable(enemy, Phaser.Physics.ARCADE);
     enemy.body.bounce.setTo(1, 0)
   }
