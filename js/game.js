@@ -4,8 +4,8 @@ import Phaser from "phaser";
 import { Level } from "./stages";
 
 const game = new Phaser.Game(
-    1280,
-    960,
+    1216,
+    640,
     Phaser.AUTO,
     document.getElementById("game")
 );

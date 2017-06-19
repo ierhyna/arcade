@@ -119,7 +119,7 @@ export const Level = {
       player.body.velocity.x = 220;
     }
     if (cursors.up.isDown && player.body.onFloor() && game.time.now > timer.jump) {
-      player.body.velocity.y = -580;
+      player.body.velocity.y = -480;
       timer.jump = game.time.now + 750;
     }
     if (fire.isDown) {
@@ -155,7 +155,7 @@ function launchEnemy() {
 
   let enemy = enemyGroup.blobs.getFirstExists(false);
   if (enemy) {
-    enemy.reset(600, 100);
+    enemy.reset(600, 50);
     enemy.body.velocity.x = speed * (waveCounter % 2 ? 1 : -1);
     game.physics.enable(enemy, Phaser.Physics.ARCADE);
     enemy.body.bounce.setTo(1, 0)
