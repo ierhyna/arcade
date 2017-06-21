@@ -147,12 +147,22 @@ export const Level = {
       playerDirection = -1;
       player.body.velocity.x = -220;
       player.scale.x = playerDirection * 0.2;
-      player.animations.play('move');
+      if (player.body.onFloor()) {
+        player.animations.play('move');
+      } else {
+        player.animations.stop();
+        player.frame = 2;
+      }
     } else if (cursors.right.isDown) {
       playerDirection = 1;
       player.scale.x = playerDirection * 0.2;
       player.body.velocity.x = 220;
-      player.animations.play('move');
+      if (player.body.onFloor()) {
+        player.animations.play('move');
+      } else {
+        player.animations.stop();
+        player.frame = 2;
+      }
     } else {
       player.animations.stop();
       player.frame = 1;
