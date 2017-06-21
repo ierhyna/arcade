@@ -47,7 +47,7 @@ export const Level = {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     map = game.add.tilemap('level1');
     map.addTilesetImage('tilea2', 'tileset');
-    bg = game.add.sprite(0,0, 'background001');
+    bg = game.add.sprite(0, 0, 'background001');
     bg.width = game.width;
     bg.height = game.height
     walls = map.createLayer('walls');
@@ -98,6 +98,20 @@ export const Level = {
     e.setAll('checkWorldBounds', true);
 
     launchEnemy();
+    const waveText = game.add.text(game.width / 2, game.height / 2, "Wave 1", {
+      font: "30px Arial",
+      fill: "#ffffff",
+      align: "center",
+      stroke: '#000000',
+      strokeThickness: 4
+    });
+    waveText.anchor.set(0.5);
+    
+    game.add.tween(waveText.scale).to({
+      x: 2,
+      y: 2
+    }, 1000, "Linear", true);
+    const waveTextTween = game.add.tween(waveText).to({alpha: 0}, 2000, "Linear", true)
   },
 
   update: function () {
@@ -124,7 +138,7 @@ export const Level = {
     game.physics.arcade.overlap(enemyGroup.blobs, player, (player, enemy) => {
       enemy.kill();
       player.health -= enemy.damageOnImpact;
-      if(player.health <=0) player.kill();
+      if (player.health <= 0) player.kill();
     });
 
     player.body.velocity.x = 0;
