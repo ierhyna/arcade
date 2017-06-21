@@ -36,6 +36,7 @@ export const Level = {
     game.load.image('tileset', 'maps/tilea2.png');
     game.load.image('bullet', 'sprites/bullet.png');
     game.load.image('blobby', 'sprites/blobby.png');
+    game.load.image('background001', 'sprites/bg001.png');
     game.load.spritesheet('hero', 'sprites/char.gif');
     game.load.audio('mobHit', 'sounds/mob_hit.wav');
     game.load.audio('gunShot', 'sounds/gun_shot.mp3');
@@ -46,12 +47,14 @@ export const Level = {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     map = game.add.tilemap('level1');
     map.addTilesetImage('tilea2', 'tileset');
-    bg = map.createLayer('bg');
+    bg = game.add.sprite(0,0, 'background001');
+    bg.width = game.width;
+    bg.height = game.height
     walls = map.createLayer('walls');
     verticalWalls = map.createLayer('vertical');
     map.setCollision([49, 63, 109], true, walls);
     map.setCollision([55], true, verticalWalls);
-    bg.resizeWorld();
+    //bg.resizeWorld();
 
     game.physics.arcade.gravity.y = 1000;
 
