@@ -4,11 +4,15 @@ function CombatText(origin, object, bullet) {
     const style = bullet.crit ? {
         font: "30px Arial",
         fill: "#ff0000",
-        align: "center"
+        align: "center",
+        stroke: '#000000',
+        strokeThickness: 6
     } : {
         font: "20px Arial",
         fill: "#ffffff",
-        align: "center"
+        align: "center",
+        stroke: '#000000',
+        strokeThickness: 3
     }
     const text = origin.add.text(x, y, bullet.damage, style);
     const tween = origin.add.tween(text).to({
