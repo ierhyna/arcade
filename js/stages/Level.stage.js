@@ -41,13 +41,14 @@ export const Level = {
     game.load.audio('mobHit', 'sounds/mob_hit.wav');
     game.load.audio('gunShot', 'sounds/gun_shot.mp3');
     game.load.audio('ricochet', 'sounds/ricochet.wav');
+    game.load.audio('trackRumble', 'sounds/Rumble.mp3');
   },
 
   create: function () {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     map = game.add.tilemap('level1');
     map.addTilesetImage('tilea2', 'tileset');
-    bg = game.add.sprite(0,0, 'background001');
+    bg = game.add.sprite(0, 0, 'background001');
     bg.width = game.width;
     bg.height = game.height
     walls = map.createLayer('walls');
@@ -83,9 +84,11 @@ export const Level = {
     sound.gunShot = game.add.audio('gunShot');
     sound.mobHit = game.add.audio('mobHit');
     sound.ricochet = game.add.audio('ricochet');
+    sound.trackRumble = game.add.audio('trackRumble');
     sound.gunShot.allowMultiple = true;
     sound.mobHit.allowMultiple = true;
     sound.ricochet.allowMultiple = true;
+    sound.trackRumble.play();
 
     enemyGroup.blobs = game.add.group();
     let e = enemyGroup.blobs;
@@ -98,6 +101,20 @@ export const Level = {
     e.setAll('checkWorldBounds', true);
 
     launchEnemy();
+    const waveText = game.add.text(game.width / 2, game.height / 2, "Rumble!", {
+      font: "30px Arial",
+      fill: "#ffffff",
+      align: "center",
+      stroke: '#000000',
+      strokeThickness: 4
+    });
+    waveText.anchor.set(0.5);
+    
+    game.add.tween(waveText.scale).to({
+      x: 2,
+      y: 2
+    }, 1000, "Linear", true);
+    const waveTextTween = game.add.tween(waveText).to({alpha: 0}, 2000, "Linear", true)
   },
 
   update: function () {
@@ -124,7 +141,7 @@ export const Level = {
     game.physics.arcade.overlap(enemyGroup.blobs, player, (player, enemy) => {
       enemy.kill();
       player.health -= enemy.damageOnImpact;
-      if(player.health <=0) player.kill();
+      if (player.health <= 0) player.kill();
     });
 
     player.body.velocity.x = 0;
