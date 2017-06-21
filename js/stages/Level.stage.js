@@ -35,7 +35,7 @@ export const Level = {
     game.load.image('tileset', 'maps/tilea2.png');
     game.load.image('bullet', 'sprites/bullet.png');
     game.load.image('blobby', 'sprites/blobby.png');
-    game.load.spritesheet('hero', 'sprites/char.gif');
+    game.load.spritesheet('hero', 'sprites/hero.png', 110, 160);
     game.load.audio('mobHit', 'sounds/mob_hit.wav');
     game.load.audio('gunShot', 'sounds/gun_shot.mp3');
     game.load.audio('ricochet', 'sounds/ricochet.wav');
@@ -55,6 +55,9 @@ export const Level = {
     game.physics.arcade.gravity.y = 1000;
 
     player = game.add.sprite(32, 32, 'hero');
+    player.frame = 0;
+    player.animations.add('move', [0, 1, 2, 3], 10, true);
+
     game.physics.enable(player, Phaser.Physics.ARCADE);
 
     player.body.collideWorldBounds = true;
@@ -114,10 +117,18 @@ export const Level = {
     if (cursors.left.isDown) {
       playerDirection = -1;
       player.body.velocity.x = -220;
+      player.scale.x = playerDirection * 0.2;
+      player.animations.play('move');
     } else if (cursors.right.isDown) {
       playerDirection = 1;
+      player.scale.x = playerDirection * 0.2;
       player.body.velocity.x = 220;
+      player.animations.play('move');
+    } else {
+      player.animations.stop();
+      player.frame = 1;
     }
+
     if (cursors.up.isDown && player.body.onFloor() && game.time.now > timer.jump) {
       player.body.velocity.y = -480;
       timer.jump = game.time.now + 750;
