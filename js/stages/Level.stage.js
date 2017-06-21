@@ -3,8 +3,9 @@ import {
   CombatText
 } from "../combatText";
 import {
-  Weapon
-} from "../../config/weapons.config";
+  Weapon,
+  Creature
+} from "../../config";
 
 let map,
   bg,
@@ -59,6 +60,7 @@ export const Level = {
 
     player.body.collideWorldBounds = true;
     player.scale.setTo(0.2, 0.2);
+    player.health = 350;
 
     bullets = game.add.group();
     bullets.enableBody = true;
@@ -93,6 +95,7 @@ export const Level = {
   },
 
   update: function () {
+
     game.physics.arcade.collide(enemyGroup.blobs, walls);
     game.physics.arcade.collide(enemyGroup.blobs, verticalWalls);
 
@@ -102,11 +105,20 @@ export const Level = {
       sound.ricochet.play();
     });
 
-    game.physics.arcade.collide(bullets, enemyGroup.blobs, (bullet, enemy) => {
-      CombatText(game, enemy, bullet);
+    game.physics.arcade.overlap(bullets, enemyGroup.blobs, (bullet, enemy) => {
       bullet.kill();
-      enemy.kill();
+      CombatText(game, enemy, bullet);
+      enemy.health -= bullet.damage;
+      if (enemy.health <= 0) {
+        enemy.kill();
+      }
       sound.mobHit.play();
+    });
+
+    game.physics.arcade.overlap(enemyGroup.blobs, player, (player, enemy) => {      
+      enemy.kill();      
+      player.health -= enemy.damageOnImpact;      
+      if(player.health <=0) player.kill();
     });
 
     player.body.velocity.x = 0;
@@ -128,6 +140,7 @@ export const Level = {
   },
 
   fireBasicWeapon: function () {
+    if (!player.alive) return;
     if (game.time.now > timer.basicBullet) {
       const BULLET_SPEED = Weapon.basic.speed;
       const BULLET_SPACING = Weapon.basic.spacing;
@@ -148,17 +161,19 @@ export const Level = {
 
 function launchEnemy() {
   const spacing = 1800;
-  const speed = 80;
 
   waveCounter -= 1;
   if (waveCounter === 0) return;
 
   let enemy = enemyGroup.blobs.getFirstExists(false);
   if (enemy) {
+    const creature = Creature.basic;
     enemy.reset(600, 50);
-    enemy.body.velocity.x = speed * (waveCounter % 2 ? 1 : -1);
+    enemy.body.velocity.x = creature.speed * (waveCounter % 2 ? 1 : -1);
+    enemy.health = creature.health;
+    enemy.damageOnImpact = creature.damageOnImpact;
     game.physics.enable(enemy, Phaser.Physics.ARCADE);
-    enemy.body.bounce.setTo(1, 0)
+    enemy.body.bounce.setTo(1, 0)    
   }
   game.time.events.add(spacing, launchEnemy)
 }
