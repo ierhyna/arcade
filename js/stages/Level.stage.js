@@ -41,6 +41,7 @@ export const Level = {
     game.load.audio('mobHit', 'sounds/mob_hit.wav');
     game.load.audio('gunShot', 'sounds/gun_shot.mp3');
     game.load.audio('ricochet', 'sounds/ricochet.wav');
+    game.load.audio('trackRumble', 'sounds/Rumble.mp3');
   },
 
   create: function () {
@@ -83,9 +84,11 @@ export const Level = {
     sound.gunShot = game.add.audio('gunShot');
     sound.mobHit = game.add.audio('mobHit');
     sound.ricochet = game.add.audio('ricochet');
+    sound.trackRumble = game.add.audio('trackRumble');
     sound.gunShot.allowMultiple = true;
     sound.mobHit.allowMultiple = true;
     sound.ricochet.allowMultiple = true;
+    sound.trackRumble.play();
 
     enemyGroup.blobs = game.add.group();
     let e = enemyGroup.blobs;
@@ -98,7 +101,7 @@ export const Level = {
     e.setAll('checkWorldBounds', true);
 
     launchEnemy();
-    const waveText = game.add.text(game.width / 2, game.height / 2, "Wave 1", {
+    const waveText = game.add.text(game.width / 2, game.height / 2, "Rumble!", {
       font: "30px Arial",
       fill: "#ffffff",
       align: "center",
