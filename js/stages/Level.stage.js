@@ -13,6 +13,7 @@ let map,
   verticalWalls,
   fire,
   player,
+  blast,
   cursors,
   bullets,
   playerDirection = 1,
@@ -38,6 +39,7 @@ export const Level = {
     game.load.image('blobby', 'sprites/blobby.png');
     game.load.image('background001', 'sprites/bg001.png');
     game.load.spritesheet('hero', 'sprites/hero.png', 110, 160);
+    game.load.spritesheet('blast', 'sprites/explosion_5.png', 91, 91, 20);
     game.load.audio('mobHit', 'sounds/mob_hit.wav');
     game.load.audio('gunShot', 'sounds/gun_shot.mp3');
     game.load.audio('ricochet', 'sounds/ricochet.wav');
@@ -60,6 +62,7 @@ export const Level = {
     game.physics.arcade.gravity.y = 1000;
 
     player = game.add.sprite(32, 32, 'hero');
+
     player.frame = 0;
     player.animations.add('move', [0, 1, 2, 3], 10, true);
 
@@ -86,6 +89,7 @@ export const Level = {
     sound.ricochet = game.add.audio('ricochet');
     sound.trackRumble = game.add.audio('trackRumble');
     sound.gunShot.allowMultiple = true;
+    sound.gunShot.volume= 0.5;
     sound.mobHit.allowMultiple = true;
     sound.ricochet.allowMultiple = true;
     sound.trackRumble.play();
@@ -109,12 +113,14 @@ export const Level = {
       strokeThickness: 4
     });
     waveText.anchor.set(0.5);
-    
+
     game.add.tween(waveText.scale).to({
       x: 2,
       y: 2
     }, 1000, "Linear", true);
-    const waveTextTween = game.add.tween(waveText).to({alpha: 0}, 2000, "Linear", true)
+    const waveTextTween = game.add.tween(waveText).to({
+      alpha: 0
+    }, 2000, "Linear", true)
   },
 
   update: function () {
@@ -133,6 +139,11 @@ export const Level = {
       CombatText(game, enemy, bullet);
       enemy.health -= bullet.damage;
       if (enemy.health <= 0) {
+        let explosion = this.game.add.sprite(enemy.body.x, enemy.body.y, "blast");
+        explosion.scale.setTo(0.5);
+        explosion.anchor.setTo(0.5, 0.5);
+        explosion.animations.add("blast");
+        explosion.animations.play("blast",20, false, true);
         enemy.kill();
       }
       sound.mobHit.play();
