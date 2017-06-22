@@ -89,6 +89,7 @@ export const Level = {
     sound.ricochet = game.add.audio('ricochet');
     sound.trackRumble = game.add.audio('trackRumble');
     sound.gunShot.allowMultiple = true;
+    sound.gunShot.volume= 0.5;
     sound.mobHit.allowMultiple = true;
     sound.ricochet.allowMultiple = true;
     sound.trackRumble.play();
