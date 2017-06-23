@@ -53,7 +53,7 @@ export const Level = {
     fire = game.input.keyboard.addKey(Phaser.KeyCode.ONE);
 
     enemyGroup.blobs = game.add.group();
-    prepareEnemyGroup(enemyGroup.blobs, 'blobby');
+    prepareEnemyGroup(enemyGroup.blobs, 'blob-ani');
 
     prepareBullets();
     prepareSounds();
@@ -76,12 +76,16 @@ function launchEnemy() {
   let enemy = enemyGroup.blobs.getFirstExists(false);
   if (enemy) {
     const creature = Creature.basic;
-    enemy.reset(600, 50);
+    enemy.reset(600, 20);
     enemy.body.velocity.x = creature.speed * (waveCounter % 2 ? 1 : -1);
     enemy.health = creature.health;
     enemy.damageOnImpact = creature.damageOnImpact;
     game.physics.enable(enemy, Phaser.Physics.ARCADE);
-    enemy.body.bounce.setTo(1, 0)
+    enemy.body.bounce.setTo(1, 0);
+    enemy.scale.setTo(1, 2)
+    enemy.animations.add("live", [0, 1], 10, true);
+    enemy.animations.add("die", [2, 3, 4, 5, 6], 10, true);
+    enemy.animations.play("live", 2);
   }
   game.time.events.add(spacing, launchEnemy)
 }
@@ -124,12 +128,8 @@ function checkCollisions() {
     Text.combat(enemy, bullet);
     enemy.health -= bullet.damage;
     if (enemy.health <= 0) {
-      const explosion = game.add.sprite(enemy.body.x, enemy.body.y, "blast");
-      explosion.scale.setTo(0.5);
-      explosion.anchor.setTo(0.5, 0.5);
-      explosion.animations.add("blast");
-      explosion.animations.play("blast", 20, false, true);
-      enemy.kill();
+      enemy.body.velocity.x = 0;
+      enemy.animations.play("die", 6, false, true);
     }
     sound.mobHit.play();
   });
@@ -137,7 +137,7 @@ function checkCollisions() {
   game.physics.arcade.overlap(enemyGroup.blobs, player, (player, enemy) => {
     enemy.kill();
     player.health -= enemy.damageOnImpact;
-    if (player.health <= 0) player.kill();
+    player.health <= 0 && player.kill();
   });
 }
 
