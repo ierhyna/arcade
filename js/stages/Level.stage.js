@@ -121,7 +121,7 @@ function checkCollisions() {
   game.physics.arcade.collide(enemyGroup.blobs, walls);
   game.physics.arcade.collide(enemyGroup.blobs, verticalWalls);
   game.physics.arcade.collide(player, [walls, verticalWalls]);
-  game.physics.arcade.collide(bullets, verticalWalls, bullet => {    
+  game.physics.arcade.collide(bullets, verticalWalls, bullet => {
     bullet.body.x += bullet.body.velocity.x / 20
     bullet.body.velocity.x = -bullet.speed;
     bullet.body.velocity.y = bullet.speed;
@@ -157,8 +157,10 @@ function checkCollisions() {
   });
 
   game.physics.arcade.overlap(enemyGroup.blobs, player, (player, enemy) => {
-    if (enemy.active) player.health -= enemy.damageOnImpact;
-    Text.life(player, enemy);
+    if (enemy.active) {
+      player.health -= enemy.damageOnImpact;
+      Text.life(player, enemy);
+    }
     player.health <= 0 && player.kill();
     enemy.body.velocity.x = 0;
     enemy.active = false;
