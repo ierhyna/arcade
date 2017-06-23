@@ -47,8 +47,8 @@ const Text = {
         let x = hero.body.x
         let y = hero.body.y
         const style = {
-            font: "20px Arial",
-            fill: "#ff0000",
+            font: "24px Arial",
+            fill: "#00ff00",
             align: "center",
             stroke: '#000000',
             strokeThickness: 3

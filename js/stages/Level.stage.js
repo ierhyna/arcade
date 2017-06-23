@@ -127,7 +127,7 @@ function checkCollisions() {
     bullet.body.velocity.y = bullet.speed;
     sound.ricochet.play();
   });
-    game.physics.arcade.collide(bullets, walls, bullet => {
+  game.physics.arcade.collide(bullets, walls, bullet => {
     bullet.kill();
     sound.ricochet.play();
   });
@@ -135,7 +135,7 @@ function checkCollisions() {
   game.physics.arcade.overlap(bullets, enemyGroup.blobs, (bullet, enemy) => {
     if (!enemy.active) return
     bullet.kill();
-    if (player.havoc) bullet.damage *=2;
+    if (player.havoc) bullet.damage *= 2;
     Text.combat(enemy, bullet);
     if (bullet.crit) player.critCombo++;
     if (player.critCombo > 2) {
@@ -161,7 +161,10 @@ function checkCollisions() {
       player.health -= enemy.damageOnImpact;
       Text.life(player, enemy);
     }
-    player.health <= 0 && player.kill();
+    if(player.health <= 0) {
+      Text.level("WASTED!", "#ffaa00");
+      player.kill()};
+
     enemy.body.velocity.x = 0;
     enemy.active = false;
     enemy.animations.play("die", 6, false, true);
