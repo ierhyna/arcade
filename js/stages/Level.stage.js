@@ -152,6 +152,7 @@ function checkCollisions() {
 
   game.physics.arcade.overlap(enemyGroup.blobs, player, (player, enemy) => {
     if (enemy.active) player.health -= enemy.damageOnImpact;
+    Text.life(player, enemy);
     player.health <= 0 && player.kill();
     enemy.body.velocity.x = 0;
     enemy.active = false;

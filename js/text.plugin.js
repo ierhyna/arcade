@@ -41,6 +41,24 @@ const Text = {
             alpha: 0
         }, 1000, "Linear", true);
         tween.onComplete.addOnce(() => text.destroy());
+    },
+
+    life: function (hero, enemy) {
+        let x = hero.body.x
+        let y = hero.body.y
+        const style = {
+            font: "20px Arial",
+            fill: "#ff0000",
+            align: "center",
+            stroke: '#000000',
+            strokeThickness: 3
+        }
+        const text = game.add.text(x, y, -enemy.damageOnImpact, style);
+        const tween = game.add.tween(text).to({
+            y: y - 100,
+            alpha: 0
+        }, 1000, "Linear", true);
+        tween.onComplete.addOnce(() => text.destroy());
     }
 }
 
