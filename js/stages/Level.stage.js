@@ -168,7 +168,7 @@ function checkControls() {
   }
 
   if (cursors.up.isDown && player.body.onFloor() && game.time.now > timer.jump) {
-    player.body.velocity.y = -480;
+    player.body.velocity.y = -520;
     timer.jump = game.time.now + 750;
   }
   if (fire.isDown) {
