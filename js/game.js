@@ -1,7 +1,7 @@
 import "pixi";
 import "p2";
 import Phaser from "phaser";
-import { Level } from "./stages";
+import { Level, Preload } from "./stages";
 
 const game = new Phaser.Game(
     1216,
@@ -9,7 +9,9 @@ const game = new Phaser.Game(
     Phaser.AUTO,
     document.getElementById("game")
 );
+
+game.state.add("Preload", Preload);
 game.state.add("Level", Level);
-game.state.start("Level");
+game.state.start("Preload");
 
 export default game;
