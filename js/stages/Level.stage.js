@@ -161,10 +161,10 @@ function checkCollisions() {
       player.health -= enemy.damageOnImpact;
       Text.life(player, enemy);
     }
-
     if(player.health <= 0) {
       Text.level("WASTED!", "#ffaa00");
       player.kill()};
+
     enemy.body.velocity.x = 0;
     enemy.active = false;
     enemy.animations.play("die", 6, false, true);
