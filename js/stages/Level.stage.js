@@ -121,7 +121,13 @@ function checkCollisions() {
   game.physics.arcade.collide(enemyGroup.blobs, walls);
   game.physics.arcade.collide(enemyGroup.blobs, verticalWalls);
   game.physics.arcade.collide(player, [walls, verticalWalls]);
-  game.physics.arcade.collide(bullets, [walls, verticalWalls], bullet => {
+  game.physics.arcade.collide(bullets, verticalWalls, bullet => {    
+    bullet.body.x += bullet.body.velocity.x / 20
+    bullet.body.velocity.x = -bullet.speed;
+    bullet.body.velocity.y = bullet.speed;
+    sound.ricochet.play();
+  });
+    game.physics.arcade.collide(bullets, walls, bullet => {
     bullet.kill();
     sound.ricochet.play();
   });
@@ -204,6 +210,7 @@ function fireBasicWeapon() {
       bullet.crit = game.rnd.integerInRange(0, 100) <= w.crit;
       bullet.reset(player.x + 16, player.y + 16);
       bullet.body.velocity.x = w.speed * playerDirection;
+      bullet.speed = bullet.body.velocity.x
       bullet.body.allowGravity = false;
       bullet.damage = bullet.crit ? w.damage * w.multiplier : w.damage;
       bullet.damage = game.rnd.integerInRange(Math.floor(bullet.damage - bullet.damage / 5), Math.floor(bullet.damage + bullet.damage / 5))
