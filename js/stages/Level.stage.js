@@ -127,11 +127,17 @@ function checkCollisions() {
   });
 
   game.physics.arcade.overlap(bullets, enemyGroup.blobs, (bullet, enemy) => {
+    if (!enemy.active) return
     bullet.kill();
+    if (player.havoc) bullet.damage *=2;
     Text.combat(enemy, bullet);
     if (bullet.crit) player.critCombo++;
     if (player.critCombo > 2) {
       Text.level("HAVOC!", "#ff0000");
+      player.havoc = true;
+      game.time.events.add(200, () => {
+        player.havoc = false
+      });
       player.critCombo = 0
     }
     enemy.health -= bullet.damage;
