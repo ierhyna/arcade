@@ -1,10 +1,10 @@
 import game from "./game";
 
 const Text = {
-    level: function (t) {
+    level: function (t, color) {
         const text = game.add.text(game.width / 2, game.height / 2, t, {
             font: "30px Arial",
-            fill: "#ffffff",
+            fill: color,
             align: "center",
             stroke: '#000000',
             strokeThickness: 4
