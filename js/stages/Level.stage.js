@@ -48,6 +48,7 @@ export const Level = {
     player.body.collideWorldBounds = true;
     player.scale.setTo(0.2, 0.2);
     player.health = 350;
+    player.critCombo = 0;
 
     cursors = game.input.keyboard.createCursorKeys();
     fire = game.input.keyboard.addKey(Phaser.KeyCode.ONE);
@@ -58,7 +59,7 @@ export const Level = {
     prepareBullets();
     prepareSounds();
     launchEnemy();
-    Text.level("Wave 1");
+    Text.level("Wave 1", "#ffffff");
   },
 
   update: function () {
@@ -85,6 +86,7 @@ function launchEnemy() {
     enemy.scale.setTo(1, 2)
     enemy.animations.add("live", [0, 1], 10, true);
     enemy.animations.add("die", [2, 3, 4, 5, 6], 10, true);
+    enemy.animations.add("blink", [7, 0], 10);
     enemy.animations.play("live", 2);
     enemy.active = true;
   }
@@ -127,13 +129,19 @@ function checkCollisions() {
   game.physics.arcade.overlap(bullets, enemyGroup.blobs, (bullet, enemy) => {
     bullet.kill();
     Text.combat(enemy, bullet);
+    if (bullet.crit) player.critCombo++;
+    if (player.critCombo > 2) {
+      Text.level("HAVOC!", "#ff0000");
+      player.critCombo = 0
+    }
     enemy.health -= bullet.damage;
     if (enemy.health <= 0) {
       enemy.body.velocity.x = 0;
       enemy.active = false;
-      enemy.animations.play("die", 6, false, true);
+      return enemy.animations.play("die", 6, false, true);
     }
     sound.mobHit.play();
+    enemy.alive && enemy.animations.play("blink", 20);
   });
 
   game.physics.arcade.overlap(enemyGroup.blobs, player, (player, enemy) => {
