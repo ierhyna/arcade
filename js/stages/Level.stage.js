@@ -86,6 +86,7 @@ function launchEnemy() {
     enemy.animations.add("live", [0, 1], 10, true);
     enemy.animations.add("die", [2, 3, 4, 5, 6], 10, true);
     enemy.animations.play("live", 2);
+    enemy.active = true;
   }
   game.time.events.add(spacing, launchEnemy)
 }
@@ -129,15 +130,19 @@ function checkCollisions() {
     enemy.health -= bullet.damage;
     if (enemy.health <= 0) {
       enemy.body.velocity.x = 0;
+      enemy.active = false;
       enemy.animations.play("die", 6, false, true);
     }
     sound.mobHit.play();
   });
 
   game.physics.arcade.overlap(enemyGroup.blobs, player, (player, enemy) => {
-    enemy.kill();
-    player.health -= enemy.damageOnImpact;
+    if (enemy.active) player.health -= enemy.damageOnImpact;
     player.health <= 0 && player.kill();
+    enemy.body.velocity.x = 0;
+    enemy.active = false;
+    enemy.animations.play("die", 6, false, true);
+
   });
 }
 
