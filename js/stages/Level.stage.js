@@ -6,9 +6,7 @@ import {
   Creature
 } from "../../config";
 
-let map,
-  bg,
-  walls,
+let walls,
   verticalWalls,
   fire,
   player,
@@ -33,9 +31,9 @@ export const Level = {
 
   create: function () {
 
-    map = game.add.tilemap('level1');
+    const map = game.add.tilemap('level1');
     map.addTilesetImage('tilea2', 'tileset');
-    bg = game.add.sprite(0, 0, 'background001');
+    const bg = game.add.sprite(0, 0, 'background001');
     bg.width = game.width;
     bg.height = game.height
     walls = map.createLayer('walls');
@@ -51,22 +49,14 @@ export const Level = {
     player.scale.setTo(0.2, 0.2);
     player.health = 350;
 
-    prepareBullets();
-    prepareSounds();
-
     cursors = game.input.keyboard.createCursorKeys();
     fire = game.input.keyboard.addKey(Phaser.KeyCode.ONE);
 
     enemyGroup.blobs = game.add.group();
-    let e = enemyGroup.blobs;
-    e.enableBody = true;
-    e.physicsBodyType = Phaser.Physics.ARCADE;
-    e.createMultiple(50, 'blobby');
-    e.setAll('anchor.x', 0.5);
-    e.setAll('anchor.y', 0.5);
-    e.setAll('outOfBoundsKill', true);
-    e.setAll('checkWorldBounds', true);
+    prepareEnemyGroup(enemyGroup.blobs, 'blobby');
 
+    prepareBullets();
+    prepareSounds();
     launchEnemy();
     Text.level("Wave 1");
   },
@@ -124,7 +114,7 @@ function checkCollisions() {
   game.physics.arcade.collide(enemyGroup.blobs, walls);
   game.physics.arcade.collide(enemyGroup.blobs, verticalWalls);
   game.physics.arcade.collide(player, [walls, verticalWalls]);
-  game.physics.arcade.collide(bullets, [walls, verticalWalls], function (bullet) {
+  game.physics.arcade.collide(bullets, [walls, verticalWalls], bullet => {
     bullet.kill();
     sound.ricochet.play();
   });
@@ -134,7 +124,7 @@ function checkCollisions() {
     Text.combat(enemy, bullet);
     enemy.health -= bullet.damage;
     if (enemy.health <= 0) {
-      let explosion = game.add.sprite(enemy.body.x, enemy.body.y, "blast");
+      const explosion = game.add.sprite(enemy.body.x, enemy.body.y, "blast");
       explosion.scale.setTo(0.5);
       explosion.anchor.setTo(0.5, 0.5);
       explosion.animations.add("blast");
@@ -188,7 +178,7 @@ function checkControls() {
 
 function fireBasicWeapon() {
   if (!player.alive) return;
-  if (game.time.now > timer.basicBullet) {   
+  if (game.time.now > timer.basicBullet) {
     const bullet = bullets.getFirstExists(false);
     if (bullet) {
       const w = Weapon.basic;
@@ -202,4 +192,14 @@ function fireBasicWeapon() {
       sound.gunShot.play();
     }
   }
+}
+
+function prepareEnemyGroup(e, sprite) {
+  e.enableBody = true;
+  e.physicsBodyType = Phaser.Physics.ARCADE;
+  e.createMultiple(50, sprite);
+  e.setAll('anchor.x', 0.5);
+  e.setAll('anchor.y', 0.5);
+  e.setAll('outOfBoundsKill', true);
+  e.setAll('checkWorldBounds', true);
 }
