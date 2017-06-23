@@ -9,6 +9,7 @@ export const Preload = {
         game.load.image('background001', 'sprites/bg001.png');
         game.load.spritesheet('hero', 'sprites/hero.png', 110, 160);
         game.load.spritesheet('blast', 'sprites/explosion_5.png', 91, 91, 20);
+        game.load.spritesheet('blob-ani', 'sprites/mob-ani01.png', 32, 32);
         game.load.audio('mobHit', 'sounds/mob_hit.wav');
         game.load.audio('gunShot', 'sounds/gun_shot.mp3');
         game.load.audio('ricochet', 'sounds/ricochet.wav');
