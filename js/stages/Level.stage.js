@@ -41,7 +41,16 @@ let walls,
   waveCounter = 40;
 
 const enemyGroup = {};
-const buffs = []
+const buffs = [];
+
+const Armory = {
+  'basic': {
+    count: 420
+  },
+  'heavy': {
+    count: 35
+  }
+}
 
 const timer = {
   basicBullet: 0,
@@ -77,6 +86,13 @@ export const Level = {
         align: "center"
       });
     };
+    Object.keys(Armory).forEach((e, i) => {
+      Armory[e].text = game.add.text(564 + i * 64, 652, Armory[e].count, {
+        font: "12px Press Start 2P",
+        fill: "#fff",
+        align: "center"
+      })
+    });
 
     player = game.add.sprite(32, 32, 'hero');
     player.animations.add('move', [0, 1, 2, 3], 10, true);
@@ -182,6 +198,9 @@ export const Level = {
     checkCollisions();
     checkControls();
     renderBuffs();
+    Object.keys(Armory).forEach((e, i) => {
+      Armory[e].text.text = Armory[e].count;
+    });
   }
 };
 
@@ -327,7 +346,7 @@ function checkControls() {
 }
 
 function fireBasicWeapon() {
-  if (!player.alive) return;
+  if (!player.alive || !Armory.basic.count) return;  
   if (game.time.now > timer.basicBullet) {
     const bullet = bullets.getFirstExists(false);
     if (bullet) {
@@ -339,6 +358,7 @@ function fireBasicWeapon() {
       bullet.damage = bullet.crit ? w.damage * w.multiplier : w.damage;
       bullet.damage = game.rnd.integerInRange(Math.floor(bullet.damage - bullet.damage / 5), Math.floor(bullet.damage + bullet.damage / 5))
       timer.basicBullet = game.time.now + w.spacing;
+      Armory.basic.count--;
       SoundEngine.gunShot.play();
     }
   }
@@ -346,8 +366,7 @@ function fireBasicWeapon() {
 
 function fireHeavyWeapon() {
 
-  if (!player.alive) return;
-  console.log(111)
+  if (!player.alive || !Armory.heavy.count) return;  
   if (game.time.now > timer.heavyBullet) {
     const bullet = heavyBullets.getFirstExists(false);
 
@@ -360,6 +379,7 @@ function fireHeavyWeapon() {
       bullet.damage = bullet.crit ? w.damage * w.multiplier : w.damage;
       bullet.damage = game.rnd.integerInRange(Math.floor(bullet.damage - bullet.damage / 5), Math.floor(bullet.damage + bullet.damage / 5))
       timer.heavyBullet = game.time.now + w.spacing;
+      Armory.heavy.count--;
       SoundEngine.heavyShot.play();
     }
   }
