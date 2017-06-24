@@ -3,6 +3,7 @@ import game from "../game";
 const SoundEngine = {}
 const Preload = {
     preload: function () {
+        game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
         game.load.tilemap('level1', 'maps/level1.json', null, Phaser.Tilemap.TILED_JSON);
         game.load.image('tileset', 'maps/tilea2.png');
         game.load.image('bullet', 'sprites/bullet.png');

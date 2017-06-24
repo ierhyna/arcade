@@ -3,7 +3,8 @@ import game from "./game";
 const Text = {
     level: function (t, color) {
         const text = game.add.text(game.width / 2, game.height / 2, t, {
-            font: "30px Arial",
+            font: "Press Start 2P",
+            fontSize: "30px",
             fill: color,
             align: "center",
             stroke: '#000000',
