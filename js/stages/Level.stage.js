@@ -26,11 +26,14 @@ import {
 let walls,
   verticalWalls,
   fire,
+  fireHeavy,
   player,
   blast,
   cursors,
   bullets,
+  heavyBullets,
   healthBar,
+  skillIcons = {},
   buffIcons = {},
   expBar,
   levelText,
@@ -42,6 +45,7 @@ const buffs = []
 
 const timer = {
   basicBullet: 0,
+  heavyBullet: 0,
   jump: 0
 }
 
@@ -63,6 +67,19 @@ export const Level = {
 
     buffIcons['havoc'] = game.add.sprite(-500, -500, 'buff_havoc');
     buffIcons['enrage'] = game.add.sprite(-500, -500, 'buff_enrage');
+
+    skillIcons['basic'] = game.add.sprite(540, 670, 'icon_basic');
+    skillIcons['heavy'] = game.add.sprite(604, 670, 'icon_heavy');
+    game.add.text(564, 737, "1", {
+      font: "16px Press Start 2P",
+      fill: "#fff",
+      align: "center"
+    })
+    game.add.text(628, 737, "2", {
+      font: "16px Press Start 2P",
+      fill: "#fff",
+      align: "center"
+    })
 
     player = game.add.sprite(32, 32, 'hero');
     player.animations.add('move', [0, 1, 2, 3], 10, true);
@@ -121,6 +138,7 @@ export const Level = {
 
     cursors = game.input.keyboard.createCursorKeys();
     fire = game.input.keyboard.addKey(Phaser.KeyCode.ONE);
+    fireHeavy = game.input.keyboard.addKey(Phaser.KeyCode.TWO);
 
     enemyGroup.blobs = game.add.group();
     ConstructGroup(enemyGroup.blobs, {
@@ -134,6 +152,13 @@ export const Level = {
       number: 50,
       sprite: 'bullet',
       scale: 0.5
+    });
+
+    heavyBullets = game.add.group();
+    ConstructGroup(heavyBullets, {
+      number: 20,
+      sprite: 'heavyBullet',
+      scale: 1.25
     });
 
     SoundEngine.trackRumble.play();
@@ -153,7 +178,7 @@ export const Level = {
       player.exp = 0;
       player.level++;
       expToLevel *= 2;
-      Text.level(`You reached level ${player.level}!`, "#ff0");
+      Text.level(`Gained level ${player.level}!`, "#ff0");
       levelText.text = `Level ${player.level} Soldier`;
     }
     player.body.velocity.x = 0;
@@ -192,17 +217,17 @@ function checkCollisions() {
   game.physics.arcade.collide(enemyGroup.blobs, [walls, verticalWalls]);
   game.physics.arcade.collide(player, [walls, verticalWalls]);
   game.physics.arcade.collide(bullets, [walls, verticalWalls], bullet => {
-    bullet.kill();    
+    bullet.kill();
   });
 
-  game.physics.arcade.overlap(bullets, enemyGroup.blobs, (bullet, enemy) => {
+  game.physics.arcade.overlap([bullets, heavyBullets], enemyGroup.blobs, (bullet, enemy) => {
     if (!enemy.active) return
     bullet.kill();
 
     // Damage calculation
     if (player.havoc) bullet.damage *= 2;
     if (player.enrage) bullet.damage = (bullet.damage * 1.2).toFixed();
-    
+
 
     const event = bullet.crit ? EVENTS.CRIT : EVENTS.HIT;
     Text.combat(enemy, bullet.damage, event);
@@ -299,6 +324,9 @@ function checkControls() {
   if (fire.isDown) {
     fireBasicWeapon();
   }
+  if (fireHeavy.isDown) {
+    fireHeavyWeapon();
+  }
 }
 
 function fireBasicWeapon() {
@@ -315,6 +343,27 @@ function fireBasicWeapon() {
       bullet.damage = game.rnd.integerInRange(Math.floor(bullet.damage - bullet.damage / 5), Math.floor(bullet.damage + bullet.damage / 5))
       timer.basicBullet = game.time.now + w.spacing;
       SoundEngine.gunShot.play();
+    }
+  }
+}
+
+function fireHeavyWeapon() {
+
+  if (!player.alive) return;
+  console.log(111)
+  if (game.time.now > timer.heavyBullet) {
+    const bullet = heavyBullets.getFirstExists(false);
+
+    if (bullet) {
+      const w = Weapon.heavy;
+      bullet.crit = game.rnd.integerInRange(0, 100) <= w.crit;
+      bullet.reset(player.x, player.y + 16);
+      bullet.body.velocity.x = w.speed * playerDirection;
+      bullet.body.allowGravity = false;
+      bullet.damage = bullet.crit ? w.damage * w.multiplier : w.damage;
+      bullet.damage = game.rnd.integerInRange(Math.floor(bullet.damage - bullet.damage / 5), Math.floor(bullet.damage + bullet.damage / 5))
+      timer.heavyBullet = game.time.now + w.spacing;
+      SoundEngine.heavyShot.play();
     }
   }
 }
