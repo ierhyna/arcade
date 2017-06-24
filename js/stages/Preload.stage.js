@@ -1,6 +1,7 @@
 import game from "../game";
 
-export const Preload = {
+const SoundEngine = {}
+const Preload = {
     preload: function () {
         game.load.tilemap('level1', 'maps/level1.json', null, Phaser.Tilemap.TILED_JSON);
         game.load.image('tileset', 'maps/tilea2.png');
@@ -16,9 +17,24 @@ export const Preload = {
         game.load.audio('trackRumble', 'sounds/Rumble.mp3');
     },
     create: function () {
+        SoundEngine.gunShot = game.add.audio('gunShot');
+        SoundEngine.mobHit = game.add.audio('mobHit');
+        SoundEngine.ricochet = game.add.audio('ricochet');
+        SoundEngine.trackRumble = game.add.audio('trackRumble');
+        SoundEngine.trackRumble.volume = 0.1;
+        SoundEngine.gunShot.allowMultiple = true;
+        SoundEngine.gunShot.volume = 0.25;
+        SoundEngine.mobHit.allowMultiple = true;
+        SoundEngine.ricochet.allowMultiple = true;       
+
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.arcade.gravity.y = 1000;
         game.state.start("Level");
     },
     update: function () {}
+}
+
+export {
+    Preload,
+    SoundEngine
 }
