@@ -28,7 +28,7 @@ const Text = {
         switch (event) {
             case "crit":
                 style = {
-                    font: "30px Arial",
+                    font: "30px Press Start 2P",
                     fill: "#ff0000",
                     align: "center",
                     stroke: '#000000',
@@ -42,7 +42,7 @@ const Text = {
 
             case "hit":
                 style = {
-                    font: "20px Arial",
+                    font: "20px Press Start 2P",
                     fill: "#ffffff",
                     align: "center",
                     stroke: '#000000',
@@ -56,7 +56,7 @@ const Text = {
 
             case "playerHit":
                 style = {
-                    font: "20px Arial",
+                    font: "20px Press Start 2P",
                     fill: "#22ff22",
                     align: "center",
                     stroke: '#000000',
@@ -69,7 +69,7 @@ const Text = {
                 break;
             case "info":
                 style = {
-                    font: "30px Arial",
+                    font: "30px Press Start 2P",
                     fill: "yellow",
                     align: "center",
                     stroke: '#000000',
