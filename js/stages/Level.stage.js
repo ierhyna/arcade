@@ -30,8 +30,8 @@ let walls,
   player,
   blast,
   cursors,
-  bullets,
-  heavyBullets,
+  basicWeapon,
+  heavyWeapon,
   healthBar,
   skillIcons = {},
   buffIcons = {},
@@ -43,18 +43,11 @@ let walls,
 const enemyGroup = {};
 const buffs = [];
 
-const Armory = {
-  'basic': {
-    count: 420
-  },
-  'heavy': {
-    count: 35
-  }
-}
+let Armory = {}
 
 const timer = {
-  basicBullet: 0,
-  heavyBullet: 0,
+  basicWeapon: 0,
+  heavyWeapon: 0,
   jump: 0
 }
 
@@ -64,6 +57,16 @@ let expToLevel = 650;
 export const Level = {
 
   create: function () {
+    Armory = {
+      'basicWeapon': {
+        count: 420,
+        sound: SoundEngine.gunShot
+      },
+      'heavyWeapon': {
+        count: 35,
+        sound: SoundEngine.heavyShot
+      }
+    }
     const map = game.add.tilemap('level1');
     map.addTilesetImage('tilea2', 'tileset');
     const bg = game.add.sprite(0, 0, 'background001');
@@ -160,15 +163,15 @@ export const Level = {
       scale: 0.5
     });
 
-    bullets = game.add.group();
-    ConstructGroup(bullets, {
+    basicWeapon = game.add.group();
+    ConstructGroup(basicWeapon, {
       number: 50,
       sprite: 'bullet',
       scale: 0.5
     });
 
-    heavyBullets = game.add.group();
-    ConstructGroup(heavyBullets, {
+    heavyWeapon = game.add.group();
+    ConstructGroup(heavyWeapon, {
       number: 20,
       sprite: 'heavyBullet',
       scale: 1.25
@@ -232,11 +235,11 @@ function launchEnemy() {
 function checkCollisions() {
   game.physics.arcade.collide(enemyGroup.blobs, [walls, verticalWalls]);
   game.physics.arcade.collide(player, [walls, verticalWalls]);
-  game.physics.arcade.collide(bullets, [walls, verticalWalls], bullet => {
+  game.physics.arcade.collide([basicWeapon, heavyWeapon], [walls, verticalWalls], bullet => {
     bullet.kill();
   });
 
-  game.physics.arcade.overlap([bullets, heavyBullets], enemyGroup.blobs, (bullet, enemy) => {
+  game.physics.arcade.overlap([basicWeapon, heavyWeapon], enemyGroup.blobs, (bullet, enemy) => {
     if (!enemy.active) return
     bullet.kill();
 
@@ -338,49 +341,28 @@ function checkControls() {
     timer.jump = game.time.now + 750;
   }
   if (fire.isDown) {
-    fireBasicWeapon();
+    fireWeapon(basicWeapon, "basicWeapon");
   }
   if (fireHeavy.isDown) {
-    fireHeavyWeapon();
+    fireWeapon(heavyWeapon, "heavyWeapon");
   }
 }
 
-function fireBasicWeapon() {
-  if (!player.alive || !Armory.basic.count) return;  
-  if (game.time.now > timer.basicBullet) {
-    const bullet = bullets.getFirstExists(false);
+function fireWeapon(weapon, name) {
+  if (!player.alive || !Armory[name].count) return;
+  if (game.time.now > timer[name]) {
+    const bullet = weapon.getFirstExists(false);
     if (bullet) {
-      const w = Weapon.basic;
+      const w = Weapon[name];
       bullet.crit = game.rnd.integerInRange(0, 100) <= w.crit;
       bullet.reset(player.x, player.y + 16);
       bullet.body.velocity.x = w.speed * playerDirection;
       bullet.body.allowGravity = false;
       bullet.damage = bullet.crit ? w.damage * w.multiplier : w.damage;
       bullet.damage = game.rnd.integerInRange(Math.floor(bullet.damage - bullet.damage / 5), Math.floor(bullet.damage + bullet.damage / 5))
-      timer.basicBullet = game.time.now + w.spacing;
-      Armory.basic.count--;
-      SoundEngine.gunShot.play();
-    }
-  }
-}
-
-function fireHeavyWeapon() {
-
-  if (!player.alive || !Armory.heavy.count) return;  
-  if (game.time.now > timer.heavyBullet) {
-    const bullet = heavyBullets.getFirstExists(false);
-
-    if (bullet) {
-      const w = Weapon.heavy;
-      bullet.crit = game.rnd.integerInRange(0, 100) <= w.crit;
-      bullet.reset(player.x, player.y + 16);
-      bullet.body.velocity.x = w.speed * playerDirection;
-      bullet.body.allowGravity = false;
-      bullet.damage = bullet.crit ? w.damage * w.multiplier : w.damage;
-      bullet.damage = game.rnd.integerInRange(Math.floor(bullet.damage - bullet.damage / 5), Math.floor(bullet.damage + bullet.damage / 5))
-      timer.heavyBullet = game.time.now + w.spacing;
-      Armory.heavy.count--;
-      SoundEngine.heavyShot.play();
+      timer[name] = game.time.now + w.spacing;
+      Armory[name].count--;      
+      Armory[name].sound.play();
     }
   }
 }
