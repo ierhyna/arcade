@@ -192,8 +192,7 @@ function checkCollisions() {
   game.physics.arcade.collide(enemyGroup.blobs, [walls, verticalWalls]);
   game.physics.arcade.collide(player, [walls, verticalWalls]);
   game.physics.arcade.collide(bullets, [walls, verticalWalls], bullet => {
-    bullet.kill();
-    SoundEngine.ricochet.play();
+    bullet.kill();    
   });
 
   game.physics.arcade.overlap(bullets, enemyGroup.blobs, (bullet, enemy) => {
