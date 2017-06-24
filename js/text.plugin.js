@@ -19,45 +19,71 @@ const Text = {
         }, 2000, "Linear", true);
     },
 
-    combat: function (object, bullet) {
+    combat: function (object, message, event) {
+        let style;
+        let direction;
         let x = object.body.x
         let y = object.body.y
-        const style = bullet.crit ? {
-            font: "30px Arial",
-            fill: "#ff0000",
-            align: "center",
-            stroke: '#000000',
-            strokeThickness: 6
-        } : {
-            font: "20px Arial",
-            fill: "#ffffff",
-            align: "center",
-            stroke: '#000000',
-            strokeThickness: 3
-        }
-        const text = game.add.text(x, y, bullet.damage, style);
-        const tween = game.add.tween(text).to({
-            y: y - 100,
-            alpha: 0
-        }, 1000, "Linear", true);
-        tween.onComplete.addOnce(() => text.destroy());
-    },
+        switch (event) {
+            case "crit":
+                style = {
+                    font: "30px Arial",
+                    fill: "#ff0000",
+                    align: "center",
+                    stroke: '#000000',
+                    strokeThickness: 6
+                };
+                direction = {
+                    y: y - 140,
+                    alpha: 0
+                }
+                break;
 
-    life: function (hero, enemy) {
-        let x = hero.body.x
-        let y = hero.body.y
-        const style = {
-            font: "24px Arial",
-            fill: "#00ff00",
-            align: "center",
-            stroke: '#000000',
-            strokeThickness: 3
+            case "hit":
+                style = {
+                    font: "20px Arial",
+                    fill: "#ffffff",
+                    align: "center",
+                    stroke: '#000000',
+                    strokeThickness: 3
+                }
+                direction = {
+                    y: y - 100,
+                    alpha: 0
+                }
+                break;
+
+            case "playerHit":
+                style = {
+                    font: "20px Arial",
+                    fill: "#22ff22",
+                    align: "center",
+                    stroke: '#000000',
+                    strokeThickness: 3
+                };
+                direction = {
+                    y: y - 100,
+                    alpha: 0
+                }
+                break;
+            case "info":
+                style = {
+                    font: "30px Arial",
+                    fill: "yellow",
+                    align: "center",
+                    stroke: '#000000',
+                    strokeThickness: 3
+                };
+                direction = {
+                    y: y + 100,
+                    alpha: 0
+                }
+
+                break;
         }
-        const text = game.add.text(x, y, -enemy.damageOnImpact, style);
-        const tween = game.add.tween(text).to({
-            y: y - 100,
-            alpha: 0
-        }, 1000, "Linear", true);
+
+        const text = game.add.text(x, y, message, style);
+        const tween = game.add.tween(text).to(direction, 1000, "Linear", true);
         tween.onComplete.addOnce(() => text.destroy());
     }
 }

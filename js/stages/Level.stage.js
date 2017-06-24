@@ -1,6 +1,9 @@
 import game from "../game";
 import Text from "../text.plugin";
 import {
+  HealthBar
+} from "../bar.plugin";
+import {
   SoundEngine
 } from "./Preload.stage";
 import {
@@ -19,6 +22,9 @@ let walls,
   blast,
   cursors,
   bullets,
+  healthBar,
+  expBar,
+  levelText,
   playerDirection = 1,
   waveCounter = 40;
 
@@ -29,28 +35,76 @@ const timer = {
   jump: 0
 }
 
+let maxPlayerHp =350
+let expToLevel = 650;
+
 export const Level = {
 
   create: function () {
-
     const map = game.add.tilemap('level1');
     map.addTilesetImage('tilea2', 'tileset');
     const bg = game.add.sprite(0, 0, 'background001');
     bg.width = game.width;
-    bg.height = game.height
+    bg.height = 640;
     walls = map.createLayer('walls');
     verticalWalls = map.createLayer('vertical');
     map.setCollision([49, 63, 109], true, walls);
     map.setCollision([55], true, verticalWalls);
 
     player = game.add.sprite(32, 32, 'hero');
-    player.frame = 0;
     player.animations.add('move', [0, 1, 2, 3], 10, true);
     game.physics.enable(player, Phaser.Physics.ARCADE);
     player.body.collideWorldBounds = true;
     player.scale.setTo(0.2, 0.2);
     player.health = 350;
     player.critCombo = 0;
+    player.frame = 0;
+    player.exp = 0;
+    player.level = 1;
+
+    expBar = new HealthBar(game, {
+      width: 400,
+      height: 12,
+      x: 330,
+      y: 716,
+      bg: {
+        color: '#ccc'
+      },
+      bar: {
+        color: '#f00'
+      },
+      animationDuration: 200,
+      flipped: false
+    });
+    expBar.setPercent(0);
+    healthBar = new HealthBar(game, {
+      width: 400,
+      height: 12,
+      x: 330,
+      y: 738,
+      bg: {
+        color: '#651828'
+      },
+      bar: {
+        color: '#FEFF03'
+      },
+      animationDuration: 100,
+      flipped: false
+    });
+
+    healthBar.setPercent(350 / player.health);
+    const avatar = game.add.sprite(10, 650, "avatar");
+    avatar.scale.setTo(0.5, 0.5);
+    game.add.text(130, 650, "Jackson Martinez", {
+      font: "20px Arial",
+      fill: "#888",
+      align: "left"
+    });
+    levelText = game.add.text(130, 680, `Level ${player.level} Soldier`, {
+      font: "18px Arial",
+      fill: "#bbb",
+      align: "left"
+    });
 
     cursors = game.input.keyboard.createCursorKeys();
     fire = game.input.keyboard.addKey(Phaser.KeyCode.ONE);
@@ -75,6 +129,15 @@ export const Level = {
   },
 
   update: function () {
+    healthBar.setPercent(player.health / 350 * 100);
+    expBar.setPercent(player.exp / expToLevel * 100);
+    if (player.exp >= expToLevel) {
+      player.exp = 0;
+      player.level++;
+      expToLevel *= 2;
+      Text.level(`You reached level ${player.level}!`, "#ff0");
+      levelText.text = `Level ${player.level} Soldier`;
+    }
     player.body.velocity.x = 0;
     checkCollisions();
     checkControls();
@@ -101,13 +164,13 @@ function launchEnemy() {
     enemy.animations.add("blink", [7, 0], 10);
     enemy.animations.play("live", 2);
     enemy.active = true;
+    enemy.exp = creature.exp;
   }
-  game.time.events.add(spacing, launchEnemy)
+  game.time.events.add(spacing, launchEnemy);
 }
 
 function checkCollisions() {
-  game.physics.arcade.collide(enemyGroup.blobs, walls);
-  game.physics.arcade.collide(enemyGroup.blobs, verticalWalls);
+  game.physics.arcade.collide(enemyGroup.blobs, [walls, verticalWalls]);
   game.physics.arcade.collide(player, [walls, verticalWalls]);
   game.physics.arcade.collide(bullets, [walls, verticalWalls], bullet => {
     bullet.kill();
@@ -118,8 +181,13 @@ function checkCollisions() {
     if (!enemy.active) return
     bullet.kill();
     if (player.havoc) bullet.damage *= 2;
-    Text.combat(enemy, bullet);
-    if (bullet.crit) player.critCombo++;
+    const event = bullet.crit ? EVENTS.CRIT : EVENTS.HIT;
+    Text.combat(enemy, bullet.damage, event);
+    if (bullet.crit) {
+      player.critCombo++
+    } else {
+      player.critCombo = 0
+    };
     if (player.critCombo > 2) {
       Text.level("HAVOC!", "#ff0000");
       player.havoc = true;
@@ -128,6 +196,8 @@ function checkCollisions() {
     }
     enemy.health -= bullet.damage;
     if (enemy.health <= 0) {
+      Text.combat(enemy, enemy.exp + " exp", EVENTS.INFO);
+      player.exp += enemy.exp;
       enemy.body.velocity.x = 0;
       enemy.active = false;
       return enemy.animations.play("die", 6, false, true);
@@ -139,7 +209,7 @@ function checkCollisions() {
   game.physics.arcade.overlap(enemyGroup.blobs, player, (player, enemy) => {
     if (enemy.active) {
       player.health -= enemy.damageOnImpact;
-      Text.life(player, enemy);
+      Text.combat(player, -enemy.damageOnImpact, EVENTS.PLAYER_HIT);
     }
     if (player.health <= 0) {
       Text.level("WASTED!", "#ffaa00");
@@ -149,7 +219,6 @@ function checkCollisions() {
     enemy.body.velocity.x = 0;
     enemy.active = false;
     enemy.animations.play("die", 6, false, true);
-
   });
 }
 
@@ -176,7 +245,7 @@ function checkControls() {
     }
   } else {
     player.animations.stop();
-    player.frame = 1;
+    player.frame = 0;
   }
 
   if (cursors.up.isDown && player.body.onFloor() && game.time.now > timer.jump) {
@@ -204,4 +273,12 @@ function fireBasicWeapon() {
       SoundEngine.gunShot.play();
     }
   }
+}
+
+// Combat text event
+const EVENTS = {
+  PLAYER_HIT: "playerHit",
+  HIT: "hit",
+  INFO: "info",
+  CRIT: "crit"
 }
