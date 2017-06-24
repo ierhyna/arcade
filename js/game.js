@@ -5,7 +5,7 @@ import { Level, Preload } from "./stages";
 
 const game = new Phaser.Game(
     1216,
-    640,
+    760,
     Phaser.AUTO,
     document.getElementById("game")
 );
