@@ -129,6 +129,10 @@ export const Level = {
   },
 
   update: function () {
+    if (player.health < maxPlayerHp && player.alive) {
+      player.health +=0.1;
+      if (player.health > maxPlayerHp) player.health = maxPlayerHp;
+    }
     healthBar.setPercent(player.health / 350 * 100);
     expBar.setPercent(player.exp / expToLevel * 100);
     if (player.exp >= expToLevel) {
