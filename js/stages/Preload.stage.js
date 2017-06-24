@@ -10,6 +10,8 @@ const Preload = {
         game.load.image('blobby', 'sprites/blobby.png');
         game.load.image('background001', 'sprites/bg001.png');
         game.load.image('avatar', 'sprites/avatar.png');
+        game.load.image('buff_havoc', 'sprites/buffs/buff.havoc.png');
+        game.load.image('buff_enrage', 'sprites/buffs/buff.enrage.png');
         game.load.spritesheet('hero', 'sprites/hero.png', 110, 160);
         game.load.spritesheet('blast', 'sprites/explosion_5.png', 91, 91, 20);
         game.load.spritesheet('blob-ani', 'sprites/mob-ani01.png', 32, 32);

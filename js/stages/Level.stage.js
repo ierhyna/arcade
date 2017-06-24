@@ -1,3 +1,11 @@
+/*
+Player buffs: last 3 seconds, can not happen more than once per 3 seconds
+- Havoc — after performing 3 crits in a row increase damage by 100%
+- Enrage — after killing an enemy increase damage by 20%
+
+Buffs are applied in the aforementioned order
+*/
+
 import game from "../game";
 import Text from "../text.plugin";
 import {
@@ -23,19 +31,21 @@ let walls,
   cursors,
   bullets,
   healthBar,
+  buffIcons = {},
   expBar,
   levelText,
   playerDirection = 1,
   waveCounter = 40;
 
 const enemyGroup = {};
+const buffs = []
 
 const timer = {
   basicBullet: 0,
   jump: 0
 }
 
-let maxPlayerHp =350
+let maxPlayerHp = 350
 let expToLevel = 650;
 
 export const Level = {
@@ -50,6 +60,9 @@ export const Level = {
     verticalWalls = map.createLayer('vertical');
     map.setCollision([49, 63, 109], true, walls);
     map.setCollision([55], true, verticalWalls);
+
+    buffIcons['havoc'] = game.add.sprite(-500, -500, 'buff_havoc');
+    buffIcons['enrage'] = game.add.sprite(-500, -500, 'buff_enrage');
 
     player = game.add.sprite(32, 32, 'hero');
     player.animations.add('move', [0, 1, 2, 3], 10, true);
@@ -129,8 +142,9 @@ export const Level = {
   },
 
   update: function () {
+
     if (player.health < maxPlayerHp && player.alive) {
-      player.health +=0.1;
+      player.health += 0.1;
       if (player.health > maxPlayerHp) player.health = maxPlayerHp;
     }
     healthBar.setPercent(player.health / 350 * 100);
@@ -145,6 +159,7 @@ export const Level = {
     player.body.velocity.x = 0;
     checkCollisions();
     checkControls();
+    renderBuffs();
   }
 };
 
@@ -184,7 +199,12 @@ function checkCollisions() {
   game.physics.arcade.overlap(bullets, enemyGroup.blobs, (bullet, enemy) => {
     if (!enemy.active) return
     bullet.kill();
+
+    // Damage calculation
     if (player.havoc) bullet.damage *= 2;
+    if (player.enrage) bullet.damage = (bullet.damage * 1.2).toFixed();
+    
+
     const event = bullet.crit ? EVENTS.CRIT : EVENTS.HIT;
     Text.combat(enemy, bullet.damage, event);
     if (bullet.crit) {
@@ -192,10 +212,19 @@ function checkCollisions() {
     } else {
       player.critCombo = 0
     };
-    if (player.critCombo > 2) {
+    if (player.critCombo > 1) {
       Text.level("HAVOC!", "#ff0000");
-      player.havoc = true;
-      game.time.events.add(3000, () => player.havoc = false);
+
+      if (!buffs.hasOwnProperty('havoc')) {
+        Object.assign(buffs, {
+          'havoc': true
+        });
+        player.havoc = true;
+        game.time.events.add(3000, () => {
+          player.havoc = false;
+          delete buffs['havoc'];
+        });
+      }
       player.critCombo = 0;
     }
     enemy.health -= bullet.damage;
@@ -204,6 +233,18 @@ function checkCollisions() {
       player.exp += enemy.exp;
       enemy.body.velocity.x = 0;
       enemy.active = false;
+      player.enrage = true;
+      if (!buffs.hasOwnProperty('enrage')) {
+        Object.assign(buffs, {
+          'enrage': true
+        });
+        game.time.events.add(3000, () => {
+          player.enrage = false;
+          delete buffs['enrage'];
+        });
+      };
+
+
       return enemy.animations.play("die", 6, false, true);
     }
     SoundEngine.mobHit.play();
@@ -276,6 +317,21 @@ function fireBasicWeapon() {
       timer.basicBullet = game.time.now + w.spacing;
       SoundEngine.gunShot.play();
     }
+  }
+}
+
+function renderBuffs() {
+  Object.keys(buffIcons).forEach(icon => {
+    buffIcons[icon].x = -500;
+    buffIcons[icon].y -= 500
+  });
+  if (Object.keys(buffs).length) {
+    let position = 0;
+    Object.keys(buffs).forEach(buff => {
+      position++;
+      buffIcons[buff].x = 1120 - position * 32;
+      buffIcons[buff].y = 16;
+    });
   }
 }
 
