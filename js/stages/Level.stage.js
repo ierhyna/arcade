@@ -1,5 +1,11 @@
 import game from "../game";
 import Text from "../text.plugin";
+import {
+  SoundEngine
+} from "./Preload.stage";
+import {
+  ConstructGroup
+} from "../constructors";
 
 import {
   Weapon,
@@ -14,9 +20,7 @@ let walls,
   cursors,
   bullets,
   playerDirection = 1,
-  jumpTimer = 0;
-
-let waveCounter = 40;
+  waveCounter = 40;
 
 const enemyGroup = {};
 
@@ -24,8 +28,6 @@ const timer = {
   basicBullet: 0,
   jump: 0
 }
-
-const sound = {};
 
 export const Level = {
 
@@ -54,10 +56,20 @@ export const Level = {
     fire = game.input.keyboard.addKey(Phaser.KeyCode.ONE);
 
     enemyGroup.blobs = game.add.group();
-    prepareEnemyGroup(enemyGroup.blobs, 'blob-ani');
+    ConstructGroup(enemyGroup.blobs, {
+      number: 50,
+      sprite: 'blob-ani',
+      scale: 0.5
+    });
 
-    prepareBullets();
-    prepareSounds();
+    bullets = game.add.group();
+    ConstructGroup(bullets, {
+      number: 50,
+      sprite: 'bullet',
+      scale: 0.5
+    });
+
+    SoundEngine.trackRumble.play();
     launchEnemy();
     Text.level("Wave 1", "#ffffff");
   },
@@ -93,43 +105,13 @@ function launchEnemy() {
   game.time.events.add(spacing, launchEnemy)
 }
 
-function prepareBullets() {
-  bullets = game.add.group();
-  bullets.enableBody = true;
-  bullets.physicsBodyType = Phaser.Physics.ARCADE;
-  bullets.createMultiple(30, 'bullet');
-  bullets.setAll('anchor.x', 0.5);
-  bullets.setAll('anchor.y', 0.5);
-  bullets.setAll('outOfBoundsKill', true);
-  bullets.setAll('checkWorldBounds', true);
-}
-
-function prepareSounds() {
-  sound.gunShot = game.add.audio('gunShot');
-  sound.mobHit = game.add.audio('mobHit');
-  sound.ricochet = game.add.audio('ricochet');
-  sound.trackRumble = game.add.audio('trackRumble');
-  sound.trackRumble.volume = 0.1;
-  sound.gunShot.allowMultiple = true;
-  sound.gunShot.volume = 0.5;
-  sound.mobHit.allowMultiple = true;
-  sound.ricochet.allowMultiple = true;
-  sound.trackRumble.play();
-}
-
 function checkCollisions() {
   game.physics.arcade.collide(enemyGroup.blobs, walls);
   game.physics.arcade.collide(enemyGroup.blobs, verticalWalls);
   game.physics.arcade.collide(player, [walls, verticalWalls]);
-  game.physics.arcade.collide(bullets, verticalWalls, bullet => {
-    bullet.body.x += bullet.body.velocity.x / 20
-    bullet.body.velocity.x = -bullet.speed;
-    bullet.body.velocity.y = bullet.speed;
-    sound.ricochet.play();
-  });
-  game.physics.arcade.collide(bullets, walls, bullet => {
+  game.physics.arcade.collide(bullets, [walls, verticalWalls], bullet => {
     bullet.kill();
-    sound.ricochet.play();
+    SoundEngine.ricochet.play();
   });
 
   game.physics.arcade.overlap(bullets, enemyGroup.blobs, (bullet, enemy) => {
@@ -141,10 +123,8 @@ function checkCollisions() {
     if (player.critCombo > 2) {
       Text.level("HAVOC!", "#ff0000");
       player.havoc = true;
-      game.time.events.add(200, () => {
-        player.havoc = false
-      });
-      player.critCombo = 0
+      game.time.events.add(3000, () => player.havoc = false);
+      player.critCombo = 0;
     }
     enemy.health -= bullet.damage;
     if (enemy.health <= 0) {
@@ -152,7 +132,7 @@ function checkCollisions() {
       enemy.active = false;
       return enemy.animations.play("die", 6, false, true);
     }
-    sound.mobHit.play();
+    SoundEngine.mobHit.play();
     enemy.alive && enemy.animations.play("blink", 20);
   });
 
@@ -161,9 +141,10 @@ function checkCollisions() {
       player.health -= enemy.damageOnImpact;
       Text.life(player, enemy);
     }
-    if(player.health <= 0) {
+    if (player.health <= 0) {
       Text.level("WASTED!", "#ffaa00");
-      player.kill()};
+      player.kill()
+    };
 
     enemy.body.velocity.x = 0;
     enemy.active = false;
@@ -214,24 +195,13 @@ function fireBasicWeapon() {
     if (bullet) {
       const w = Weapon.basic;
       bullet.crit = game.rnd.integerInRange(0, 100) <= w.crit;
-      bullet.reset(player.x + 16, player.y + 16);
+      bullet.reset(player.x, player.y + 16);
       bullet.body.velocity.x = w.speed * playerDirection;
-      bullet.speed = bullet.body.velocity.x
       bullet.body.allowGravity = false;
       bullet.damage = bullet.crit ? w.damage * w.multiplier : w.damage;
       bullet.damage = game.rnd.integerInRange(Math.floor(bullet.damage - bullet.damage / 5), Math.floor(bullet.damage + bullet.damage / 5))
       timer.basicBullet = game.time.now + w.spacing;
-      sound.gunShot.play();
+      SoundEngine.gunShot.play();
     }
   }
-}
-
-function prepareEnemyGroup(e, sprite) {
-  e.enableBody = true;
-  e.physicsBodyType = Phaser.Physics.ARCADE;
-  e.createMultiple(50, sprite);
-  e.setAll('anchor.x', 0.5);
-  e.setAll('anchor.y', 0.5);
-  e.setAll('outOfBoundsKill', true);
-  e.setAll('checkWorldBounds', true);
 }
