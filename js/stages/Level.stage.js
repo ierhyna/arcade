@@ -70,16 +70,13 @@ export const Level = {
 
     skillIcons['basic'] = game.add.sprite(540, 670, 'icon_basic');
     skillIcons['heavy'] = game.add.sprite(604, 670, 'icon_heavy');
-    game.add.text(564, 737, "1", {
-      font: "16px Press Start 2P",
-      fill: "#fff",
-      align: "center"
-    })
-    game.add.text(628, 737, "2", {
-      font: "16px Press Start 2P",
-      fill: "#fff",
-      align: "center"
-    })
+    for (let i = 1; i <= Object.keys(skillIcons).length; i++) {
+      game.add.text(500 + 64 * i, 737, i, {
+        font: "16px Press Start 2P",
+        fill: "#fff",
+        align: "center"
+      });
+    };
 
     player = game.add.sprite(32, 32, 'hero');
     player.animations.add('move', [0, 1, 2, 3], 10, true);
