@@ -25,16 +25,15 @@ import {
 
 let walls,
   verticalWalls,
-  fire,
-  fireHeavy,
+  Key = {},
   player,
-  blast,
   cursors,
   basicWeapon,
   heavyWeapon,
   healthBar,
   skillIcons = {},
   buffIcons = {},
+  barsText = {},
   expBar,
   levelText,
   playerDirection = 1,
@@ -89,29 +88,19 @@ export const Level = {
         align: "center"
       });
     };
-    Object.keys(Armory).forEach((e, i) => {
-      Armory[e].text = game.add.text(564 + i * 64, 652, Armory[e].count, {
-        font: "12px Press Start 2P",
-        fill: "#fff",
-        align: "center"
-      })
-    });
+
 
     player = game.add.sprite(32, 32, 'hero');
     player.animations.add('move', [0, 1, 2, 3], 10, true);
     game.physics.enable(player, Phaser.Physics.ARCADE);
     player.body.collideWorldBounds = true;
     player.scale.setTo(0.2, 0.2);
-    player.health = 350;
-    player.critCombo = 0;
-    player.frame = 0;
-    player.exp = 0;
-    player.level = 1;
+    initializeNewPlayer();
 
     expBar = new HealthBar(game, {
-      width: 400,
+      width: 300,
       height: 12,
-      x: 330,
+      x: 280,
       y: 716,
       bg: {
         color: '#ccc'
@@ -124,9 +113,9 @@ export const Level = {
     });
     expBar.setPercent(0);
     healthBar = new HealthBar(game, {
-      width: 400,
+      width: 300,
       height: 12,
-      x: 330,
+      x: 280,
       y: 738,
       bg: {
         color: '#651828'
@@ -141,20 +130,11 @@ export const Level = {
     healthBar.setPercent(350 / player.health);
     const avatar = game.add.sprite(10, 650, "avatar");
     avatar.scale.setTo(0.5, 0.5);
-    game.add.text(130, 650, "Jackson Martinez", {
-      font: "20px Arial",
-      fill: "#888",
-      align: "left"
-    });
-    levelText = game.add.text(130, 680, `Level ${player.level} Soldier`, {
-      font: "18px Arial",
-      fill: "#bbb",
-      align: "left"
-    });
+    prepareInterFaceText();
 
     cursors = game.input.keyboard.createCursorKeys();
-    fire = game.input.keyboard.addKey(Phaser.KeyCode.ONE);
-    fireHeavy = game.input.keyboard.addKey(Phaser.KeyCode.TWO);
+    Key.one = game.input.keyboard.addKey(Phaser.KeyCode.ONE);
+    Key.two = game.input.keyboard.addKey(Phaser.KeyCode.TWO);
 
     enemyGroup.blobs = game.add.group();
     ConstructGroup(enemyGroup.blobs, {
@@ -188,24 +168,14 @@ export const Level = {
       player.health += 0.1;
       if (player.health > maxPlayerHp) player.health = maxPlayerHp;
     }
-    healthBar.setPercent(player.health / 350 * 100);
-    expBar.setPercent(player.exp / expToLevel * 100);
-    if (player.exp >= expToLevel) {
-      player.exp = 0;
-      player.level++;
-      expToLevel *= 2;
-      Text.level(`Gained level ${player.level}!`, "#ff0");
-      levelText.text = `Level ${player.level} Soldier`;
-    }
     player.body.velocity.x = 0;
+
     checkCollisions();
     checkControls();
     renderBuffs();
-    Object.keys(Armory).forEach((e, i) => {
-      Armory[e].text.text = Armory[e].count;
-    });
+    renderInterfaceText();
   }
-};
+}
 
 // HELPERS
 function launchEnemy() {
@@ -240,24 +210,27 @@ function checkCollisions() {
   });
 
   game.physics.arcade.overlap([basicWeapon, heavyWeapon], enemyGroup.blobs, (bullet, enemy) => {
-    if (!enemy.active) return
+    if (!enemy.active) return;
     bullet.kill();
 
     // Damage calculation
     if (player.havoc) bullet.damage *= 2;
     if (player.enrage) bullet.damage = (bullet.damage * 1.2).toFixed();
 
-
     const event = bullet.crit ? EVENTS.CRIT : EVENTS.HIT;
     Text.combat(enemy, bullet.damage, event);
     if (bullet.crit) {
-      player.critCombo++
+      if (bullet.damage > player.critRec) {
+        console.log("previous crit record " + player.critRec);
+        player.critRec = bullet.damage;
+        console.log(player.critRec + "/" + bullet.damage);
+        Text.level(`Crit record ${bullet.damage}!`, "#11ff11");
+      }
+      player.critCombo++;
     } else {
-      player.critCombo = 0
+      player.critCombo = 0;
     };
     if (player.critCombo > 1) {
-      Text.level("HAVOC!", "#ff0000");
-
       if (!buffs.hasOwnProperty('havoc')) {
         Object.assign(buffs, {
           'havoc': true
@@ -273,7 +246,7 @@ function checkCollisions() {
     enemy.health -= bullet.damage;
     if (enemy.health <= 0) {
       Text.combat(enemy, enemy.exp + " exp", EVENTS.INFO);
-      player.exp += enemy.exp;
+      updateExp(enemy.exp);
       enemy.body.velocity.x = 0;
       enemy.active = false;
       player.enrage = true;
@@ -286,8 +259,6 @@ function checkCollisions() {
           delete buffs['enrage'];
         });
       };
-
-
       return enemy.animations.play("die", 6, false, true);
     }
     SoundEngine.mobHit.play();
@@ -333,17 +304,17 @@ function checkControls() {
     }
   } else {
     player.animations.stop();
-    player.frame = 0;
+    player.frame = 1;
   }
 
   if (cursors.up.isDown && player.body.onFloor() && game.time.now > timer.jump) {
     player.body.velocity.y = -520;
     timer.jump = game.time.now + 750;
   }
-  if (fire.isDown) {
+  if (Key.one.isDown) {
     fireWeapon(basicWeapon, "basicWeapon");
   }
-  if (fireHeavy.isDown) {
+  if (Key.two.isDown) {
     fireWeapon(heavyWeapon, "heavyWeapon");
   }
 }
@@ -361,7 +332,7 @@ function fireWeapon(weapon, name) {
       bullet.damage = bullet.crit ? w.damage * w.multiplier : w.damage;
       bullet.damage = game.rnd.integerInRange(Math.floor(bullet.damage - bullet.damage / 5), Math.floor(bullet.damage + bullet.damage / 5))
       timer[name] = game.time.now + w.spacing;
-      Armory[name].count--;      
+      Armory[name].count--;
       Armory[name].sound.play();
     }
   }
@@ -379,6 +350,69 @@ function renderBuffs() {
       buffIcons[buff].x = 1120 - position * 32;
       buffIcons[buff].y = 16;
     });
+  }
+}
+
+function renderInterfaceText() {
+  Object.keys(Armory).forEach((e, i) => {
+    Armory[e].text.text = Armory[e].count;
+  });
+  healthBar.setPercent(player.health / 350 * 100);
+  expBar.setPercent(player.exp / expToLevel * 100);
+  barsText.exp.text = `${player.exp}/${expToLevel}`;
+  barsText.hp.text = `${player.health.toFixed()}/${maxPlayerHp}`;
+}
+
+function prepareInterFaceText() {
+  game.add.text(130, 650, "Jackson Martinez", {
+    font: "20px Arial",
+    fill: "#888",
+    align: "left"
+  });
+  levelText = game.add.text(130, 680, `Level ${player.level} Soldier`, {
+    font: "18px Arial",
+    fill: "#bbb",
+    align: "left"
+  });
+
+  barsText.exp = game.add.text(440, 710, `${player.exp}/${expToLevel}`, {
+    font: "11px Press Start 2P",
+    fill: "#fff",
+    align: "center"
+  });
+  barsText.hp = game.add.text(440, 730, `${player.health}/${maxPlayerHp}`, {
+    font: "11px Press Start 2P",
+    fill: "#fff",
+    align: "center"
+  });
+  Object.keys(Armory).forEach((e, i) => {
+    Armory[e].text = game.add.text(564 + i * 64, 652, Armory[e].count, {
+      font: "12px Press Start 2P",
+      fill: "#fff",
+      align: "center"
+    })
+  });
+}
+
+function initializeNewPlayer() {
+  return Object.assign(player, {
+    health: 350,
+    critCombo: 0,
+    critRec: 0,
+    frame: 0,
+    exp: 0,
+    level: 1
+  });
+}
+
+function updateExp(exp) {
+  player.exp += exp;
+  if (player.exp >= expToLevel) {
+    player.exp = 0;
+    player.level++;
+    expToLevel *= 2;
+    Text.level(`Gained level ${player.level}!`, "#ff0");
+    levelText.text = `Level ${player.level} Soldier`;
   }
 }
 
