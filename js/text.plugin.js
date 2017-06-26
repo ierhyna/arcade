@@ -14,7 +14,7 @@ const Text = {
         game.add.tween(text.scale).to({
             x: 2,
             y: 2
-        }, 1000, "Linear", true);
+        }, 2000, "Linear", true);
         const textTween = game.add.tween(text).to({
             alpha: 0
         }, 2000, "Linear", true);
