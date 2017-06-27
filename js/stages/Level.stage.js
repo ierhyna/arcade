@@ -37,7 +37,8 @@ let walls,
   expBar,
   levelText,
   playerDirection = 1,
-  waveCounter = 40;
+  waveCounter = 40,
+  treasures;
 
 const enemyGroup = {};
 const buffs = [];
@@ -157,6 +158,11 @@ export const Level = {
       scale: 1.25
     });
 
+    treasures = game.add.group();
+    treasures.enableBody = true;
+    map.createFromObjects('treasures', 193, 'treasure', 0, true, false, treasures);
+    treasures.forEach(setupTreasures, this);
+
     SoundEngine.trackRumble.play();
     launchEnemy();
     Text.level("Wave 1", "#ffffff");
@@ -205,6 +211,13 @@ function launchEnemy() {
 function checkCollisions() {
   game.physics.arcade.collide(enemyGroup.blobs, [walls, verticalWalls]);
   game.physics.arcade.collide(player, [walls, verticalWalls]);
+  game.physics.arcade.collide(treasures, [walls, verticalWalls]);
+  game.physics.arcade.overlap([player, enemyGroup.blobs], treasures, (treasure) => {
+    if (treasure.active) {
+      console.log('got a treasure');
+    }
+    treasure.active = false;
+  });
   game.physics.arcade.collide([basicWeapon, heavyWeapon], [walls, verticalWalls], bullet => {
     bullet.kill();
   });
@@ -414,6 +427,11 @@ function updateExp(exp) {
     Text.level(`Gained level ${player.level}!`, "#ff0");
     levelText.text = `Level ${player.level} Soldier`;
   }
+}
+
+function setupTreasures(treasure) {
+  treasure.scale.setTo(0.25, 0.25);
+  treasure.active = true;
 }
 
 // Combat text event

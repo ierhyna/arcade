@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.0.1" orientation="orthogonal" renderorder="right-down" width="38" height="20" tilewidth="32" tileheight="32" nextobjectid="1">
+<map version="1.0" tiledversion="1.0.1" orientation="orthogonal" renderorder="right-down" width="38" height="20" tilewidth="32" tileheight="32" nextobjectid="9">
  <tileset firstgid="1" name="tilea2" tilewidth="32" tileheight="32" tilecount="192" columns="16">
   <image source="tilea2.png" width="512" height="384"/>
+ </tileset>
+ <tileset firstgid="193" name="treasure" tilewidth="118" tileheight="108" tilecount="1" columns="0">
+  <grid orientation="orthogonal" width="1" height="1"/>
+  <tile id="0">
+   <image width="118" height="108" source="pixel_treasure_chest.png"/>
+  </tile>
  </tileset>
  <layer name="walls" width="38" height="20">
   <data encoding="csv">
@@ -51,4 +57,9 @@
 55,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,55
 </data>
  </layer>
+ <objectgroup name="treasures">
+  <object id="6" gid="193" x="475.134" y="609.335" width="33.9614" height="31.0833"/>
+  <object id="7" gid="193" x="319.803" y="478.54" width="33.9614" height="31.0833"/>
+  <object id="8" gid="193" x="831.069" y="479.316" width="33.9614" height="31.0833"/>
+ </objectgroup>
 </map>

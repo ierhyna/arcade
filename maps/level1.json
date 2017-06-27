@@ -21,8 +21,54 @@
          "width":38,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "name":"treasures",
+         "objects":[
+                {
+                 "gid":193,
+                 "height":31.0833171360388,
+                 "id":6,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":33.9614020560424,
+                 "x":475.133528384801,
+                 "y":609.335069371332
+                }, 
+                {
+                 "gid":193,
+                 "height":31.0833,
+                 "id":7,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":33.9614,
+                 "x":319.802719482424,
+                 "y":478.539528569522
+                }, 
+                {
+                 "gid":193,
+                 "height":31.0833,
+                 "id":8,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":33.9614,
+                 "x":831.068979798176,
+                 "y":479.315714641956
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextobjectid":1,
+ "nextobjectid":9,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.0.1",
@@ -40,6 +86,31 @@
          "tilecount":192,
          "tileheight":32,
          "tilewidth":32
+        }, 
+        {
+         "columns":0,
+         "firstgid":193,
+         "grid":
+            {
+             "height":1,
+             "orientation":"orthogonal",
+             "width":1
+            },
+         "margin":0,
+         "name":"treasure",
+         "spacing":0,
+         "tilecount":1,
+         "tileheight":108,
+         "tiles":
+            {
+             "0":
+                {
+                 "image":"pixel_treasure_chest.png",
+                 "imageheight":108,
+                 "imagewidth":118
+                }
+            },
+         "tilewidth":118
         }],
  "tilewidth":32,
  "type":"map",
