@@ -213,10 +213,10 @@ function checkCollisions() {
   game.physics.arcade.collide(player, [walls, verticalWalls]);
   game.physics.arcade.collide(treasures, [walls, verticalWalls]);
   game.physics.arcade.overlap([player, enemyGroup.blobs], treasures, (treasure) => {
-    if (treasure.active) {
+    // if (treasure.active) {
       console.log('got a treasure');
-    }
-    treasure.active = false;
+    // }
+    // treasure.active = false;
   });
   game.physics.arcade.collide([basicWeapon, heavyWeapon], [walls, verticalWalls], bullet => {
     bullet.kill();
