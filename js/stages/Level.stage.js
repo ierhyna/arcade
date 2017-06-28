@@ -235,7 +235,7 @@ function checkCollisions() {
   game.physics.arcade.collide(player, [walls, verticalWalls]);
   game.physics.arcade.overlap(player, coins, (player, coin)=>{
     Text.combat(coin, `+${coin.value} gold`, EVENTS.INFO);
-    totalGoldForLevel +=coin.value;
+    totalGoldForLevel += +coin.value;
     coin.kill();
   });
   game.physics.arcade.collide(treasures, [walls, verticalWalls]);
@@ -255,7 +255,7 @@ function checkCollisions() {
       enemy.coin.scale.setTo(0.25, 0.125);
       console.log(`enemy stole ${enemy.gold} coins!`);
       Text.combat(enemy, `-${enemy.gold} gold`, EVENTS.INFO);
-      totalGoldForLevel -=enemy.gold;
+      totalGoldForLevel -= +enemy.gold;
     }
   });
   game.physics.arcade.collide([basicWeapon, heavyWeapon], [walls, verticalWalls], bullet => {
@@ -486,7 +486,7 @@ function setupTreasures() {
 function dropCoin(enemy) {
   const coin = coins.getFirstExists(false);
   if (coin) {
-    coin.reset(enemy.x, enemy.y);    
+    coin.reset(enemy.x, enemy.y);
     coin.body.moves = false;
     coin.value = (enemy.gold * 0.8).toFixed();
   }
