@@ -7,6 +7,7 @@ const Preload = {
         game.load.tilemap('level1', 'maps/level1.json', null, Phaser.Tilemap.TILED_JSON);
         game.load.image('tileset', 'maps/tilea2.png');
         game.load.image('treasure', 'maps/pixel_treasure_chest.png');
+        game.load.image('coin', 'sprites/coin.png');
         game.load.image('bullet', 'sprites/bullet.png');
         game.load.image('heavyBullet', 'sprites/heavyBullet.png');
         game.load.image('blobby', 'sprites/blobby.png');
@@ -33,7 +34,7 @@ const Preload = {
         SoundEngine.mobHit.volume = 0.5;
         SoundEngine.ricochet = game.add.audio('ricochet');
         SoundEngine.trackRumble = game.add.audio('trackRumble');
-        SoundEngine.trackRumble.volume = 0.2;
+        SoundEngine.trackRumble.volume = 0;
         SoundEngine.gunShot.allowMultiple = true;
         SoundEngine.gunShot.volume = 0.1;
         SoundEngine.mobHit.allowMultiple = true;
