@@ -137,6 +137,14 @@ export const Level = {
     Key.one = game.input.keyboard.addKey(Phaser.KeyCode.ONE);
     Key.two = game.input.keyboard.addKey(Phaser.KeyCode.TWO);
 
+    treasures = game.add.group();
+    ConstructGroup(treasures, {
+      number: 10,
+      sprite: "treasure",
+      scale: 0.25
+    });
+    setupTreasures();
+
     enemyGroup.blobs = game.add.group();
     ConstructGroup(enemyGroup.blobs, {
       number: 50,
@@ -157,11 +165,6 @@ export const Level = {
       sprite: 'heavyBullet',
       scale: 1.25
     });
-
-    treasures = game.add.group();
-    treasures.enableBody = true;
-    map.createFromObjects('treasures', 193, 'treasure', 0, true, false, treasures);
-    treasures.forEach(setupTreasures, this);
 
     SoundEngine.trackRumble.play();
     launchEnemy();
@@ -212,11 +215,22 @@ function checkCollisions() {
   game.physics.arcade.collide(enemyGroup.blobs, [walls, verticalWalls]);
   game.physics.arcade.collide(player, [walls, verticalWalls]);
   game.physics.arcade.collide(treasures, [walls, verticalWalls]);
-  game.physics.arcade.overlap([player, enemyGroup.blobs], treasures, (treasure) => {
-    // if (treasure.active) {
-      console.log('got a treasure');
-    // }
-    // treasure.active = false;
+  game.physics.arcade.overlap(enemyGroup.blobs, treasures, (enemy, treasure) => {
+    if (!enemy.carryingTreasure) {
+      const stealAmount = 10;
+      enemy.carryingTreasure = true;
+      if (treasure.goldCapacity >= stealAmount) {
+        treasure.goldCapacity -= stealAmount;
+        enemy.gold = stealAmount;        
+      } else {
+        enemy.gold = treasure.goldCapacity;
+        treasure.goldCapacity = 0;
+        treasure.kill();
+      }
+      const child = enemy.addChild(game.make.sprite(-16,-8 , 'coin'));
+      child.scale.setTo(0.25, 0.125);
+      console.log(`enemy stole ${enemy.gold} coins!`);
+    }
   });
   game.physics.arcade.collide([basicWeapon, heavyWeapon], [walls, verticalWalls], bullet => {
     bullet.kill();
@@ -429,9 +443,12 @@ function updateExp(exp) {
   }
 }
 
-function setupTreasures(treasure) {
-  treasure.scale.setTo(0.25, 0.25);
-  treasure.active = true;
+function setupTreasures() {
+  const treasure = treasures.getFirstExists(false);
+  if (treasure) {
+    treasure.reset(328, 200);
+    treasure.goldCapacity = 87;
+  }
 }
 
 // Combat text event
