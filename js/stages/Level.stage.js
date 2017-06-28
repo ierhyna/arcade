@@ -299,10 +299,10 @@ function checkCollisions() {
     enemy.health -= bullet.damage;
     if (enemy.health <= 0) {
       Text.combat(enemy, enemy.exp + " exp", EVENTS.INFO);
-      updateExp(enemy.exp);
-      enemy.carryingTreasure = false;
+      updateExp(enemy.exp);      
       enemy.body.velocity.x = 0;
-      if (enemy.coin) {
+      if (enemy.carryingTreasure) {
+        enemy.carryingTreasure = false;
         enemy.coin.kill();
         dropCoin(enemy);
       }
