@@ -38,7 +38,8 @@ let walls,
   levelText,
   playerDirection = 1,
   waveCounter = 40,
-  treasures;
+  treasures,
+  coins;
 
 const enemyGroup = {};
 const buffs = [];
@@ -145,6 +146,12 @@ export const Level = {
     });
     setupTreasures();
 
+    coins = game.add.group();
+    ConstructGroup(coins, {
+      sprite: "coin",
+      scale: 0.25
+    });
+
     enemyGroup.blobs = game.add.group();
     ConstructGroup(enemyGroup.blobs, {
       number: 50,
@@ -207,6 +214,7 @@ function launchEnemy() {
     enemy.animations.play("live", 2);
     enemy.active = true;
     enemy.exp = creature.exp;
+
   }
   game.time.events.add(spacing, launchEnemy);
 }
@@ -214,6 +222,10 @@ function launchEnemy() {
 function checkCollisions() {
   game.physics.arcade.collide(enemyGroup.blobs, [walls, verticalWalls]);
   game.physics.arcade.collide(player, [walls, verticalWalls]);
+  game.physics.arcade.overlap(player, coins, (player, coin)=>{
+    Text.combat(coin, `+${coin.value} gold`, EVENTS.INFO);
+    coin.kill();
+  });
   game.physics.arcade.collide(treasures, [walls, verticalWalls]);
   game.physics.arcade.overlap(enemyGroup.blobs, treasures, (enemy, treasure) => {
     if (!enemy.carryingTreasure) {
@@ -221,15 +233,16 @@ function checkCollisions() {
       enemy.carryingTreasure = true;
       if (treasure.goldCapacity >= stealAmount) {
         treasure.goldCapacity -= stealAmount;
-        enemy.gold = stealAmount;        
+        enemy.gold = stealAmount;
       } else {
         enemy.gold = treasure.goldCapacity;
         treasure.goldCapacity = 0;
         treasure.kill();
       }
-      const child = enemy.addChild(game.make.sprite(-16,-8 , 'coin'));
-      child.scale.setTo(0.25, 0.125);
+      enemy.coin = enemy.addChild(game.make.sprite(-16, -8, 'coin'));
+      enemy.coin.scale.setTo(0.25, 0.125);
       console.log(`enemy stole ${enemy.gold} coins!`);
+      Text.combat(enemy, `-${enemy.gold} gold`, EVENTS.INFO);
     }
   });
   game.physics.arcade.collide([basicWeapon, heavyWeapon], [walls, verticalWalls], bullet => {
@@ -275,6 +288,10 @@ function checkCollisions() {
       Text.combat(enemy, enemy.exp + " exp", EVENTS.INFO);
       updateExp(enemy.exp);
       enemy.body.velocity.x = 0;
+      if (enemy.coin) {
+        enemy.coin.kill();
+        dropCoin(enemy);
+      }
       enemy.active = false;
       player.enrage = true;
       if (!buffs.hasOwnProperty('enrage')) {
@@ -448,6 +465,15 @@ function setupTreasures() {
   if (treasure) {
     treasure.reset(328, 200);
     treasure.goldCapacity = 87;
+  }
+}
+
+function dropCoin(enemy) {
+  const coin = coins.getFirstExists(false);
+  if (coin) {
+    coin.reset(enemy.x, enemy.y);    
+    coin.body.moves = false;
+    coin.value = (enemy.gold * 0.8).toFixed();
   }
 }
 
