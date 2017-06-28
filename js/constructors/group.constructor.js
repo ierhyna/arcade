@@ -6,6 +6,8 @@ export function ConstructGroup(enemy, param) {
     enemy.createMultiple(param.number || 50, param.sprite);
     enemy.setAll('anchor.x', param.scale || 0.5);
     enemy.setAll('anchor.y', param.scale || 0.5);
+    enemy.setAll('scale.x', param.scale || 0.5);
+    enemy.setAll('scale.y', param.scale || 0.5);
     enemy.setAll('outOfBoundsKill', true);
     enemy.setAll('checkWorldBounds', true);
 }
