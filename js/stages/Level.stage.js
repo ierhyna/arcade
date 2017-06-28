@@ -34,6 +34,7 @@ let walls,
   skillIcons = {},
   buffIcons = {},
   barsText = {},
+  InfoText = {},
   expBar,
   levelText,
   playerDirection = 1,
@@ -54,6 +55,7 @@ const timer = {
 
 let maxPlayerHp = 350
 let expToLevel = 650;
+let totalGoldForLevel = 500;
 
 export const Level = {
 
@@ -176,6 +178,15 @@ export const Level = {
     SoundEngine.trackRumble.play();
     launchEnemy();
     Text.level("Wave 1", "#ffffff");
+
+    InfoText.gold = game.add.text(48,16, `Gold: ${totalGoldForLevel}`,{
+            font: "Press Start 2P",
+            fontSize: "20px",
+            fill: "gold",
+            align: "center",
+            stroke: '#000000',
+            strokeThickness: 4
+        })
   },
 
   update: function () {
@@ -224,6 +235,7 @@ function checkCollisions() {
   game.physics.arcade.collide(player, [walls, verticalWalls]);
   game.physics.arcade.overlap(player, coins, (player, coin)=>{
     Text.combat(coin, `+${coin.value} gold`, EVENTS.INFO);
+    totalGoldForLevel +=coin.value;
     coin.kill();
   });
   game.physics.arcade.collide(treasures, [walls, verticalWalls]);
@@ -243,6 +255,7 @@ function checkCollisions() {
       enemy.coin.scale.setTo(0.25, 0.125);
       console.log(`enemy stole ${enemy.gold} coins!`);
       Text.combat(enemy, `-${enemy.gold} gold`, EVENTS.INFO);
+      totalGoldForLevel -=enemy.gold;
     }
   });
   game.physics.arcade.collide([basicWeapon, heavyWeapon], [walls, verticalWalls], bullet => {
@@ -406,6 +419,7 @@ function renderInterfaceText() {
   expBar.setPercent(player.exp / expToLevel * 100);
   barsText.exp.text = `${player.exp}/${expToLevel}`;
   barsText.hp.text = `${player.health.toFixed()}/${maxPlayerHp}`;
+  InfoText.gold.text = `Gold: ${totalGoldForLevel}`;
 }
 
 function prepareInterFaceText() {
