@@ -54,7 +54,7 @@ const timer = {
 }
 
 let maxPlayerHp = 350
-let expToLevel = 650;
+let totalExpForLevel = 650;
 let totalGoldForLevel = 500;
 
 export const Level = {
@@ -101,92 +101,30 @@ export const Level = {
     player.scale.setTo(0.2, 0.2);
     initializeNewPlayer();
 
-    expBar = new HealthBar(game, {
-      width: 300,
-      height: 12,
-      x: 280,
-      y: 716,
-      bg: {
-        color: '#ccc'
-      },
-      bar: {
-        color: '#f00'
-      },
-      animationDuration: 200,
-      flipped: false
-    });
-    expBar.setPercent(0);
-    healthBar = new HealthBar(game, {
-      width: 300,
-      height: 12,
-      x: 280,
-      y: 738,
-      bg: {
-        color: '#651828'
-      },
-      bar: {
-        color: '#FEFF03'
-      },
-      animationDuration: 100,
-      flipped: false
-    });
+    prepareBars();
+    prepareInterFaceText();
 
-    healthBar.setPercent(350 / player.health);
     const avatar = game.add.sprite(10, 650, "avatar");
     avatar.scale.setTo(0.5, 0.5);
-    prepareInterFaceText();
 
     cursors = game.input.keyboard.createCursorKeys();
     Key.one = game.input.keyboard.addKey(Phaser.KeyCode.ONE);
     Key.two = game.input.keyboard.addKey(Phaser.KeyCode.TWO);
 
-    treasures = game.add.group();
-    ConstructGroup(treasures, {
-      number: 10,
-      sprite: "treasure",
-      scale: 0.25
-    });
+    prepareGroups();
     setupTreasures();
-
-    coins = game.add.group();
-    ConstructGroup(coins, {
-      sprite: "coin",
-      scale: 0.25
-    });
-
-    enemyGroup.blobs = game.add.group();
-    ConstructGroup(enemyGroup.blobs, {
-      number: 50,
-      sprite: 'blob-ani',
-      scale: 0.5
-    });
-
-    basicWeapon = game.add.group();
-    ConstructGroup(basicWeapon, {
-      number: 50,
-      sprite: 'bullet',
-      scale: 0.5
-    });
-
-    heavyWeapon = game.add.group();
-    ConstructGroup(heavyWeapon, {
-      number: 20,
-      sprite: 'heavyBullet',
-      scale: 1.25
-    });
-
-    SoundEngine.trackRumble.play();
-    launchEnemy();
+    launchEnemy(Creature.basic);
     Text.level("Wave 1", "#ffffff");
+    SoundEngine.trackRumble.play();
 
-    InfoText.gold = game.add.text(48,16, `Gold: ${totalGoldForLevel}`,{
-            font: "Press Start 2P",
-            fontSize: "20px",
-            fill: "gold",
-            align: "center",
-            stroke: '#000000',
-            strokeThickness: 4
-        })
+    InfoText.gold = game.add.text(48, 16, `Gold: ${totalGoldForLevel}`, {
+      font: "Press Start 2P",
+      fontSize: "20px",
+      fill: "gold",
+      align: "center",
+      stroke: '#000000',
+      strokeThickness: 4
+    })
   },
 
   update: function () {
@@ -205,17 +143,17 @@ export const Level = {
 }
 
 // HELPERS
-function launchEnemy() {
+function launchEnemy(mob) {
   const spacing = 1800;
   waveCounter -= 1;
   if (waveCounter === 0) return;
   let enemy = enemyGroup.blobs.getFirstExists(false);
   if (enemy) {
-    const creature = Creature.basic;
+
     enemy.reset(600, 20);
-    enemy.body.velocity.x = creature.speed * (waveCounter % 2 ? 1 : -1);
-    enemy.health = creature.health;
-    enemy.damageOnImpact = creature.damageOnImpact;
+    enemy.body.velocity.x = mob.speed * (waveCounter % 2 ? 1 : -1);
+    enemy.health = mob.health;
+    enemy.damageOnImpact = mob.damageOnImpact;
     game.physics.enable(enemy, Phaser.Physics.ARCADE);
     enemy.body.bounce.setTo(1, 0);
     enemy.scale.setTo(1, 2)
@@ -224,21 +162,25 @@ function launchEnemy() {
     enemy.animations.add("blink", [7, 0], 10);
     enemy.animations.play("live", 2);
     enemy.active = true;
-    enemy.exp = creature.exp;
+    enemy.exp = mob.exp;
 
   }
-  game.time.events.add(spacing, launchEnemy);
+  game.time.events.add(spacing, () => launchEnemy(mob));
 }
 
 function checkCollisions() {
   game.physics.arcade.collide(enemyGroup.blobs, [walls, verticalWalls]);
+
   game.physics.arcade.collide(player, [walls, verticalWalls]);
-  game.physics.arcade.overlap(player, coins, (player, coin)=>{
+
+  game.physics.arcade.overlap(player, coins, (player, coin) => {
     Text.combat(coin, `+${coin.value} gold`, EVENTS.INFO);
     totalGoldForLevel += +coin.value;
     coin.kill();
   });
+
   game.physics.arcade.collide(treasures, [walls, verticalWalls]);
+
   game.physics.arcade.overlap(enemyGroup.blobs, treasures, (enemy, treasure) => {
     if (!enemy.carryingTreasure) {
       const stealAmount = 10;
@@ -258,6 +200,7 @@ function checkCollisions() {
       totalGoldForLevel -= +enemy.gold;
     }
   });
+
   game.physics.arcade.collide([basicWeapon, heavyWeapon], [walls, verticalWalls], bullet => {
     bullet.kill();
   });
@@ -265,7 +208,6 @@ function checkCollisions() {
   game.physics.arcade.overlap([basicWeapon, heavyWeapon], enemyGroup.blobs, (bullet, enemy) => {
     if (!enemy.active) return;
     bullet.kill();
-
     // Damage calculation
     if (player.havoc) bullet.damage *= 2;
     if (player.enrage) bullet.damage = (bullet.damage * 1.2).toFixed();
@@ -273,9 +215,9 @@ function checkCollisions() {
     const event = bullet.crit ? EVENTS.CRIT : EVENTS.HIT;
     Text.combat(enemy, bullet.damage, event);
     if (bullet.crit) {
-      if (bullet.damage > player.critRec) {
+      if (Number(bullet.damage) > Number(player.critRec)) {
         console.log("previous crit record " + player.critRec);
-        player.critRec = bullet.damage;
+        player.critRec = Number(bullet.damage);
         console.log(player.critRec + "/" + bullet.damage);
         Text.level(`Crit record ${bullet.damage}!`, "#11ff11");
       }
@@ -284,22 +226,13 @@ function checkCollisions() {
       player.critCombo = 0;
     };
     if (player.critCombo > 1) {
-      if (!buffs.hasOwnProperty('havoc')) {
-        Object.assign(buffs, {
-          'havoc': true
-        });
-        player.havoc = true;
-        game.time.events.add(3000, () => {
-          player.havoc = false;
-          delete buffs['havoc'];
-        });
-      }
+      activateBuff('havoc', 3000);
       player.critCombo = 0;
     }
     enemy.health -= bullet.damage;
     if (enemy.health <= 0) {
       Text.combat(enemy, enemy.exp + " exp", EVENTS.INFO);
-      updateExp(enemy.exp);      
+      updateExp(enemy.exp);
       enemy.body.velocity.x = 0;
       if (enemy.carryingTreasure) {
         enemy.carryingTreasure = false;
@@ -308,15 +241,7 @@ function checkCollisions() {
       }
       enemy.active = false;
       player.enrage = true;
-      if (!buffs.hasOwnProperty('enrage')) {
-        Object.assign(buffs, {
-          'enrage': true
-        });
-        game.time.events.add(3000, () => {
-          player.enrage = false;
-          delete buffs['enrage'];
-        });
-      };
+      activateBuff('enrage', 3000)
       return enemy.animations.play("die", 6, false, true);
     }
     SoundEngine.mobHit.play();
@@ -329,6 +254,7 @@ function checkCollisions() {
       Text.combat(player, -enemy.damageOnImpact, EVENTS.PLAYER_HIT);
     }
     if (player.health <= 0) {
+      player.health = 0;
       Text.level("WASTED!", "#ffaa00");
       player.kill()
     };
@@ -416,8 +342,8 @@ function renderInterfaceText() {
     Armory[e].text.text = Armory[e].count;
   });
   healthBar.setPercent(player.health / 350 * 100);
-  expBar.setPercent(player.exp / expToLevel * 100);
-  barsText.exp.text = `${player.exp}/${expToLevel}`;
+  expBar.setPercent(player.exp / totalExpForLevel * 100);
+  barsText.exp.text = `${player.exp}/${totalExpForLevel}`;
   barsText.hp.text = `${player.health.toFixed()}/${maxPlayerHp}`;
   InfoText.gold.text = `Gold: ${totalGoldForLevel}`;
 }
@@ -434,7 +360,7 @@ function prepareInterFaceText() {
     align: "left"
   });
 
-  barsText.exp = game.add.text(440, 710, `${player.exp}/${expToLevel}`, {
+  barsText.exp = game.add.text(440, 710, `${player.exp}/${totalExpForLevel}`, {
     font: "11px Press Start 2P",
     fill: "#fff",
     align: "center"
@@ -453,6 +379,76 @@ function prepareInterFaceText() {
   });
 }
 
+function prepareBars() {
+  expBar = new HealthBar(game, {
+    width: 300,
+    height: 12,
+    x: 280,
+    y: 716,
+    bg: {
+      color: '#ccc'
+    },
+    bar: {
+      color: '#f00'
+    },
+    animationDuration: 200,
+    flipped: false
+  });
+  expBar.setPercent(0);
+
+  healthBar = new HealthBar(game, {
+    width: 300,
+    height: 12,
+    x: 280,
+    y: 738,
+    bg: {
+      color: '#651828'
+    },
+    bar: {
+      color: '#FEFF03'
+    },
+    animationDuration: 100,
+    flipped: false
+  });
+  healthBar.setPercent(350 / player.health);
+}
+
+function prepareGroups() {
+  treasures = game.add.group();
+  ConstructGroup(treasures, {
+    number: 10,
+    sprite: "treasure",
+    scale: 0.25
+  });
+
+  coins = game.add.group();
+  ConstructGroup(coins, {
+    sprite: "coin",
+    scale: 0.25
+  });
+
+  enemyGroup.blobs = game.add.group();
+  ConstructGroup(enemyGroup.blobs, {
+    number: 50,
+    sprite: 'blob-ani',
+    scale: 0.5
+  });
+
+  basicWeapon = game.add.group();
+  ConstructGroup(basicWeapon, {
+    number: 50,
+    sprite: 'bullet',
+    scale: 0.5
+  });
+
+  heavyWeapon = game.add.group();
+  ConstructGroup(heavyWeapon, {
+    number: 20,
+    sprite: 'heavyBullet',
+    scale: 1.25
+  });
+}
+
 function initializeNewPlayer() {
   return Object.assign(player, {
     health: 350,
@@ -466,10 +462,10 @@ function initializeNewPlayer() {
 
 function updateExp(exp) {
   player.exp += exp;
-  if (player.exp >= expToLevel) {
+  if (player.exp >= totalExpForLevel) {
     player.exp = 0;
     player.level++;
-    expToLevel *= 2;
+    totalExpForLevel *= 2;
     Text.level(`Gained level ${player.level}!`, "#ff0");
     levelText.text = `Level ${player.level} Soldier`;
   }
@@ -489,6 +485,19 @@ function dropCoin(enemy) {
     coin.reset(enemy.x, enemy.y);
     coin.body.moves = false;
     coin.value = (enemy.gold * 0.8).toFixed();
+  }
+}
+
+function activateBuff(buff, length) {
+  if (!buffs.hasOwnProperty(buff)) {
+    Object.assign(buffs, {
+      [buff]: true
+    });
+    player[buff] = true;
+    game.time.events.add(length, () => {
+      player[buff] = false;
+      delete buffs[buff];
+    });
   }
 }
 
