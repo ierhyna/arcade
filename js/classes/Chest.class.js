@@ -16,7 +16,8 @@ export default class Chest extends Object {
 
     spawnOne(x, y, goldAmount) {
         this.goldAmount = goldAmount;
-        this.game.add.sprite(x, y, this.sprite);
-        this.scale.setTo(0.25, 0.25);        
+        let sprite = this.game.add.sprite(x, y, this.sprite);
+        sprite.scale.setTo(0.25, 0.25);
+        return sprite;        
     }
 }

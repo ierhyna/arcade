@@ -139,7 +139,7 @@ export const Level = {
         let chest = new Chest(game);
         console.log(chest)
         console.log(chest.item.props())
-        chest.spawnOne(64, 64, 87);
+        chest.spawnOne(64, 64, 87);        
 
         basicBulletGroup = new Pool(game, BasicBullet, 50);
     },
