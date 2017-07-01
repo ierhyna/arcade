@@ -8,6 +8,7 @@ export default class Blob extends Enemy {
         super(game, "blobby");
         this.game = game;
         this.item = new Item(data);
+        this.sound = game.add.audio('mobHit');
     };
 
     spawn(x, y) {
