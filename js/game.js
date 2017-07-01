@@ -10,8 +10,11 @@ const game = new Phaser.Game(
     document.getElementById("game")
 );
 
+const Store = {}
+
 game.state.add("Preload", Preload);
 game.state.add("Level", Level);
 game.state.start("Preload");
 
 export default game;
+export {Store}
