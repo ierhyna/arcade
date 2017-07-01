@@ -26,14 +26,12 @@ export default class Enemy extends Phaser.Sprite {
     };
 
     hit(projectile) {
-        if (!this.alive) return;
-        projectile.kill();        
+        if (!this.alive) return;        
         this.health -= projectile.damage;
         if (this.health <= 0) {
             this.body.velocity.x = 0;
             this.alive = false;
             this.kill();
-        }
-       // SoundEngine.mobHit.play();
+        }       
     }
 }

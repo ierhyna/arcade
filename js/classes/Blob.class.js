@@ -1,11 +1,13 @@
 import game from "../game";
 import Enemy from "./Enemy.class";
+import Item from "./Item.class";
 
 export default class Blob extends Enemy {
 
     constructor(game) {
         super(game);
         this.game = game;
+        this.item = new Item();
     }
 
     spawn(x, y) {
