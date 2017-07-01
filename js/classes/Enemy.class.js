@@ -1,4 +1,6 @@
 import game from "../game";
+import Text from "../text.plugin";
+
 export default class Enemy extends Phaser.Sprite {
     constructor(game, sprite) {
         super(game, 0, 0, sprite);
@@ -26,14 +28,23 @@ export default class Enemy extends Phaser.Sprite {
     };
 
     hit(projectile) {
-        if (!this.alive) return;
+        if (!this.alive) return;        
         this.health -= projectile.damage;
+        const event = projectile.crit ? "crit" : "hit";
+        Text.combat(this, projectile.damage, event);
         if (this.health <= 0) {
             this.body.velocity.x = 0;
             this.alive = false;
-            this.kill();
+            this.die();
         }
     }
+
+    hitPlayer(player){
+        player.health -= this.damageOnContact;
+        if (player.health <=0) player.kill();
+        this.die();
+    }
+
     update() {
         this.game.physics.arcade.collide(this, this.game.walls);
         if (this.body.blocked.right) {
@@ -43,5 +54,9 @@ export default class Enemy extends Phaser.Sprite {
             this.scale.x = 1;
             this.body.velocity.x = this.speed;
         }
+    }
+
+    die(){
+        this.kill();
     }
 }
