@@ -6,7 +6,7 @@ Player buffs: last 3 seconds, can not happen more than once per 3 seconds
 Buffs are applied in the aforementioned order
 */
 
-import game from "../game";
+import game, { Store } from "../game";
 import Text from "../text.plugin";
 import { HealthBar } from "../bar.plugin";
 import { SoundEngine } from "./Preload.stage";
@@ -14,7 +14,7 @@ import { ConstructGroup } from "../constructors";
 
 import { Weapon, Creature } from "../../config";
 
-import { Pool, Blob, BasicBullet } from "../classes";
+import { Pool, Blob, BasicBullet, Chest } from "../classes";
 
 let Key = {},
     player,
@@ -53,7 +53,6 @@ let totalExpForLevel = 650;
 let totalGoldForLevel = 500;
 
 export const Level = {
-
     create: function() {
         Armory = {
             'basicWeapon': {
@@ -65,6 +64,9 @@ export const Level = {
                 sound: SoundEngine.heavyShot
             }
         }
+        Store.wave = 1;
+        Store.enemiesInWave = 40;
+        Store.currentEnemy = 1;
         const map = game.add.tilemap('level1');
         map.addTilesetImage('tilea2', 'tileset');
         const bg = game.add.sprite(0, 0, 'background001');
@@ -127,16 +129,17 @@ export const Level = {
         });
 
 
-        blobGroup = game.add.group()
-        for (let i = 0; i < 10; i++) {
-            blobGroup.add(new Blob(game));
-        }
-
         blobbyGroup = new Pool(game, Blob, 50, { title: "Blob", description: "Tiny blob" });
         let blobby = blobbyGroup.create(100, 100);
         blobby.item.props({ value: 3 })
-        console.log(blobby.item.props());
-        spawnEnenmy(blobbyGroup, 600, 50, 2500);
+        console.log(blobby);
+
+        spawnEnenmy(blobbyGroup, { x: 600, y: 50, spacing: 2500, quantity: Store.enemiesInWave });
+
+        let chest = new Chest(game);
+        console.log(chest)
+        console.log(chest.item.props())
+        chest.spawnOne(64, 64, 87);
 
         basicBulletGroup = new Pool(game, BasicBullet, 50);
     },
@@ -157,9 +160,10 @@ export const Level = {
 }
 
 // HELPERS
-function spawnEnenmy(group, x, y, spacing) {
-    group.create(x, y);
-    game.time.events.add(spacing, () => spawnEnenmy(group, x, y, spacing));
+function spawnEnenmy(group, data) {
+    if (Store.currentEnemy > data.quantity) return;
+    group.create(data.x, data.y);
+    game.time.events.add(data.spacing, () => spawnEnenmy(group, data));
 }
 
 function launchEnemy(mob) {
@@ -333,10 +337,10 @@ function checkControls() {
 
 function fire(weapon, spacing) {
     if (game.time.now > (timer[weapon] || 250)) {
-      console.log('shootin')
-      const bullet = weapon.create(player.x, player.y);
-      bullet.body.velocity.x = 500;
-      timer[weapon] = game.time.now + spacing;
+        console.log('shootin')
+        const bullet = weapon.create(player.x, player.y);
+        bullet.body.velocity.x = 500;
+        timer[weapon] = game.time.now + spacing;
     }
 }
 
