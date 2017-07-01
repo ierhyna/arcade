@@ -331,15 +331,15 @@ function checkControls() {
     }
 
     if (Key.three.isDown) {
-        fire(basicBulletGroup, 80);
+        fire(basicBulletGroup);
     }
 }
 
-function fire(weapon, spacing) {
-    if (game.time.now > (timer[weapon] || 250)) {        
+function fire(weapon) {
+    if (game.time.now > (timer[weapon] || 0)) {        
         const bullet = weapon.create(player.x, player.y);
         bullet.body.velocity.x = bullet.baseSpeed * playerDirection;
-        timer[weapon] = game.time.now + spacing;
+        timer[weapon] = game.time.now + bullet.spacing;
     }
 }
 
