@@ -337,6 +337,7 @@ function checkControls() {
 }
 
 function fire(weapon) {
+    if (!player.alive) return;
     if (game.time.now > (timer[weapon] || 0)) {
         const bullet = weapon.create(player.x, player.y);
         bullet.body.velocity.x = bullet.baseSpeed * playerDirection;
