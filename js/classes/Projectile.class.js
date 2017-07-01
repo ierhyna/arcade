@@ -1,4 +1,7 @@
 import game from "../game";
+import { SoundEngine } from "../stages/Preload.stage";
+
+
 export default class Projectile extends Phaser.Sprite {
     constructor(game, sprite) {
         super(game, 0, 0, sprite);
@@ -13,6 +16,11 @@ export default class Projectile extends Phaser.Sprite {
     classReset(x, y) {
         this.reset(x, y);
         this.exists = true;
+        this.critical = this.game.rnd.integerInRange(0, 100) <= this.baseCrit;
+        const multplier = this.critical ? this.criticalMultiplier : 1;
+        this.damage = game.rnd.integerInRange(Math.floor(this.baseDamage - this.baseDamage / 5), Math.floor(this.baseDamage + this.baseDamage / 5)) * multplier;
+        this.sound.volume = 0.25;
+        this.sound.play();
     };
 
     hit(object) {

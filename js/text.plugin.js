@@ -1,7 +1,7 @@
 import game from "./game";
 
 const Text = {
-    level: function (t, color) {
+    level: function(t, color) {
         const text = game.add.text(game.width / 2, game.height / 2, t, {
             font: "Press Start 2P",
             fontSize: "30px",
@@ -11,16 +11,11 @@ const Text = {
             strokeThickness: 4
         });
         text.anchor.set(0.5);
-        game.add.tween(text.scale).to({
-            x: 2,
-            y: 2
-        }, 2000, "Linear", true);
-        const textTween = game.add.tween(text).to({
-            alpha: 0
-        }, 2000, "Linear", true);
+        game.add.tween(text.scale).to({ x: 2, y: 2 }, 2000, "Linear", true);
+        const textTween = game.add.tween(text).to({ alpha: 0 }, 2000, "Linear", true);
     },
 
-    combat: function (object, message, event) {
+    combat: function(object, message, event) {
         let style;
         let direction;
         let x = object.body.x
@@ -34,10 +29,7 @@ const Text = {
                     stroke: '#000000',
                     strokeThickness: 6
                 };
-                direction = {
-                    y: y - 140,
-                    alpha: 0
-                }
+                direction = { y: y - 160, alpha: 0 }
                 break;
 
             case "hit":
@@ -48,10 +40,7 @@ const Text = {
                     stroke: '#000000',
                     strokeThickness: 3
                 }
-                direction = {
-                    y: y - 100,
-                    alpha: 0
-                }
+                direction = { y: y - 120, alpha: 0 }
                 break;
 
             case "playerHit":
@@ -62,10 +51,7 @@ const Text = {
                     stroke: '#000000',
                     strokeThickness: 3
                 };
-                direction = {
-                    y: y - 100,
-                    alpha: 0
-                }
+                direction = { y: y - 100, alpha: 0 }
                 break;
             case "info":
                 style = {
@@ -75,10 +61,7 @@ const Text = {
                     stroke: '#000000',
                     strokeThickness: 3
                 };
-                direction = {
-                    y: y + 100,
-                    alpha: 0
-                }
+                direction = { y: y + 100, alpha: 0 }
 
                 break;
         }
