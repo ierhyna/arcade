@@ -9,7 +9,9 @@ export default class BasicBullet extends Projectile {
         this.game = game;
         this.baseCrit = 25;
         this.baseDamage = 7;
-        this.baseSpeed = 500;
+        this.baseSpeed = 1000;
+        this.critical = false;
+        this.criticalMultiplier = 3;
     };
 
     spawn(x, y) {

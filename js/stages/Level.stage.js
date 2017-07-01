@@ -228,7 +228,7 @@ function checkCollisions() {
         bullet.kill();
     });
 
-    game.physics.arcade.overlap([basicWeapon, heavyWeapon], blobbyGroup, (bullet, enemy) => {
+    game.physics.arcade.overlap([basicWeapon, heavyWeapon, basicBulletGroup], blobbyGroup, (bullet, enemy) => {
 
         enemy.hit(bullet);
         bullet.kill();
@@ -331,15 +331,14 @@ function checkControls() {
     }
 
     if (Key.three.isDown) {
-        fire(basicBulletGroup, 250);
+        fire(basicBulletGroup, 80);
     }
 }
 
 function fire(weapon, spacing) {
-    if (game.time.now > (timer[weapon] || 250)) {
-        console.log('shootin')
+    if (game.time.now > (timer[weapon] || 250)) {        
         const bullet = weapon.create(player.x, player.y);
-        bullet.body.velocity.x = 500;
+        bullet.body.velocity.x = bullet.baseSpeed * playerDirection;
         timer[weapon] = game.time.now + spacing;
     }
 }

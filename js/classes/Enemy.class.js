@@ -27,6 +27,7 @@ export default class Enemy extends Phaser.Sprite {
 
     hit(projectile) {
         if (!this.alive) return;
+        console.log(projectile.damage);
         this.health -= projectile.damage;
         if (this.health <= 0) {
             this.body.velocity.x = 0;
