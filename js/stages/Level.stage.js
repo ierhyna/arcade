@@ -64,9 +64,11 @@ export const Level = {
                 sound: SoundEngine.heavyShot
             }
         }
+
         Store.wave = 1;
         Store.enemiesInWave = 40;
         Store.currentEnemy = 1;
+
         const map = game.add.tilemap('level1');
         map.addTilesetImage('tilea2', 'tileset');
         const bg = game.add.sprite(0, 0, 'background001');
@@ -129,17 +131,12 @@ export const Level = {
         });
 
 
-        blobbyGroup = new Pool(game, Blob, 50, { title: "Blob", description: "Tiny blob" });
-        let blobby = blobbyGroup.create(100, 100);
-        blobby.item.props({ value: 3 })
-        console.log(blobby);
+        blobbyGroup = new Pool(game, Blob, 50, { title: "Blob", description: "Tiny blob" });               
 
         spawnEnenmy(blobbyGroup, { x: 600, y: 50, spacing: 2500, quantity: Store.enemiesInWave });
 
-        let chest = new Chest(game);
-        console.log(chest)
-        console.log(chest.item.props())
-        chest.spawnOne(64, 64, 87);        
+        let chest = new Chest(game);        
+        chest.spawnOne(64, 64, 87);
 
         basicBulletGroup = new Pool(game, BasicBullet, 50);
     },
@@ -276,6 +273,10 @@ function checkCollisions() {
         enemy.alive && enemy.animations.play("blink", 20);
     });
 
+    game.physics.arcade.overlap(blobbyGroup, player, (player, enemy) => {
+        enemy.hitPlayer(player);
+    });
+
     game.physics.arcade.overlap(enemyGroup.blobs, player, (player, enemy) => {
         if (enemy.active) {
             player.health -= enemy.damageOnImpact;
@@ -336,7 +337,7 @@ function checkControls() {
 }
 
 function fire(weapon) {
-    if (game.time.now > (timer[weapon] || 0)) {        
+    if (game.time.now > (timer[weapon] || 0)) {
         const bullet = weapon.create(player.x, player.y);
         bullet.body.velocity.x = bullet.baseSpeed * playerDirection;
         timer[weapon] = game.time.now + bullet.spacing;
@@ -425,12 +426,8 @@ function prepareBars() {
         height: 12,
         x: 280,
         y: 716,
-        bg: {
-            color: '#ccc'
-        },
-        bar: {
-            color: '#f00'
-        },
+        bg: { color: '#ccc' },
+        bar: { color: '#f00' },
         animationDuration: 200,
         flipped: false
     });
@@ -441,12 +438,8 @@ function prepareBars() {
         height: 12,
         x: 280,
         y: 738,
-        bg: {
-            color: '#651828'
-        },
-        bar: {
-            color: '#FEFF03'
-        },
+        bg: { color: '#651828' },
+        bar: { color: '#FEFF03' },
         animationDuration: 100,
         flipped: false
     });
@@ -462,31 +455,16 @@ function prepareGroups() {
     });
 
     coins = game.add.group();
-    ConstructGroup(coins, {
-        sprite: "coin",
-        scale: 0.25
-    });
+    ConstructGroup(coins, { sprite: "coin", scale: 0.25 });
 
     enemyGroup.blobs = game.add.group();
-    ConstructGroup(enemyGroup.blobs, {
-        number: 50,
-        sprite: 'blob-ani',
-        scale: 0.5
-    });
+    ConstructGroup(enemyGroup.blobs, { number: 50, sprite: 'blob-ani', scale: 0.5 });
 
     basicWeapon = game.add.group();
-    ConstructGroup(basicWeapon, {
-        number: 50,
-        sprite: 'bullet',
-        scale: 0.5
-    });
+    ConstructGroup(basicWeapon, { number: 50, sprite: 'bullet', scale: 0.5 });
 
     heavyWeapon = game.add.group();
-    ConstructGroup(heavyWeapon, {
-        number: 20,
-        sprite: 'heavyBullet',
-        scale: 1.25
-    });
+    ConstructGroup(heavyWeapon, { number: 20, sprite: 'heavyBullet', scale: 1.25 });
 }
 
 function initializeNewPlayer() {
@@ -531,8 +509,7 @@ function dropCoin(enemy) {
 function activateBuff(buff, length) {
     if (!buffs.hasOwnProperty(buff)) {
         Object.assign(buffs, {
-            [buff]: true
-        });
+            [buff]: true });
         player[buff] = true;
         game.time.events.add(length, () => {
             player[buff] = false;

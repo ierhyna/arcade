@@ -35,9 +35,16 @@ export default class Enemy extends Phaser.Sprite {
         if (this.health <= 0) {
             this.body.velocity.x = 0;
             this.alive = false;
-            this.kill();
+            this.die();
         }
     }
+
+    hitPlayer(player){
+        player.health -= this.damageOnContact;
+        if (player.health <=0) player.kill();
+        this.die();
+    }
+
     update() {
         this.game.physics.arcade.collide(this, this.game.walls);
         if (this.body.blocked.right) {
@@ -47,5 +54,9 @@ export default class Enemy extends Phaser.Sprite {
             this.scale.x = 1;
             this.body.velocity.x = this.speed;
         }
+    }
+
+    die(){
+        this.kill();
     }
 }
