@@ -23,6 +23,8 @@ import {
   Creature
 } from "../../config";
 
+import Blob from "../classes/Blob.class";
+
 let walls,
   verticalWalls,
   Key = {},
@@ -44,6 +46,8 @@ let walls,
 
 const enemyGroup = {};
 const buffs = [];
+
+let blobGroup;
 
 let Armory = {}
 
@@ -124,7 +128,18 @@ export const Level = {
       align: "center",
       stroke: '#000000',
       strokeThickness: 4
-    })
+    });
+
+    game.walls = []
+    game.walls.push(walls, verticalWalls);
+    blobGroup = game.add.group()
+    for (let i = 0; i < 10; i++) {
+      blobGroup.add(new Blob(game));
+    }
+    let blobby = blobGroup.getFirstExists(false);
+    //console.log(blobGroup.getFirstExists())
+    blobby.spawn(100, 100);
+
   },
 
   update: function () {
@@ -205,6 +220,7 @@ function checkCollisions() {
     bullet.kill();
   });
 
+  game.physics.arcade.overlap([basicWeapon, heavyWeapon], blobGroup, (bullet, enemy) => enemy.hit(bullet));
   game.physics.arcade.overlap([basicWeapon, heavyWeapon], enemyGroup.blobs, (bullet, enemy) => {
     if (!enemy.active) return;
     bullet.kill();
