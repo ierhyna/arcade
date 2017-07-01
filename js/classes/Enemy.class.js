@@ -1,9 +1,9 @@
 import game from "../game";
 export default class Enemy extends Phaser.Sprite {
-    constructor(game) {
-        super(game, 0, 0, "blobby");
+    constructor(game, sprite) {
+        super(game, 0, 0, sprite);
         this.game = game;
-        this.exists = false;        
+        this.exists = false;
         this.anchor.setTo(0.5, 0.5);
         this.game.physics.enable(this);
         this.body.allowGravity = true;
@@ -18,7 +18,7 @@ export default class Enemy extends Phaser.Sprite {
 
     classReset(x, y) {
         this.reset(x, y);
-        this.health = this.maxHealth;        
+        this.health = this.maxHealth;
         this.alive = true;
         this.carrying = false;
         this.exists = true;
@@ -27,13 +27,21 @@ export default class Enemy extends Phaser.Sprite {
 
     hit(projectile) {
         if (!this.alive) return;
-        projectile.kill();        
         this.health -= projectile.damage;
         if (this.health <= 0) {
             this.body.velocity.x = 0;
             this.alive = false;
             this.kill();
         }
-       // SoundEngine.mobHit.play();
+    }
+    update() {
+        this.game.physics.arcade.collide(this, this.game.walls);
+        if (this.body.blocked.right) {
+            this.scale.x = -1;
+            this.body.velocity.x = -this.speed;
+        } else if (this.body.blocked.left) {
+            this.scale.x = 1;
+            this.body.velocity.x = this.speed;
+        }
     }
 }
