@@ -14,11 +14,12 @@ import { ConstructGroup } from "../constructors";
 
 import { Weapon, Creature } from "../../config";
 
-import Blob from "../classes/Blob.class";
+import { Pool, Blob } from "../classes";
 
 let Key = {},
     player,
     cursors,
+    blobbyGroup,
     basicWeapon,
     heavyWeapon,
     healthBar,
@@ -128,9 +129,12 @@ export const Level = {
         for (let i = 0; i < 10; i++) {
             blobGroup.add(new Blob(game));
         }
-        let blobby = blobGroup.getFirstExists(false);
-        blobby.spawn(100, 100);
+
+        blobbyGroup = new Pool(game, Blob, 50, { title: "Blob", description: "Tiny blob" });
+        let blobby = blobbyGroup.create(100, 100);
+        blobby.item.props({ value: 3 })
         console.log(blobby.item.props());
+        spawnEnenmy(blobbyGroup, 600, 50, 2500);
     },
 
     update: function() {
@@ -149,6 +153,11 @@ export const Level = {
 }
 
 // HELPERS
+function spawnEnenmy(group, x, y, spacing) {
+    group.create(x, y);
+    game.time.events.add(spacing, () => spawnEnenmy(group, x, y, spacing));
+}
+
 function launchEnemy(mob) {
     const spacing = 1800;
     waveCounter -= 1;
@@ -211,9 +220,10 @@ function checkCollisions() {
         bullet.kill();
     });
 
-    game.physics.arcade.overlap([basicWeapon, heavyWeapon], blobGroup, (bullet, enemy) => {
-        bullet.kill();
+    game.physics.arcade.overlap([basicWeapon, heavyWeapon], blobbyGroup, (bullet, enemy) => {
+        
         enemy.hit(bullet);
+        bullet.kill();
     });
     game.physics.arcade.overlap([basicWeapon, heavyWeapon], enemyGroup.blobs, (bullet, enemy) => {
         if (!enemy.active) return;

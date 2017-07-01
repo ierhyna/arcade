@@ -4,11 +4,11 @@ import Item from "./Item.class";
 
 export default class Blob extends Enemy {
 
-    constructor(game) {
-        super(game);
+    constructor(game, data = {}) {
+        super(game, "blobby");
         this.game = game;
-        this.item = new Item();
-    }
+        this.item = new Item(data);
+    };
 
     spawn(x, y) {
         this.classReset(x, y);
@@ -17,16 +17,5 @@ export default class Blob extends Enemy {
         } else {
             this.body.velocity.x = this.speed;
         }
-    }
-
-    update() {
-        this.game.physics.arcade.collide(this, this.game.walls);
-        if (this.body.blocked.right) {
-            this.scale.x = -1;
-            this.body.velocity.x = -this.speed;
-        } else if (this.body.blocked.left) {
-            this.scale.x = 1;
-            this.body.velocity.x = this.speed;
-        }
-    }
+    };
 }
