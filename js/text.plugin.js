@@ -35,7 +35,7 @@ const Text = {
                     strokeThickness: 6
                 };
                 direction = {
-                    y: y - 140,
+                    y: y - 160,
                     alpha: 0
                 }
                 break;
@@ -49,7 +49,7 @@ const Text = {
                     strokeThickness: 3
                 }
                 direction = {
-                    y: y - 100,
+                    y: y - 120,
                     alpha: 0
                 }
                 break;

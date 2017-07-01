@@ -1,4 +1,6 @@
 import game from "../game";
+import Text from "../text.plugin";
+
 export default class Enemy extends Phaser.Sprite {
     constructor(game, sprite) {
         super(game, 0, 0, sprite);
@@ -26,9 +28,10 @@ export default class Enemy extends Phaser.Sprite {
     };
 
     hit(projectile) {
-        if (!this.alive) return;
-        console.log(projectile.damage);
+        if (!this.alive) return;        
         this.health -= projectile.damage;
+        const event = projectile.crit ? "crit" : "hit";
+        Text.combat(this, projectile.damage, event);
         if (this.health <= 0) {
             this.body.velocity.x = 0;
             this.alive = false;
