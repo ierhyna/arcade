@@ -14,12 +14,13 @@ import { ConstructGroup } from "../constructors";
 
 import { Weapon, Creature } from "../../config";
 
-import { Pool, Blob } from "../classes";
+import { Pool, Blob, BasicBullet } from "../classes";
 
 let Key = {},
     player,
     cursors,
     blobbyGroup,
+    basicBulletGroup,
     basicWeapon,
     heavyWeapon,
     healthBar,
@@ -108,6 +109,7 @@ export const Level = {
         cursors = game.input.keyboard.createCursorKeys();
         Key.one = game.input.keyboard.addKey(Phaser.KeyCode.ONE);
         Key.two = game.input.keyboard.addKey(Phaser.KeyCode.TWO);
+        Key.three = game.input.keyboard.addKey(Phaser.KeyCode.THREE);
 
         prepareGroups();
         setupTreasures();
@@ -135,6 +137,8 @@ export const Level = {
         blobby.item.props({ value: 3 })
         console.log(blobby.item.props());
         spawnEnenmy(blobbyGroup, 600, 50, 2500);
+
+        basicBulletGroup = new Pool(game, BasicBullet, 50);
     },
 
     update: function() {
@@ -221,7 +225,7 @@ function checkCollisions() {
     });
 
     game.physics.arcade.overlap([basicWeapon, heavyWeapon], blobbyGroup, (bullet, enemy) => {
-        
+
         enemy.hit(bullet);
         bullet.kill();
     });
@@ -320,6 +324,19 @@ function checkControls() {
     }
     if (Key.two.isDown) {
         fireWeapon(heavyWeapon, "heavyWeapon");
+    }
+
+    if (Key.three.isDown) {
+        fire(basicBulletGroup, 250);
+    }
+}
+
+function fire(weapon, spacing) {
+    if (game.time.now > (timer[weapon] || 250)) {
+      console.log('shootin')
+      const bullet = weapon.create(player.x, player.y);
+      bullet.body.velocity.x = 500;
+      timer[weapon] = game.time.now + spacing;
     }
 }
 
