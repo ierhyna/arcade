@@ -36,11 +36,6 @@ let Key = {},
     treasures,
     coins;
 
-const enemyGroup = {};
-const buffs = [];
-
-let blobGroup;
-
 const EVENTS = {
     PLAYER_HIT: "playerHit",
     HIT: "hit",
@@ -49,8 +44,6 @@ const EVENTS = {
 }
 
 const timer = {
-    basicWeapon: 0,
-    heavyWeapon: 0,
     jump: 0
 }
 
@@ -97,7 +90,6 @@ export const Level = {
         player.scale.setTo(0.2, 0.2);
         player.anchor.setTo(0.5, 0.5);
         initializeNewPlayer();
-
         prepareBars();
         prepareInterFaceText();
 
@@ -109,8 +101,6 @@ export const Level = {
         Key.two = game.input.keyboard.addKey(Phaser.KeyCode.TWO);
         Key.three = game.input.keyboard.addKey(Phaser.KeyCode.THREE);
 
-        prepareGroups();
-        setupTreasures();        
         Text.level("Wave 1", "#ffffff");
         SoundEngine.trackRumble.play();
 
@@ -128,7 +118,7 @@ export const Level = {
 
         spawnEnenmy(blobbyGroup, { x: 600, y: 5, spacing: 2500, quantity: Store.enemiesInWave });
 
-        
+
         game.projectiles = [];
         basicBulletGroup = new Pool(game, BasicBullet, 50);
         heavyBulletGroup = new Pool(game, HeavyBullet, 10);
@@ -155,7 +145,6 @@ function spawnEnenmy(group, data) {
 }
 
 function checkCollisions() {
-    game.physics.arcade.collide(enemyGroup.blobs, game.walls);
 
     game.physics.arcade.collide(player, game.walls);
 
@@ -187,37 +176,8 @@ function checkCollisions() {
     //     }
     // });
 
-    game.physics.arcade.overlap(game.projectiles, blobbyGroup, (bullet, enemy) => {
-
-        enemy.hit(bullet);
-        bullet.kill();
-    });
-    game.physics.arcade.overlap(game.projectiles, enemyGroup.blobs, (bullet, enemy) => {
-        if (!enemy.active) return;
-        bullet.kill();
-
-        const event = bullet.crit ? EVENTS.CRIT : EVENTS.HIT;
-        Text.combat(enemy, bullet.damage, event);
-        enemy.health -= bullet.damage;
-        if (enemy.health <= 0) {
-            Text.combat(enemy, enemy.exp + " exp", EVENTS.INFO);
-            updateExp(enemy.exp);
-            enemy.body.velocity.x = 0;
-            if (enemy.carryingTreasure) {
-                enemy.carryingTreasure = false;
-                enemy.coin.kill();
-                dropCoin(enemy);
-            }
-            enemy.active = false;
-            return enemy.animations.play("die", 6, false, true);
-        }
-        SoundEngine.mobHit.play();
-        enemy.alive && enemy.animations.play("blink", 20);
-    });
-
-    game.physics.arcade.overlap(blobbyGroup, player, (player, enemy) => {
-        enemy.hitPlayer(player);
-    });
+    game.physics.arcade.overlap(game.projectiles, blobbyGroup, (bullet, enemy) => enemy.hit(bullet));
+    game.physics.arcade.overlap(blobbyGroup, player, (player, enemy) => enemy.hitPlayer(player));
 }
 
 function checkControls() {
@@ -325,27 +285,6 @@ function prepareBars() {
     healthBar.setPercent(350 / player.health);
 }
 
-function prepareGroups() {
-    treasures = game.add.group();
-    ConstructGroup(treasures, {
-        number: 10,
-        sprite: "treasure",
-        scale: 0.25
-    });
-
-    coins = game.add.group();
-    ConstructGroup(coins, { sprite: "coin", scale: 0.25 });
-
-    enemyGroup.blobs = game.add.group();
-    ConstructGroup(enemyGroup.blobs, { number: 50, sprite: 'blob-ani', scale: 0.5 });
-
-    basicWeapon = game.add.group();
-    ConstructGroup(basicWeapon, { number: 50, sprite: 'bullet', scale: 0.5 });
-
-    heavyWeapon = game.add.group();
-    ConstructGroup(heavyWeapon, { number: 20, sprite: 'heavyBullet', scale: 1.25 });
-}
-
 function initializeNewPlayer() {
     return Object.assign(player, {
         health: 350,
@@ -368,19 +307,19 @@ function updateExp(exp) {
     }
 }
 
-function setupTreasures() {
-    const treasure = treasures.getFirstExists(false);
-    if (treasure) {
-        treasure.reset(328, 200);
-        treasure.goldCapacity = 87;
-    }
-}
+// function setupTreasures() {
+//     const treasure = treasures.getFirstExists(false);
+//     if (treasure) {
+//         treasure.reset(328, 200);
+//         treasure.goldCapacity = 87;
+//     }
+// }
 
-function dropCoin(enemy) {
-    const coin = coins.getFirstExists(false);
-    if (coin) {
-        coin.reset(enemy.x, enemy.y);
-        coin.body.moves = false;
-        coin.value = (enemy.gold * 0.8).toFixed();
-    }
-}
+// function dropCoin(enemy) {
+//     const coin = coins.getFirstExists(false);
+//     if (coin) {
+//         coin.reset(enemy.x, enemy.y);
+//         coin.body.moves = false;
+//         coin.value = (enemy.gold * 0.8).toFixed();
+//     }
+// }
