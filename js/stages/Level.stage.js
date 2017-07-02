@@ -110,12 +110,13 @@ export const Level = {
             if (player.health > maxPlayerHp) player.health = maxPlayerHp;
         }
         player.body.velocity.x = 0;
-        checkControls();
         renderInterfaceText();
 
         game.physics.arcade.collide(player, game.walls);
         game.physics.arcade.overlap(game.projectiles, blobbyGroup, (bullet, enemy) => enemy.hit(bullet));
         game.physics.arcade.overlap(blobbyGroup, player, (player, enemy) => enemy.hitPlayer(player));
+
+        checkControls();
     }
 }
 
