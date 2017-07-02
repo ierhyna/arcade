@@ -1,7 +1,5 @@
 import game from "../game";
 import Projectile from "./Projectile.class";
-import { SoundEngine } from "../stages/Preload.stage";
-
 
 export default class BasicBullet extends Projectile {
 

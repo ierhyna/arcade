@@ -40,7 +40,12 @@ const buffs = [];
 
 let blobGroup;
 
-let Armory = {}
+const EVENTS = {
+    PLAYER_HIT: "playerHit",
+    HIT: "hit",
+    INFO: "info",
+    CRIT: "crit"
+}
 
 const timer = {
     basicWeapon: 0,
@@ -54,16 +59,6 @@ let totalGoldForLevel = 500;
 
 export const Level = {
     create: function() {
-        Armory = {
-            'basicWeapon': {
-                count: 420,
-                sound: SoundEngine.gunShot
-            },
-            'heavyWeapon': {
-                count: 35,
-                sound: SoundEngine.heavyShot
-            }
-        }
 
         Store.wave = 1;
         Store.enemiesInWave = 40;
@@ -83,9 +78,6 @@ export const Level = {
         game.walls = []
         game.walls.push(walls, verticalWalls);
 
-        buffIcons['havoc'] = game.add.sprite(-500, -500, 'buff_havoc');
-        buffIcons['enrage'] = game.add.sprite(-500, -500, 'buff_enrage');
-
         skillIcons['basic'] = game.add.sprite(540, 670, 'icon_basic');
         skillIcons['heavy'] = game.add.sprite(604, 670, 'icon_heavy');
         for (let i = 1; i <= Object.keys(skillIcons).length; i++) {
@@ -102,6 +94,7 @@ export const Level = {
         game.physics.enable(player, Phaser.Physics.ARCADE);
         player.body.collideWorldBounds = true;
         player.scale.setTo(0.2, 0.2);
+        player.anchor.setTo(0.5, 0.5);
         initializeNewPlayer();
 
         prepareBars();
@@ -131,27 +124,24 @@ export const Level = {
         });
 
 
-        blobbyGroup = new Pool(game, Blob, 50, { title: "Blob", description: "Tiny blob" });               
+        blobbyGroup = new Pool(game, Blob, 50, { title: "Blob", description: "Tiny blob" });
 
         spawnEnenmy(blobbyGroup, { x: 600, y: 50, spacing: 2500, quantity: Store.enemiesInWave });
 
-        let chest = new Chest(game);        
+        let chest = new Chest(game);
         chest.spawnOne(64, 64, 87);
 
         basicBulletGroup = new Pool(game, BasicBullet, 50);
     },
 
     update: function() {
-
         if (player.health < maxPlayerHp && player.alive) {
             player.health += 0.1;
             if (player.health > maxPlayerHp) player.health = maxPlayerHp;
         }
         player.body.velocity.x = 0;
-
         checkCollisions();
-        checkControls();
-        renderBuffs();
+        checkControls();        
         renderInterfaceText();
     }
 }
@@ -233,27 +223,9 @@ function checkCollisions() {
     game.physics.arcade.overlap([basicWeapon, heavyWeapon], enemyGroup.blobs, (bullet, enemy) => {
         if (!enemy.active) return;
         bullet.kill();
-        // Damage calculation
-        if (player.havoc) bullet.damage *= 2;
-        if (player.enrage) bullet.damage = (bullet.damage * 1.2).toFixed();
 
         const event = bullet.crit ? EVENTS.CRIT : EVENTS.HIT;
         Text.combat(enemy, bullet.damage, event);
-        if (bullet.crit) {
-            if (Number(bullet.damage) > Number(player.critRec)) {
-                console.log("previous crit record " + player.critRec);
-                player.critRec = Number(bullet.damage);
-                console.log(player.critRec + "/" + bullet.damage);
-                Text.level(`Crit record ${bullet.damage}!`, "#11ff11");
-            }
-            player.critCombo++;
-        } else {
-            player.critCombo = 0;
-        };
-        if (player.critCombo > 1) {
-            activateBuff('havoc', 3000);
-            player.critCombo = 0;
-        }
         enemy.health -= bullet.damage;
         if (enemy.health <= 0) {
             Text.combat(enemy, enemy.exp + " exp", EVENTS.INFO);
@@ -265,8 +237,6 @@ function checkCollisions() {
                 dropCoin(enemy);
             }
             enemy.active = false;
-            player.enrage = true;
-            activateBuff('enrage', 3000)
             return enemy.animations.play("die", 6, false, true);
         }
         SoundEngine.mobHit.play();
@@ -346,7 +316,7 @@ function fire(weapon) {
 }
 
 function fireWeapon(weapon, name) {
-    if (!player.alive || !Armory[name].count) return;
+    if (!player.alive) return;
     if (game.time.now > timer[name]) {
         const bullet = weapon.getFirstExists(false);
         if (bullet) {
@@ -357,32 +327,12 @@ function fireWeapon(weapon, name) {
             bullet.body.allowGravity = false;
             bullet.damage = bullet.crit ? w.damage * w.multiplier : w.damage;
             bullet.damage = game.rnd.integerInRange(Math.floor(bullet.damage - bullet.damage / 5), Math.floor(bullet.damage + bullet.damage / 5))
-            timer[name] = game.time.now + w.spacing;
-            Armory[name].count--;
-            Armory[name].sound.play();
+            timer[name] = game.time.now + w.spacing;            
         }
     }
 }
 
-function renderBuffs() {
-    Object.keys(buffIcons).forEach(icon => {
-        buffIcons[icon].x = -500;
-        buffIcons[icon].y -= 500
-    });
-    if (Object.keys(buffs).length) {
-        let position = 0;
-        Object.keys(buffs).forEach(buff => {
-            position++;
-            buffIcons[buff].x = 1120 - position * 32;
-            buffIcons[buff].y = 16;
-        });
-    }
-}
-
-function renderInterfaceText() {
-    Object.keys(Armory).forEach((e, i) => {
-        Armory[e].text.text = Armory[e].count;
-    });
+function renderInterfaceText() {    
     healthBar.setPercent(player.health / 350 * 100);
     expBar.setPercent(player.exp / totalExpForLevel * 100);
     barsText.exp.text = `${player.exp}/${totalExpForLevel}`;
@@ -411,14 +361,7 @@ function prepareInterFaceText() {
         font: "11px Press Start 2P",
         fill: "#fff",
         align: "center"
-    });
-    Object.keys(Armory).forEach((e, i) => {
-        Armory[e].text = game.add.text(564 + i * 64, 652, Armory[e].count, {
-            font: "12px Press Start 2P",
-            fill: "#fff",
-            align: "center"
-        })
-    });
+    });    
 }
 
 function prepareBars() {
@@ -505,24 +448,4 @@ function dropCoin(enemy) {
         coin.body.moves = false;
         coin.value = (enemy.gold * 0.8).toFixed();
     }
-}
-
-function activateBuff(buff, length) {
-    if (!buffs.hasOwnProperty(buff)) {
-        Object.assign(buffs, {
-            [buff]: true });
-        player[buff] = true;
-        game.time.events.add(length, () => {
-            player[buff] = false;
-            delete buffs[buff];
-        });
-    }
-}
-
-// Combat text event
-const EVENTS = {
-    PLAYER_HIT: "playerHit",
-    HIT: "hit",
-    INFO: "info",
-    CRIT: "crit"
 }
