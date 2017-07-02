@@ -10,12 +10,11 @@ export default class Enemy extends Phaser.Sprite {
         this.game.physics.enable(this);
         this.body.allowGravity = true;
         this.body.immovable = false;
-        this.maxHealth = 150;
-        this.damageOnContact = 125;
-        this.carrying = false;
+        this.maxHealth = 1;
+        this.damageOnContact = 1;        
         this.alive = false;
-        this.exp = 68;
-        this.speed = 120;
+        this.exp = 1;
+        this.speed = 100;
     };
 
     classReset(x, y) {

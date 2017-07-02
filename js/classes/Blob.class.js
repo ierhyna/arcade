@@ -11,8 +11,13 @@ export default class Blob extends Enemy {
         this.sound = game.add.audio('mobHit');
         this.animations.add("live", [0, 1], 10, true);
         this.animations.add("die", [2, 3, 4, 5, 6], 10, true);
-        this.animations.add("blink", [7, 0], 10);        
+        this.animations.add("blink", [7, 0], 10);
         this.scale.setTo(1, 2);
+        this.maxHealth = 125;
+        this.damageOnContact = 125;
+        this.carrying = false;
+        this.exp = 75;
+        this.speed = 120;
     };
 
     spawn(x, y) {
