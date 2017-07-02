@@ -3,10 +3,9 @@ import Text from "../text.plugin";
 import { HealthBar } from "../bar.plugin";
 import { SoundEngine } from "./Preload.stage";
 
-import { Pool, Blob, BasicBullet, HeavyBullet, Chest } from "../classes";
+import { Pool, Blob, BasicBullet, HeavyBullet, Chest, Player } from "../classes";
 
-let Key = {},
-    player,
+let player,
     cursors,
     blobbyGroup,
     basicBulletGroup,
@@ -16,8 +15,8 @@ let Key = {},
     barsText = {},
     InfoText = {},
     expBar,
-    levelText,
-    playerDirection = 1;
+    levelText
+//playerDirection = 1;
 
 const EVENTS = {
     PLAYER_HIT: "playerHit",
@@ -36,6 +35,13 @@ let totalGoldForLevel = 500;
 
 export const Level = {
     create: function() {
+
+        const cursors = game.input.keyboard.createCursorKeys();
+        const one = game.input.keyboard.addKey(Phaser.KeyCode.ONE);
+        const two = game.input.keyboard.addKey(Phaser.KeyCode.TWO);
+        const three = game.input.keyboard.addKey(Phaser.KeyCode.THREE);
+
+        game.Key = { cursors: cursors, one: one, two: two, three: three }
 
         Store.wave = 1;
         Store.enemiesInWave = 40;
@@ -65,23 +71,14 @@ export const Level = {
             });
         };
 
-        player = game.add.sprite(32, 32, 'hero');
-        player.animations.add('move', [0, 1, 2, 3], 10, true);
-        game.physics.enable(player, Phaser.Physics.ARCADE);
-        player.body.collideWorldBounds = true;
-        player.scale.setTo(0.2, 0.2);
-        player.anchor.setTo(0.5, 0.5);
-        initializeNewPlayer();
+        player = new Player(game);
+        player.create(64, 64);
+
         prepareBars();
         prepareInterFaceText();
 
         const avatar = game.add.sprite(10, 650, "avatar");
         avatar.scale.setTo(0.5, 0.5);
-
-        cursors = game.input.keyboard.createCursorKeys();
-        Key.one = game.input.keyboard.addKey(Phaser.KeyCode.ONE);
-        Key.two = game.input.keyboard.addKey(Phaser.KeyCode.TWO);
-        Key.three = game.input.keyboard.addKey(Phaser.KeyCode.THREE);
 
         Text.level("Wave 1", "#ffffff");
         SoundEngine.trackRumble.play();
@@ -105,10 +102,6 @@ export const Level = {
     },
 
     update: function() {
-        if (player.health < maxPlayerHp && player.alive) {
-            player.health += 0.1;
-            if (player.health > maxPlayerHp) player.health = maxPlayerHp;
-        }
         player.body.velocity.x = 0;
         renderInterfaceText();
 
@@ -127,19 +120,19 @@ function spawnEnenmy(group, data) {
 }
 
 function checkControls() {
-    if (cursors.left.isDown) {
-        playerDirection = -1;
+    if (game.Key.cursors.left.isDown) {
+        player.direction = -1;
         player.body.velocity.x = -220;
-        player.scale.x = playerDirection * 0.2;
+        player.scale.x = player.direction * 0.2;
         if (player.body.onFloor()) {
             player.animations.play('move');
         } else {
             player.animations.stop();
             player.frame = 2;
         }
-    } else if (cursors.right.isDown) {
-        playerDirection = 1;
-        player.scale.x = playerDirection * 0.2;
+    } else if (game.Key.cursors.right.isDown) {
+        player.direction = 1;
+        player.scale.x = player.direction * 0.2;
         player.body.velocity.x = 220;
         if (player.body.onFloor()) {
             player.animations.play('move');
@@ -152,24 +145,15 @@ function checkControls() {
         player.frame = 1;
     }
 
-    if (cursors.up.isDown && player.body.onFloor() && game.time.now > timer.jump) {
+    if (game.Key.cursors.up.isDown && player.body.onFloor() && game.time.now > timer.jump) {
         player.body.velocity.y = -520;
         timer.jump = game.time.now + 750;
     }
-    if (Key.one.isDown) {
-        fire(basicBulletGroup);
+    if (game.Key.one.isDown) {
+        player.fire(basicBulletGroup);
     }
-    if (Key.two.isDown) {
-        fire(heavyBulletGroup);
-    }
-}
-
-function fire(weapon) {
-    if (!player.alive) return;
-    if (game.time.now > (timer[weapon] || 0)) {
-        const bullet = weapon.create(player.x, player.y);
-        bullet.body.velocity.x = bullet.baseSpeed * playerDirection;
-        timer[weapon] = game.time.now + bullet.spacing;
+    if (game.Key.two.isDown) {
+        player.fire(heavyBulletGroup);
     }
 }
 
