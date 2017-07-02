@@ -29,7 +29,6 @@ const timer = {
     jump: 0
 }
 
-let maxPlayerHp = 350
 let totalExpForLevel = 650;
 let totalGoldForLevel = 500;
 
@@ -102,11 +101,16 @@ export const Level = {
     },
 
     update: function() {
+        if (player.experience > totalExpForLevel) {
+            totalExpForLevel *= 2;
+            player.level++;
+            player.experience = 0;
+        }
         player.body.velocity.x = 0;
         renderInterfaceText();
 
         game.physics.arcade.collide(player, game.walls);
-        game.physics.arcade.overlap(game.projectiles, blobbyGroup, (bullet, enemy) => enemy.hit(bullet));
+        game.physics.arcade.overlap(game.projectiles, blobbyGroup, (bullet, enemy) => enemy.hit(bullet, player));
         game.physics.arcade.overlap(blobbyGroup, player, (player, enemy) => enemy.hitPlayer(player));
 
         checkControls();
@@ -158,10 +162,10 @@ function checkControls() {
 }
 
 function renderInterfaceText() {
-    healthBar.setPercent(player.health / 350 * 100);
-    expBar.setPercent(player.exp / totalExpForLevel * 100);
-    barsText.exp.text = `${player.exp}/${totalExpForLevel}`;
-    barsText.hp.text = `${player.health.toFixed()}/${maxPlayerHp}`;
+    healthBar.setPercent(player.health / player.maxHealth * 100);
+    expBar.setPercent(player.experience / totalExpForLevel * 100);
+    barsText.exp.text = `${player.experience}/${totalExpForLevel}`;
+    barsText.hp.text = `${player.health.toFixed()}/${ player.maxHealth}`;
     InfoText.gold.text = `Gold: ${totalGoldForLevel}`;
 }
 
@@ -177,12 +181,12 @@ function prepareInterFaceText() {
         align: "left"
     });
 
-    barsText.exp = game.add.text(440, 710, `${player.exp}/${totalExpForLevel}`, {
+    barsText.exp = game.add.text(440, 710, `${player.experience}/${totalExpForLevel}`, {
         font: "11px Press Start 2P",
         fill: "#fff",
         align: "center"
     });
-    barsText.hp = game.add.text(440, 730, `${player.health}/${maxPlayerHp}`, {
+    barsText.hp = game.add.text(440, 730, `${player.health}/${player.maxHealth}`, {
         font: "11px Press Start 2P",
         fill: "#fff",
         align: "center"
@@ -212,7 +216,7 @@ function prepareBars() {
         animationDuration: 100,
         flipped: false
     });
-    healthBar.setPercent(350 / player.health);
+    healthBar.setPercent(player.maxHealth / player.health);
 }
 
 function initializeNewPlayer() {
