@@ -10,12 +10,11 @@ export default class Enemy extends Phaser.Sprite {
         this.game.physics.enable(this);
         this.body.allowGravity = true;
         this.body.immovable = false;
-        this.maxHealth = 150;
-        this.damageOnContact = 125;
-        this.carrying = false;
+        this.maxHealth = 1;
+        this.damageOnContact = 1;        
         this.alive = false;
-        this.exp = 68;
-        this.speed = 120;
+        this.exp = 1;
+        this.speed = 100;
     };
 
     classReset(x, y) {
@@ -29,13 +28,13 @@ export default class Enemy extends Phaser.Sprite {
 
     hit(projectile) {
         if (!this.alive) return;
+        projectile.kill();
+        this.animations.play("blink", 20);
         this.health -= projectile.damage;
-        const event = projectile.crit ? "crit" : "hit";
         this.sound.play();
+        const event = projectile.critical ? "crit" : "hit";
         Text.combat(this, projectile.damage, event);
-        if (this.health <= 0) {
-            this.die();
-        }
+        if (this.health <= 0) this.die();
     }
 
     hitPlayer(player) {
@@ -61,6 +60,6 @@ export default class Enemy extends Phaser.Sprite {
     die() {
         this.body.velocity.x = 0;
         this.alive = false;
-        this.kill();
+        this.play("die", 6, false, true);
     }
 }
