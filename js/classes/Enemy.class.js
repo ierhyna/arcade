@@ -11,7 +11,7 @@ export default class Enemy extends Phaser.Sprite {
         this.body.allowGravity = true;
         this.body.immovable = false;
         this.maxHealth = 1;
-        this.damageOnContact = 1;        
+        this.damageOnContact = 1;
         this.alive = false;
         this.exp = 1;
         this.speed = 100;
@@ -38,6 +38,7 @@ export default class Enemy extends Phaser.Sprite {
     }
 
     hitPlayer(player) {
+        if (!this.alive) return;
         player.health -= this.damageOnContact;
         if (player.health <= 0) {
             player.alive = false;

@@ -2,7 +2,7 @@ import game from "../game";
 
 const SoundEngine = {}
 const Preload = {
-    preload: function () {
+    preload: function() {
         game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
         game.load.tilemap('level1', 'maps/level1.json', null, Phaser.Tilemap.TILED_JSON);
         game.load.image('tileset', 'maps/tilea2.png');
@@ -26,7 +26,8 @@ const Preload = {
         game.load.audio('ricochet', 'sounds/ricochet.wav');
         game.load.audio('trackRumble', 'sounds/Rumble.mp3');
     },
-    create: function () {
+    create: function() {
+
         SoundEngine.gunShot = game.add.audio('gunShot');
         SoundEngine.heavyShot = game.add.audio('shotHeavy');
         SoundEngine.heavyShot.volume = 0.2;
@@ -45,7 +46,7 @@ const Preload = {
         game.physics.arcade.gravity.y = 1000;
         game.state.start("Level");
     },
-    update: function () {}
+    update: function() {}
 }
 
 export {
