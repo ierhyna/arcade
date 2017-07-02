@@ -7,5 +7,6 @@ import Object from "./Object.class";
 import Blob from "./Blob.class";
 import Chest from "./Chest.class";
 import BasicBullet from "./BasicBullet.class";
+import HeavyBullet from "./HeavyBullet.class";
 
-export { Pool, Item, Enemy, Blob, BasicBullet, Object, Chest };
+export { Pool, Item, Enemy, Blob, BasicBullet, Object, Chest, HeavyBullet };

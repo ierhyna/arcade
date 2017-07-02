@@ -29,8 +29,9 @@ export default class Enemy extends Phaser.Sprite {
 
     hit(projectile) {
         if (!this.alive) return;
+        this.animations.play("blink", 20);
         this.health -= projectile.damage;
-        const event = projectile.crit ? "crit" : "hit";
+        const event = projectile.critical ? "crit" : "hit";
         this.sound.play();
         Text.combat(this, projectile.damage, event);
         if (this.health <= 0) {
