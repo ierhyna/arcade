@@ -1,18 +1,7 @@
-/*
-Player buffs: last 3 seconds, can not happen more than once per 3 seconds
-- Havoc — after performing 3 crits in a row increase damage by 100%
-- Enrage — after killing an enemy increase damage by 20%
-
-Buffs are applied in the aforementioned order
-*/
-
 import game, { Store } from "../game";
 import Text from "../text.plugin";
 import { HealthBar } from "../bar.plugin";
 import { SoundEngine } from "./Preload.stage";
-import { ConstructGroup } from "../constructors";
-
-import { Weapon, Creature } from "../../config";
 
 import { Pool, Blob, BasicBullet, HeavyBullet, Chest } from "../classes";
 
@@ -22,19 +11,13 @@ let Key = {},
     blobbyGroup,
     basicBulletGroup,
     heavyBulletGroup,
-    basicWeapon,
-    heavyWeapon,
     healthBar,
     skillIcons = {},
-    buffIcons = {},
     barsText = {},
     InfoText = {},
     expBar,
     levelText,
-    playerDirection = 1,
-    waveCounter = 40,
-    treasures,
-    coins;
+    playerDirection = 1;
 
 const EVENTS = {
     PLAYER_HIT: "playerHit",
@@ -82,7 +65,6 @@ export const Level = {
             });
         };
 
-
         player = game.add.sprite(32, 32, 'hero');
         player.animations.add('move', [0, 1, 2, 3], 10, true);
         game.physics.enable(player, Phaser.Physics.ARCADE);
@@ -113,11 +95,8 @@ export const Level = {
             strokeThickness: 4
         });
 
-
         blobbyGroup = new Pool(game, Blob, 50, { title: "Blob", description: "Tiny blob" });
-
         spawnEnenmy(blobbyGroup, { x: 600, y: 5, spacing: 2500, quantity: Store.enemiesInWave });
-
 
         game.projectiles = [];
         basicBulletGroup = new Pool(game, BasicBullet, 50);
@@ -131,53 +110,19 @@ export const Level = {
             if (player.health > maxPlayerHp) player.health = maxPlayerHp;
         }
         player.body.velocity.x = 0;
-        checkCollisions();
         checkControls();
         renderInterfaceText();
+
+        game.physics.arcade.collide(player, game.walls);
+        game.physics.arcade.overlap(game.projectiles, blobbyGroup, (bullet, enemy) => enemy.hit(bullet));
+        game.physics.arcade.overlap(blobbyGroup, player, (player, enemy) => enemy.hitPlayer(player));
     }
 }
 
-// HELPERS
 function spawnEnenmy(group, data) {
     if (Store.currentEnemy > data.quantity) return;
     group.create(data.x, data.y);
     game.time.events.add(data.spacing, () => spawnEnenmy(group, data));
-}
-
-function checkCollisions() {
-
-    game.physics.arcade.collide(player, game.walls);
-
-    game.physics.arcade.overlap(player, coins, (player, coin) => {
-        Text.combat(coin, `+${coin.value} gold`, EVENTS.INFO);
-        totalGoldForLevel += +coin.value;
-        coin.kill();
-    });
-
-    game.physics.arcade.collide(treasures, game.walls);
-
-    // game.physics.arcade.overlap(enemyGroup.blobs, treasures, (enemy, treasure) => {
-    //     if (!enemy.carryingTreasure) {
-    //         const stealAmount = 10;
-    //         enemy.carryingTreasure = true;
-    //         if (treasure.goldCapacity >= stealAmount) {
-    //             treasure.goldCapacity -= stealAmount;
-    //             enemy.gold = stealAmount;
-    //         } else {
-    //             enemy.gold = treasure.goldCapacity;
-    //             treasure.goldCapacity = 0;
-    //             treasure.kill();
-    //         }
-    //         enemy.coin = enemy.addChild(game.make.sprite(-16, -8, 'coin'));
-    //         enemy.coin.scale.setTo(0.25, 0.125);
-    //         console.log(`enemy stole ${enemy.gold} coins!`);
-    //         Text.combat(enemy, `-${enemy.gold} gold`, EVENTS.INFO);
-    //         totalGoldForLevel -= +enemy.gold;
-    //     }
-    // });
-
-    game.physics.arcade.overlap(game.projectiles, blobbyGroup, (bullet, enemy) => enemy.hit(bullet));
-    game.physics.arcade.overlap(blobbyGroup, player, (player, enemy) => enemy.hitPlayer(player));
 }
 
 function checkControls() {
@@ -295,31 +240,3 @@ function initializeNewPlayer() {
         level: 1
     });
 }
-
-function updateExp(exp) {
-    player.exp += exp;
-    if (player.exp >= totalExpForLevel) {
-        player.exp = 0;
-        player.level++;
-        totalExpForLevel *= 2;
-        Text.level(`Gained level ${player.level}!`, "#ff0");
-        levelText.text = `Level ${player.level} Soldier`;
-    }
-}
-
-// function setupTreasures() {
-//     const treasure = treasures.getFirstExists(false);
-//     if (treasure) {
-//         treasure.reset(328, 200);
-//         treasure.goldCapacity = 87;
-//     }
-// }
-
-// function dropCoin(enemy) {
-//     const coin = coins.getFirstExists(false);
-//     if (coin) {
-//         coin.reset(enemy.x, enemy.y);
-//         coin.body.moves = false;
-//         coin.value = (enemy.gold * 0.8).toFixed();
-//     }
-// }
