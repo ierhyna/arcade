@@ -3,6 +3,7 @@ export default class Pool extends Phaser.Group {
         super(game, game.world);
         this.game = game;
         this.spriteType = spriteType;
+        this.instances = instances;
         if (instances) {
             let sprite;
             for (var i = 0; i < instances; i++) {
@@ -10,6 +11,10 @@ export default class Pool extends Phaser.Group {
             }
         }
         return this;
+    }
+
+    count() {
+      return this.instances;
     }
 
     create(x, y) {

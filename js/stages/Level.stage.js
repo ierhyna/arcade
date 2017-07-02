@@ -15,7 +15,9 @@ let player,
     barsText = {},
     InfoText = {},
     expBar,
-    levelText
+    levelText,
+    basicBulletText,
+    heavyBulletText;
 //playerDirection = 1;
 
 const EVENTS = {
@@ -73,8 +75,6 @@ export const Level = {
         player = new Player(game);
         player.create(64, 64);
 
-        prepareBars();
-        prepareInterFaceText();
 
         const avatar = game.add.sprite(10, 650, "avatar");
         avatar.scale.setTo(0.5, 0.5);
@@ -98,6 +98,9 @@ export const Level = {
         basicBulletGroup = new Pool(game, BasicBullet, 50);
         heavyBulletGroup = new Pool(game, HeavyBullet, 10);
         game.projectiles.push(basicBulletGroup, heavyBulletGroup);
+
+        prepareBars();
+        prepareInterFaceText();
     },
 
     update: function() {
@@ -167,6 +170,7 @@ function renderInterfaceText() {
     barsText.exp.text = `${player.experience}/${totalExpForLevel}`;
     barsText.hp.text = `${player.health.toFixed()}/${ player.maxHealth}`;
     InfoText.gold.text = `Gold: ${totalGoldForLevel}`;
+    basicBulletText.text = basicBulletGroup.count();
 }
 
 function prepareInterFaceText() {
@@ -188,6 +192,17 @@ function prepareInterFaceText() {
     });
     barsText.hp = game.add.text(440, 730, `${player.health}/${player.maxHealth}`, {
         font: "11px Press Start 2P",
+        fill: "#fff",
+        align: "center"
+    });
+
+    basicBulletText = game.add.text(560, 653, basicBulletGroup.count(), {
+        font: "12px Press Start 2P",
+        fill: "#fff",
+        align: "center"
+    });
+    heavyBulletText = game.add.text(620, 653, heavyBulletGroup.count(), {
+        font: "12px Press Start 2P",
         fill: "#fff",
         align: "center"
     });
