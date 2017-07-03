@@ -105,30 +105,13 @@ function spawnEnenmy(group, data) {
 
 function checkControls() {
     if (game.Key.cursors.left.isDown) {
-        player.direction = -1;
-        player.body.velocity.x = -220;
-        player.scale.x = player.direction * 0.2;
-        if (player.body.onFloor()) {
-            player.animations.play('move');
-        } else {
-            player.animations.stop();
-            player.frame = 2;
-        }
+        player.move("left")
     } else if (game.Key.cursors.right.isDown) {
-        player.direction = 1;
-        player.scale.x = player.direction * 0.2;
-        player.body.velocity.x = 220;
-        if (player.body.onFloor()) {
-            player.animations.play('move');
-        } else {
-            player.animations.stop();
-            player.frame = 2;
-        }
+        player.move("right");
     } else {
-        player.animations.stop();
-        player.frame = 1;
+        player.move("stop");
     }
-    if (game.Key.cursors.up.isDown) player.jump();
+    if (game.Key.cursors.up.isDown) player.move("jump");
     if (game.Key.one.isDown) player.fire(basicBulletGroup);
     if (game.Key.two.isDown) player.fire(heavyBulletGroup);
 }
