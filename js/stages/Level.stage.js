@@ -14,7 +14,7 @@ let player,
     expBar,
     levelText,
     basicBulletText,
-    heavyBulletText,    
+    heavyBulletText,
     totalGoldForLevel = 500;
 
 export const Level = {
@@ -44,8 +44,11 @@ export const Level = {
         game.walls = []
         game.walls.push(walls, verticalWalls);
 
-        skillIcons['basic'] = game.add.sprite(540, 670, 'icon_basic');
-        skillIcons['heavy'] = game.add.sprite(604, 670, 'icon_heavy');
+        skillIcons['basic'] = new GameObject('icon_basic');
+        skillIcons['heavy'] = new GameObject('icon_heavy');
+        skillIcons['basic'].spawnOne(572, 702);
+        skillIcons['heavy'].spawnOne(636, 702);
+
         for (let i = 1; i <= Object.keys(skillIcons).length; i++) {
             game.add.text(500 + 64 * i, 737, i, {
                 font: "16px Press Start 2P",
@@ -57,8 +60,8 @@ export const Level = {
         player = new Player("hero");
         player.create(64, 64);
         const avatar = new GameObject("avatar");
-        avatar.spawnOne(66,700);
-        avatar.scale.setTo(0.5,0.5)
+        avatar.spawnOne(66, 700);
+        avatar.scale.setTo(0.5, 0.5)
 
         Text.level("Wave 1", "#ffffff");
         game.songs.trackRumble.play();
@@ -171,7 +174,7 @@ function prepareBars() {
         y: 716,
         bg: { color: '#ccc' },
         bar: { color: '#f00' },
-        animationDuration: 200        
+        animationDuration: 200
     });
     expBar.setPercent(0);
 
@@ -182,7 +185,7 @@ function prepareBars() {
         y: 738,
         bg: { color: '#651828' },
         bar: { color: '#FEFF03' },
-        animationDuration: 100        
+        animationDuration: 100
     });
     healthBar.setPercent(player.maxHealth / player.health);
 }
