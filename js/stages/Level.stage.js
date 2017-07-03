@@ -1,7 +1,7 @@
 import game, { Store } from "../game";
 import Text from "../text.plugin";
 import { HealthBar } from "../bar.plugin";
-import { Pool, Blob, BasicBullet, HeavyBullet, Chest, Player } from "../classes";
+import { GameObject, Pool, Blob, BasicBullet, HeavyBullet, Chest, Player } from "../classes";
 
 let player,
     blobbyGroup,
@@ -56,8 +56,9 @@ export const Level = {
 
         player = new Player("hero");
         player.create(64, 64);
-        const avatar = game.add.sprite(10, 650, "avatar");
-        avatar.scale.setTo(0.5, 0.5);
+        const avatar = new GameObject("avatar");
+        avatar.spawnOne(66,700);
+        avatar.scale.setTo(0.5,0.5)
 
         Text.level("Wave 1", "#ffffff");
         game.songs.trackRumble.play();
