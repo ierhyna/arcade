@@ -22,7 +22,10 @@ export default class Player extends Phaser.Sprite {
         this.jumpVelocity = -520
         this.timer = {};
         this.totalExpForLevel = 650;
-        this.weaponsCount = {};
+        this.ammo = {
+            BasicBullet: 10,
+            HeavyBullet: 100,
+        };
     };
 
     create(x, y) {
@@ -94,11 +97,12 @@ export default class Player extends Phaser.Sprite {
     fire(weapon) {
         if (!this.alive) return;
         if (game.time.now > (this.timer[weapon] || 0)) {
-            if (weapon.instances > 0) {
+            const weaponName = weapon.spriteType.name;
+            if (this.ammo[weaponName] > 0) {
                 const bullet = weapon.create(this.x, this.y);
                 bullet.body.velocity.x = bullet.baseSpeed * this.direction;
                 this.timer[weapon] = game.time.now + bullet.spacing;
-                this.weaponsCount[weapon] = weapon.instances--;
+                this.ammo[weaponName] -= 1;
             }
         }
     };

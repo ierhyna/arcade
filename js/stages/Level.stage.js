@@ -122,8 +122,8 @@ function renderInterfaceText() {
     barsText.exp.text = `${player.experience}/${player.totalExpForLevel}`;
     barsText.hp.text = `${player.health.toFixed()}/${ player.maxHealth}`;
     InfoText.gold.text = `Gold: ${totalGoldForLevel}`;
-    basicBulletText.text = basicBulletGroup.count();
-    heavyBulletText.text = heavyBulletGroup.count();
+    basicBulletText.text = player.ammo.BasicBullet;
+    heavyBulletText.text = player.ammo.HeavyBullet;
 }
 
 function prepareInterFaceText() {
@@ -146,9 +146,9 @@ function prepareInterFaceText() {
     barsText.exp = game.add.text(440, 710, `${player.experience}/${player.totalExpForLevel}`, basicTextStyle);
     barsText.hp = game.add.text(440, 730, `${player.health}/${player.maxHealth}`, basicTextStyle);
 
-    basicBulletText = game.add.text(560, 653, `${player.weaponsCount[basicBulletGroup]}/ ${basicBulletGroup.count()}`, basicTextStyle);
+    basicBulletText = game.add.text(560, 653, player.ammo.BasicBullet, basicTextStyle);
 
-    heavyBulletText = game.add.text(620, 653, `${player.weaponsCount[heavyBulletGroup]}/ ${heavyBulletGroup.count()}`, basicTextStyle);
+    heavyBulletText = game.add.text(620, 653, player.ammo.HeavyBullet, basicTextStyle);
 }
 
 function prepareBars() {

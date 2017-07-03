@@ -16,10 +16,6 @@ export default class Pool extends Phaser.Group {
         return this;
     }
 
-    count() {
-      return this.instances;
-    }
-
     create(x, y) {
         let obj = this.getFirstExists(false);
         if (!obj) {
