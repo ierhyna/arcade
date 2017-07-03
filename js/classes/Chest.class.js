@@ -1,8 +1,8 @@
 import game from "../game";
-import Object from "./Object.class";
+import GameObject from "./Object.class";
 import Item from "./Item.class";
 
-export default class Chest extends Object {
+export default class Chest extends GameObject {
 
     constructor(sprite, data = {}) {
         super(sprite);

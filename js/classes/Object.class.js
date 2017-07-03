@@ -1,5 +1,5 @@
 import game from "../game";
-export default class Object extends Phaser.Sprite {
+export default class GameObject extends Phaser.Sprite {
     constructor(sprite) {
         super(game, 0, 0, sprite);
         this.game = game;
@@ -17,6 +17,17 @@ export default class Object extends Phaser.Sprite {
     };
 
     spawnOne(x, y) {
-        this.game.add.sprite(x, y, this.sprite);
+        this.game.add.existing(this);
+        this.x = x;
+        this.y = y;
+        this.exists = true;
+    }
+
+    enableGravity() {
+        this.body.allowGravity = true;
+    }
+
+    disableGravity() {
+        this.body.allowGravity = false;
     }
 }
