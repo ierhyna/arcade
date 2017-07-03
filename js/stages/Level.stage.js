@@ -2,7 +2,6 @@ import game, { Store } from "../game";
 import Text from "../text.plugin";
 import { HealthBar } from "../bar.plugin";
 import { SoundEngine } from "./Preload.stage";
-
 import { Pool, Blob, BasicBullet, HeavyBullet, Chest, Player } from "../classes";
 
 let player,
@@ -16,31 +15,17 @@ let player,
     expBar,
     levelText,
     basicBulletText,
-    heavyBulletText;
-
-const EVENTS = {
-    PLAYER_HIT: "playerHit",
-    HIT: "hit",
-    INFO: "info",
-    CRIT: "crit"
-}
-
-const timer = {
-    jump: 0
-}
-
-let totalExpForLevel = 650;
-let totalGoldForLevel = 500;
+    heavyBulletText,    
+    totalGoldForLevel = 500;
 
 export const Level = {
-    create: function() {
 
+    create: function() {
         const cursors = game.input.keyboard.createCursorKeys();
         const one = game.input.keyboard.addKey(Phaser.KeyCode.ONE);
         const two = game.input.keyboard.addKey(Phaser.KeyCode.TWO);
         const three = game.input.keyboard.addKey(Phaser.KeyCode.THREE);
-
-        game.Key = { cursors: cursors, one: one, two: two, three: three }
+        game.Key = { cursors, one, two, three };
 
         Store.wave = 1;
         Store.enemiesInWave = 40;
@@ -72,8 +57,6 @@ export const Level = {
 
         player = new Player("hero");
         player.create(64, 64);
-
-
         const avatar = game.add.sprite(10, 650, "avatar");
         avatar.scale.setTo(0.5, 0.5);
 
@@ -96,29 +79,22 @@ export const Level = {
         basicBulletGroup = new Pool(BasicBullet, "bullet", 50);
         heavyBulletGroup = new Pool(HeavyBullet, "heavyBullet", 10);
         game.projectiles.push(basicBulletGroup, heavyBulletGroup);
-
         prepareBars();
         prepareInterFaceText();
     },
 
     update: function() {
-        if (player.experience > totalExpForLevel) {
-            totalExpForLevel *= 2;
-            player.level++;
-            player.experience = 0;
-        }
         player.body.velocity.x = 0;
         renderInterfaceText();
-
         game.physics.arcade.collide(player, game.walls);
         game.physics.arcade.overlap(game.projectiles, blobbyGroup, (bullet, enemy) => enemy.hit(bullet, player));
         game.physics.arcade.overlap(blobbyGroup, player, (player, enemy) => enemy.hitPlayer(player));
-
         checkControls();
     }
 }
 
 function spawnEnenmy(group, data) {
+    Store.currentEnemy++;
     if (Store.currentEnemy > data.quantity) return;
     group.create(data.x, data.y);
     game.time.events.add(data.spacing, () => spawnEnenmy(group, data));
@@ -149,29 +125,26 @@ function checkControls() {
         player.animations.stop();
         player.frame = 1;
     }
-
-    if (game.Key.cursors.up.isDown && player.body.onFloor() && game.time.now > timer.jump) {
-        player.body.velocity.y = -520;
-        timer.jump = game.time.now + 750;
-    }
-    if (game.Key.one.isDown) {
-        player.fire(basicBulletGroup);
-    }
-    if (game.Key.two.isDown) {
-        player.fire(heavyBulletGroup);
-    }
+    if (game.Key.cursors.up.isDown) player.jump();
+    if (game.Key.one.isDown) player.fire(basicBulletGroup);
+    if (game.Key.two.isDown) player.fire(heavyBulletGroup);
 }
 
 function renderInterfaceText() {
     healthBar.setPercent(player.health / player.maxHealth * 100);
-    expBar.setPercent(player.experience / totalExpForLevel * 100);
-    barsText.exp.text = `${player.experience}/${totalExpForLevel}`;
+    expBar.setPercent(player.experience / player.totalExpForLevel * 100);
+    barsText.exp.text = `${player.experience}/${player.totalExpForLevel}`;
     barsText.hp.text = `${player.health.toFixed()}/${ player.maxHealth}`;
     InfoText.gold.text = `Gold: ${totalGoldForLevel}`;
     basicBulletText.text = basicBulletGroup.count();
 }
 
 function prepareInterFaceText() {
+    const basicTextStyle = {
+        font: "12px Press Start 2P",
+        fill: "#fff",
+        align: "center"
+    }
     game.add.text(130, 650, "Jackson Martinez", {
         font: "20px Arial",
         fill: "#888",
@@ -183,27 +156,11 @@ function prepareInterFaceText() {
         align: "left"
     });
 
-    barsText.exp = game.add.text(440, 710, `${player.experience}/${totalExpForLevel}`, {
-        font: "11px Press Start 2P",
-        fill: "#fff",
-        align: "center"
-    });
-    barsText.hp = game.add.text(440, 730, `${player.health}/${player.maxHealth}`, {
-        font: "11px Press Start 2P",
-        fill: "#fff",
-        align: "center"
-    });
+    barsText.exp = game.add.text(440, 710, `${player.experience}/${player.totalExpForLevel}`, basicTextStyle);
+    barsText.hp = game.add.text(440, 730, `${player.health}/${player.maxHealth}`, basicTextStyle);
 
-    basicBulletText = game.add.text(560, 653, basicBulletGroup.count(), {
-        font: "12px Press Start 2P",
-        fill: "#fff",
-        align: "center"
-    });
-    heavyBulletText = game.add.text(620, 653, heavyBulletGroup.count(), {
-        font: "12px Press Start 2P",
-        fill: "#fff",
-        align: "center"
-    });
+    basicBulletText = game.add.text(560, 653, basicBulletGroup.count(), basicTextStyle);
+    heavyBulletText = game.add.text(620, 653, heavyBulletGroup.count(), basicTextStyle);
 }
 
 function prepareBars() {
@@ -214,8 +171,7 @@ function prepareBars() {
         y: 716,
         bg: { color: '#ccc' },
         bar: { color: '#f00' },
-        animationDuration: 200,
-        flipped: false
+        animationDuration: 200        
     });
     expBar.setPercent(0);
 
@@ -226,19 +182,7 @@ function prepareBars() {
         y: 738,
         bg: { color: '#651828' },
         bar: { color: '#FEFF03' },
-        animationDuration: 100,
-        flipped: false
+        animationDuration: 100        
     });
     healthBar.setPercent(player.maxHealth / player.health);
-}
-
-function initializeNewPlayer() {
-    return Object.assign(player, {
-        health: 350,
-        critCombo: 0,
-        critRec: 0,
-        frame: 0,
-        exp: 0,
-        level: 1
-    });
 }
