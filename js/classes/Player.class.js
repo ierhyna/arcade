@@ -43,7 +43,7 @@ export default class Player extends Phaser.Sprite {
             this.totalExpForLevel *= 2;
             this.level++;
             this.experience = 0;
-        }        
+        }
     };
 
     die() {
@@ -53,11 +53,42 @@ export default class Player extends Phaser.Sprite {
         this.kill();
     };
 
-    jump() {
-        if (this.body.onFloor()) {
-            this.body.velocity.y = this.jumpVelocity;
+    move(direction) {
+        switch (direction) {
+            case "left":
+                this.direction = -1;
+                this.body.velocity.x = -220;
+                this.scale.x = this.direction * 0.2;
+                if (this.body.onFloor()) {
+                    this.animations.play('move');
+                } else {
+                    this.animations.stop();
+                    this.frame = 2;
+                }
+                break;
+
+            case "right":
+                this.direction = 1;
+                this.scale.x = this.direction * 0.2;
+                this.body.velocity.x = 220;
+                if (this.body.onFloor()) {
+                    this.animations.play('move');
+                } else {
+                    this.animations.stop();
+                    this.frame = 2;
+                }
+                break;
+
+            case "jump":
+                if (this.body.onFloor()) this.body.velocity.y = this.jumpVelocity;
+                break;
+            case "stop":
+                this.animations.stop();
+                this.frame = 1;
+                break;
         }
-    };
+
+    }
 
     fire(weapon) {
         if (!this.alive) return;
