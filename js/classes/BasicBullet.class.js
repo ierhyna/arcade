@@ -4,7 +4,7 @@ import Projectile from "./Projectile.class";
 export default class BasicBullet extends Projectile {
 
     constructor(sprite, data = {}) {
-        super(game, sprite);
+        super(sprite);
         this.game = game;
         this.baseCrit = 25;
         this.baseDamage = 7;
@@ -12,7 +12,7 @@ export default class BasicBullet extends Projectile {
         this.critical = false;
         this.criticalMultiplier = 3;
         this.spacing = 100;
-        this.sound = game.add.audio('gunShot');
+        this.sound = this.game.add.audio('gunShot');
     };
 
     spawn(x, y) {
