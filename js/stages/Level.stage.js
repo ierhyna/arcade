@@ -50,11 +50,7 @@ export const Level = {
         skillIcons['heavy'].spawnOne(636, 702);
 
         for (let i = 1; i <= Object.keys(skillIcons).length; i++) {
-            game.add.text(500 + 64 * i, 737, i, {
-                font: "16px Press Start 2P",
-                fill: "#fff",
-                align: "center"
-            });
+            game.add.text(500 + 64 * i, 737, i, { font: "16px Press Start 2P", fill: "#fff", align: "center" });
         };
 
         player = new Player("hero");
@@ -108,9 +104,7 @@ function checkControls() {
         player.move("left")
     } else if (game.Key.cursors.right.isDown) {
         player.move("right");
-    } else {
-        player.move("stop");
-    }
+    } else player.move("stop");
     if (game.Key.cursors.up.isDown) player.move("jump");
     if (game.Key.one.isDown) player.fire(basicBulletGroup);
     if (game.Key.two.isDown) player.fire(heavyBulletGroup);
@@ -127,28 +121,13 @@ function renderInterfaceText() {
 }
 
 function prepareInterFaceText() {
-    const basicTextStyle = {
-        font: "12px Press Start 2P",
-        fill: "#fff",
-        align: "center"
-    }
-    game.add.text(130, 650, "Jackson Martinez", {
-        font: "20px Arial",
-        fill: "#888",
-        align: "left"
-    });
-    levelText = game.add.text(130, 680, `Level ${player.level} Soldier`, {
-        font: "18px Arial",
-        fill: "#bbb",
-        align: "left"
-    });
-
-    barsText.exp = game.add.text(440, 710, `${player.experience}/${player.totalExpForLevel}`, basicTextStyle);
-    barsText.hp = game.add.text(440, 730, `${player.health}/${player.maxHealth}`, basicTextStyle);
-
-    basicBulletText = game.add.text(560, 653, player.ammo.BasicBullet, basicTextStyle);
-
-    heavyBulletText = game.add.text(620, 653, player.ammo.HeavyBullet, basicTextStyle);
+    const basicTextStyle = { font: "12px Press Start 2P", fill: "#fff", align: "center" }
+    game.add.text(130, 650, "Jackson Martinez", { font: "20px Arial", fill: "#888", align: "left" });
+    levelText = game.add.text(130, 680, `Level ${player.level} Soldier`, { font: "18px Arial", fill: "#bbb", align: "left" });
+    barsText.exp = game.add.text(440, 710, "", basicTextStyle);
+    barsText.hp = game.add.text(440, 730, "", basicTextStyle);
+    basicBulletText = game.add.text(560, 653, "", basicTextStyle);
+    heavyBulletText = game.add.text(620, 653, "", basicTextStyle);
 }
 
 function prepareBars() {
@@ -161,8 +140,6 @@ function prepareBars() {
         bar: { color: '#f00' },
         animationDuration: 200
     });
-    expBar.setPercent(0);
-
     healthBar = new HealthBar(game, {
         width: 300,
         height: 12,
@@ -172,5 +149,4 @@ function prepareBars() {
         bar: { color: '#FEFF03' },
         animationDuration: 100
     });
-    healthBar.setPercent(player.maxHealth / player.health);
 }
