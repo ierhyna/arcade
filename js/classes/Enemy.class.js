@@ -42,11 +42,10 @@ export default class Enemy extends Phaser.Sprite {
 
     hitPlayer(player) {
         if (!this.alive) return;
-        player.health -= this.damageOnContact;
+        player.health -= this.damageOnContact;        
         Text.combat(player, -this.damageOnContact, "playerHit");
         if (player.health <= 0) {
-            player.alive = false;
-            player.kill();
+            player.die();
         }
         this.die();
     }
