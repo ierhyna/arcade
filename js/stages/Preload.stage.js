@@ -1,7 +1,6 @@
 import game from "../game";
 
-const SoundEngine = {}
-const Preload = {
+export const Preload = {
     preload: function() {
         game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
         game.load.tilemap('level1', 'maps/level1.json', null, Phaser.Tilemap.TILED_JSON);
@@ -23,18 +22,12 @@ const Preload = {
         game.load.audio('shotHeavy', 'sounds/shotHeavy.mp3');
         game.load.audio('trackRumble', 'sounds/Rumble.mp3');
     },
-    create: function() {
-        SoundEngine.mobHit = game.add.audio('mobHit');
-        SoundEngine.mobHit.volume = 0.5;
-        SoundEngine.trackRumble = game.add.audio('trackRumble');
-        SoundEngine.trackRumble.volume = 0;
-        SoundEngine.mobHit.allowMultiple = true;
-
+    create: function() {   
+        game.songs = { trackRumble: game.add.audio('trackRumble') };
+        game.songs.trackRumble.volume = 0.05;
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.arcade.gravity.y = 1000;
         game.state.start("Level");
     },
     update: function() {}
 }
-
-export { Preload, SoundEngine }

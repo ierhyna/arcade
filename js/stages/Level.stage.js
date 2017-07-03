@@ -1,7 +1,6 @@
 import game, { Store } from "../game";
 import Text from "../text.plugin";
 import { HealthBar } from "../bar.plugin";
-import { SoundEngine } from "./Preload.stage";
 import { Pool, Blob, BasicBullet, HeavyBullet, Chest, Player } from "../classes";
 
 let player,
@@ -61,7 +60,7 @@ export const Level = {
         avatar.scale.setTo(0.5, 0.5);
 
         Text.level("Wave 1", "#ffffff");
-        SoundEngine.trackRumble.play();
+        game.songs.trackRumble.play();
 
         InfoText.gold = game.add.text(48, 16, `Gold: ${totalGoldForLevel}`, {
             font: "Press Start 2P",
