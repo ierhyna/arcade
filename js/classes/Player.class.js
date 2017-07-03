@@ -23,7 +23,7 @@ export default class Player extends Phaser.Sprite {
         this.timer = {};
         this.totalExpForLevel = 650;
         this.ammo = {
-            BasicBullet: 10,
+            BasicBullet: 500,
             HeavyBullet: 100,
         };
     };
