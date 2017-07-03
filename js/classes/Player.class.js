@@ -63,10 +63,12 @@ export default class Player extends Phaser.Sprite {
     fire(weapon) {
         if (!this.alive) return;
         if (game.time.now > (this.timer[weapon] || 0)) {
-            const bullet = weapon.create(this.x, this.y);
-            bullet.body.velocity.x = bullet.baseSpeed * this.direction;
-            this.timer[weapon] = game.time.now + bullet.spacing;
-            this.weaponsCount[weapon] = weapon.instances--;
+            if (weapon.instances > 0) {
+                const bullet = weapon.create(this.x, this.y);
+                bullet.body.velocity.x = bullet.baseSpeed * this.direction;
+                this.timer[weapon] = game.time.now + bullet.spacing;
+                this.weaponsCount[weapon] = weapon.instances--;
+            }
         }
     };
 }
