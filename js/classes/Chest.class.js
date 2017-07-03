@@ -4,8 +4,8 @@ import Item from "./Item.class";
 
 export default class Chest extends Object {
 
-    constructor(game, data = {}) {
-        super(game, "treasure");
+    constructor(sprite, data = {}) {
+        super(sprite);
         this.game = game;
         this.item = new Item(data);
     };
