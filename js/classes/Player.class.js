@@ -1,4 +1,4 @@
-import game, {Text, HealthBar} from "../game";
+import game, { Text, HealthBar } from "../game";
 
 export default class Player extends Phaser.Sprite {
     constructor(sprite, name) {
@@ -36,7 +36,7 @@ export default class Player extends Phaser.Sprite {
         this.exists = true;
         this.frame = 1;
         this.createBars();
-        this.game.add.existing(this);        
+        this.game.add.existing(this);
     };
 
     update() {
@@ -100,8 +100,7 @@ export default class Player extends Phaser.Sprite {
                 this.frame = 1;
                 break;
         }
-
-    }
+    };
 
     fire(weapon) {
         if (!this.alive) return;
@@ -135,8 +134,7 @@ export default class Player extends Phaser.Sprite {
             bar: { color: '#FEFF03' },
             animationDuration: 100
         });
-        const basicTextStyle = { font: "12px Press Start 2P", fill: "#fff", align: "center" };
-        this.barsExp = this.game.add.text(440, 710, "", basicTextStyle);
-        this.barsHp = this.game.add.text(440, 730, "", basicTextStyle);
+        this.barsExp = this.game.add.text(440, 710, "", Text.styles.basic);
+        this.barsHp = this.game.add.text(440, 730, "", Text.styles.basic);
     }
 }
