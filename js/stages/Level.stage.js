@@ -14,8 +14,7 @@ let player,
     expBar,
     levelText,
     basicBulletText,
-    heavyBulletText,
-    totalGoldForLevel = 500;
+    heavyBulletText
 
 export const Level = {
 
@@ -62,32 +61,43 @@ export const Level = {
         Text.level("Wave 1", "#ffffff");
         game.songs.trackRumble.play();
 
-        InfoText.gold = game.add.text(48, 16, `Gold: ${totalGoldForLevel}`, {
-            font: "Press Start 2P",
-            fontSize: "20px",
-            fill: "gold",
-            align: "center",
-            stroke: '#000000',
-            strokeThickness: 4
-        });
-
         blobbyGroup = new Pool(Blob, "blob-ani", 50);
         spawnEnenmy(blobbyGroup, { x: 600, y: 5, spacing: 2500, quantity: Store.enemiesInWave });
 
         game.projectiles = [];
         basicBulletGroup = new Pool(BasicBullet, "bullet", 50);
         heavyBulletGroup = new Pool(HeavyBullet, "heavyBullet", 10);
-        game.projectiles.push(basicBulletGroup, heavyBulletGroup);        
-        prepareInterFaceText();
+        game.projectiles.push(basicBulletGroup, heavyBulletGroup);
+
+        const basicTextStyle = { font: "12px Press Start 2P", fill: "#fff", align: "center" }
+        game.add.text(130, 650, "Jackson Martinez", { font: "20px Arial", fill: "#888", align: "left" });
+        levelText = game.add.text(130, 680, `Level ${player.level} Soldier`, { font: "18px Arial", fill: "#bbb", align: "left" });
+        barsText.exp = game.add.text(440, 710, "", basicTextStyle);
+        barsText.hp = game.add.text(440, 730, "", basicTextStyle);
+        basicBulletText = game.add.text(560, 653, "", basicTextStyle);
+        heavyBulletText = game.add.text(620, 653, "", basicTextStyle);
     },
 
     update: function() {
         player.body.velocity.x = 0;
-        renderInterfaceText();
+
+        barsText.exp.text = `${player.experience}/${player.totalExpForLevel}`;
+        barsText.hp.text = `${player.health.toFixed()}/${ player.maxHealth}`;
+        basicBulletText.text = player.ammo.BasicBullet;
+        heavyBulletText.text = player.ammo.HeavyBullet;
+
         game.physics.arcade.collide(player, game.walls);
         game.physics.arcade.overlap(game.projectiles, blobbyGroup, (bullet, enemy) => enemy.hit(bullet, player));
         game.physics.arcade.overlap(blobbyGroup, player, (player, enemy) => enemy.hitPlayer(player));
-        checkControls();
+
+        if (game.Key.cursors.left.isDown) {
+            player.move("left")
+        } else if (game.Key.cursors.right.isDown) {
+            player.move("right");
+        } else player.move("stop");
+        if (game.Key.cursors.up.isDown) player.move("jump");
+        if (game.Key.one.isDown) player.fire(basicBulletGroup);
+        if (game.Key.two.isDown) player.fire(heavyBulletGroup);
     }
 }
 
@@ -96,33 +106,4 @@ function spawnEnenmy(group, data) {
     if (Store.currentEnemy > data.quantity) return;
     group.create(data.x, data.y);
     game.time.events.add(data.spacing, () => spawnEnenmy(group, data));
-}
-
-function checkControls() {
-    if (game.Key.cursors.left.isDown) {
-        player.move("left")
-    } else if (game.Key.cursors.right.isDown) {
-        player.move("right");
-    } else player.move("stop");
-    if (game.Key.cursors.up.isDown) player.move("jump");
-    if (game.Key.one.isDown) player.fire(basicBulletGroup);
-    if (game.Key.two.isDown) player.fire(heavyBulletGroup);
-}
-
-function renderInterfaceText() {
-    barsText.exp.text = `${player.experience}/${player.totalExpForLevel}`;
-    barsText.hp.text = `${player.health.toFixed()}/${ player.maxHealth}`;
-    InfoText.gold.text = `Gold: ${totalGoldForLevel}`;
-    basicBulletText.text = player.ammo.BasicBullet;
-    heavyBulletText.text = player.ammo.HeavyBullet;
-}
-
-function prepareInterFaceText() {
-    const basicTextStyle = { font: "12px Press Start 2P", fill: "#fff", align: "center" }
-    game.add.text(130, 650, "Jackson Martinez", { font: "20px Arial", fill: "#888", align: "left" });
-    levelText = game.add.text(130, 680, `Level ${player.level} Soldier`, { font: "18px Arial", fill: "#bbb", align: "left" });
-    barsText.exp = game.add.text(440, 710, "", basicTextStyle);
-    barsText.hp = game.add.text(440, 730, "", basicTextStyle);
-    basicBulletText = game.add.text(560, 653, "", basicTextStyle);
-    heavyBulletText = game.add.text(620, 653, "", basicTextStyle);
 }
