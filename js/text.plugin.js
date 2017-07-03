@@ -1,6 +1,6 @@
 import game from "./game";
 
-const Text = {
+export const Text = {
     level: function(t, color) {
         const text = game.add.text(game.width / 2, game.height / 2, t, {
             font: "Press Start 2P",
@@ -69,7 +69,8 @@ const Text = {
         const text = game.add.text(x, y, message, style);
         const tween = game.add.tween(text).to(direction, 1000, "Linear", true);
         tween.onComplete.addOnce(() => text.destroy());
+    },
+    styles: { 
+        basic: { font: "12px Press Start 2P", fill: "#fff", align: "center" } 
     }
 }
-
-export default Text;

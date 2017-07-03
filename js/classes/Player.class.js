@@ -1,9 +1,7 @@
-import game from "../game";
-import Text from "../text.plugin";
-import { HealthBar } from "../bar.plugin";
+import game, {Text, HealthBar} from "../game";
 
 export default class Player extends Phaser.Sprite {
-    constructor(sprite) {
+    constructor(sprite, name) {
         super(game, 0, 0, sprite);
         this.game = game;
         this.exists = false;
@@ -17,9 +15,10 @@ export default class Player extends Phaser.Sprite {
         this.speed = 100;
         this.level = 1;
         this.experience = 0;
-        this.name = "Player One";
+        this.name = name;
         this.playerId = 1;
         this.direction = 1;
+        this.regenRate = 0.1;
         this.jumpVelocity = -520
         this.timer = {};
         this.totalExpForLevel = 650;
@@ -36,22 +35,25 @@ export default class Player extends Phaser.Sprite {
         this.alive = true;
         this.exists = true;
         this.frame = 1;
-        this.game.add.existing(this);
         this.createBars();
+        this.game.add.existing(this);        
     };
 
     update() {
         if (this.health < this.maxHealth && this.alive) {
-            this.health += 0.1;
+            this.health += this.regenRate;
             if (this.health > this.maxHealth) this.health = this.maxHealth;
         }
         if (this.experience > this.totalExpForLevel) {
             this.totalExpForLevel *= 2;
             this.level++;
             this.experience = 0;
+            Text.level(`Level ${this.level}`, "gold");
         }
         this.healthBar.setPercent(this.health / this.maxHealth * 100);
         this.expBar.setPercent(this.experience / this.totalExpForLevel * 100);
+        this.barsExp.text = `${this.experience}/${this.totalExpForLevel}`;
+        this.barsHp.text = `${this.health.toFixed()}/${ this.maxHealth}`;
     };
 
     die() {
@@ -91,7 +93,9 @@ export default class Player extends Phaser.Sprite {
             case "jump":
                 if (this.body.onFloor()) this.body.velocity.y = this.jumpVelocity;
                 break;
+
             case "stop":
+                this.body.velocity.x = 0;
                 this.animations.stop();
                 this.frame = 1;
                 break;
@@ -131,5 +135,8 @@ export default class Player extends Phaser.Sprite {
             bar: { color: '#FEFF03' },
             animationDuration: 100
         });
+        const basicTextStyle = { font: "12px Press Start 2P", fill: "#fff", align: "center" };
+        this.barsExp = this.game.add.text(440, 710, "", basicTextStyle);
+        this.barsHp = this.game.add.text(440, 730, "", basicTextStyle);
     }
 }

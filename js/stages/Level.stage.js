@@ -1,91 +1,53 @@
-import game, { Store } from "../game";
-import Text from "../text.plugin";
-import { HealthBar } from "../bar.plugin";
-import { GameObject, Pool, Blob, BasicBullet, HeavyBullet, Chest, Player } from "../classes";
+import game, { Text, HealthBar } from "../game";
+import { GameObject, Pool, Blob, BasicBullet, HeavyBullet, Player, Spawner } from "../classes";
 
 let player,
     blobbyGroup,
-    basicBulletGroup,
-    heavyBulletGroup,
-    healthBar,
-    skillIcons = {},
-    barsText = {},
-    InfoText = {},
-    expBar,
+    basicWeapon,
+    heavyWeapon,
     levelText,
     basicBulletText,
-    heavyBulletText
+    heavyBulletText;
 
 export const Level = {
-
     create: function() {
-        const cursors = game.input.keyboard.createCursorKeys();
-        const one = game.input.keyboard.addKey(Phaser.KeyCode.ONE);
-        const two = game.input.keyboard.addKey(Phaser.KeyCode.TWO);
-        const three = game.input.keyboard.addKey(Phaser.KeyCode.THREE);
-        game.Key = { cursors, one, two, three };
-
-        Store.wave = 1;
-        Store.enemiesInWave = 40;
-        Store.currentEnemy = 1;
-
         const map = game.add.tilemap('level1');
         map.addTilesetImage('tilea2', 'tileset');
-        const bg = game.add.sprite(0, 0, 'background001');
-        bg.width = game.width;
-        bg.height = 640;
-
+        const background = game.add.sprite(0, 0, 'background001');
+        background.width = game.width;
+        background.height = 640;
         let walls = map.createLayer('walls')
         let verticalWalls = map.createLayer('vertical')
-
         map.setCollision([49, 63, 109], true, walls);
         map.setCollision([55], true, verticalWalls);
-        game.walls = []
         game.walls.push(walls, verticalWalls);
 
-        skillIcons['basic'] = new GameObject('icon_basic');
-        skillIcons['heavy'] = new GameObject('icon_heavy');
-        skillIcons['basic'].spawnOne(572, 702);
-        skillIcons['heavy'].spawnOne(636, 702);
+        new GameObject('avatar').spawnOne(66, 700);
+        new GameObject('icon_basic').spawnOne(572, 702);
+        new GameObject('icon_heavy').spawnOne(636, 702);
+        game.add.text(564, 740, 1, Text.styles.basic);
+        game.add.text(628, 740, 2, Text.styles.basic);
 
-        for (let i = 1; i <= Object.keys(skillIcons).length; i++) {
-            game.add.text(500 + 64 * i, 737, i, { font: "16px Press Start 2P", fill: "#fff", align: "center" });
-        };
+        player = new Player("hero", "Jackson Martinez");
+        player.create(64, 64);        
 
-        player = new Player("hero");
-        player.create(64, 64);
-        const avatar = new GameObject("avatar");
-        avatar.spawnOne(66, 700);
-        avatar.scale.setTo(0.5, 0.5)
+        blobbyGroup = new Pool(Blob, "blob", 50);
+        const spawner = new Spawner(blobbyGroup, 2500, 40).launch(600, 5);
 
+        basicWeapon = new Pool(BasicBullet, "bullet", 50);
+        heavyWeapon = new Pool(HeavyBullet, "heavyBullet", 10);
+        game.projectiles.push(basicWeapon, heavyWeapon);
+
+        game.add.text(130, 656, player.name, Text.styles.basic);
+        levelText = game.add.text(130, 676, `Level ${player.level} Soldier`, Text.styles.basic);
+        basicBulletText = game.add.text(560, 653, "", Text.styles.basic);
+        heavyBulletText = game.add.text(620, 653, "", Text.styles.basic);
         Text.level("Wave 1", "#ffffff");
-        game.songs.trackRumble.play();
-
-        blobbyGroup = new Pool(Blob, "blob-ani", 50);
-        spawnEnenmy(blobbyGroup, { x: 600, y: 5, spacing: 2500, quantity: Store.enemiesInWave });
-
-        game.projectiles = [];
-        basicBulletGroup = new Pool(BasicBullet, "bullet", 50);
-        heavyBulletGroup = new Pool(HeavyBullet, "heavyBullet", 10);
-        game.projectiles.push(basicBulletGroup, heavyBulletGroup);
-
-        const basicTextStyle = { font: "12px Press Start 2P", fill: "#fff", align: "center" }
-        game.add.text(130, 650, "Jackson Martinez", { font: "20px Arial", fill: "#888", align: "left" });
-        levelText = game.add.text(130, 680, `Level ${player.level} Soldier`, { font: "18px Arial", fill: "#bbb", align: "left" });
-        barsText.exp = game.add.text(440, 710, "", basicTextStyle);
-        barsText.hp = game.add.text(440, 730, "", basicTextStyle);
-        basicBulletText = game.add.text(560, 653, "", basicTextStyle);
-        heavyBulletText = game.add.text(620, 653, "", basicTextStyle);
     },
 
     update: function() {
-        player.body.velocity.x = 0;
-
-        barsText.exp.text = `${player.experience}/${player.totalExpForLevel}`;
-        barsText.hp.text = `${player.health.toFixed()}/${ player.maxHealth}`;
         basicBulletText.text = player.ammo.BasicBullet;
         heavyBulletText.text = player.ammo.HeavyBullet;
-
         game.physics.arcade.collide(player, game.walls);
         game.physics.arcade.overlap(game.projectiles, blobbyGroup, (bullet, enemy) => enemy.hit(bullet, player));
         game.physics.arcade.overlap(blobbyGroup, player, (player, enemy) => enemy.hitPlayer(player));
@@ -96,14 +58,7 @@ export const Level = {
             player.move("right");
         } else player.move("stop");
         if (game.Key.cursors.up.isDown) player.move("jump");
-        if (game.Key.one.isDown) player.fire(basicBulletGroup);
-        if (game.Key.two.isDown) player.fire(heavyBulletGroup);
+        if (game.Key.one.isDown) player.fire(basicWeapon);
+        if (game.Key.two.isDown) player.fire(heavyWeapon);
     }
-}
-
-function spawnEnenmy(group, data) {
-    Store.currentEnemy++;
-    if (Store.currentEnemy > data.quantity) return;
-    group.create(data.x, data.y);
-    game.time.events.add(data.spacing, () => spawnEnenmy(group, data));
 }

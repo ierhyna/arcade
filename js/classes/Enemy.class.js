@@ -1,5 +1,4 @@
-import game from "../game";
-import Text from "../text.plugin";
+import game, {Text} from "../game";
 
 export default class Enemy extends Phaser.Sprite {
     constructor(sprite) {
