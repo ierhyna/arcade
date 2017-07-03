@@ -36,6 +36,7 @@ export default class Enemy extends Phaser.Sprite {
         Text.combat(this, projectile.damage, event);
         if (this.health <= 0) {
             player.experience += this.exp;
+            Text.combat(this, this.exp + " exp", "info");
             this.die();
         };
     }
@@ -64,7 +65,6 @@ export default class Enemy extends Phaser.Sprite {
     die() {
         this.body.velocity.x = 0;
         this.alive = false;
-        this.play("die", 6, false, true);
-        Text.combat(this, this.exp + " exp", "info");
+        this.play("die", 6, false, true);        
     }
 }
