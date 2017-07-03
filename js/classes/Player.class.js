@@ -1,5 +1,6 @@
 import game from "../game";
 import Text from "../text.plugin";
+import { HealthBar } from "../bar.plugin";
 
 export default class Player extends Phaser.Sprite {
     constructor(sprite) {
@@ -35,7 +36,8 @@ export default class Player extends Phaser.Sprite {
         this.alive = true;
         this.exists = true;
         this.frame = 1;
-        this.game.add.existing(this)
+        this.game.add.existing(this);
+        this.createBars();
     };
 
     update() {
@@ -48,6 +50,8 @@ export default class Player extends Phaser.Sprite {
             this.level++;
             this.experience = 0;
         }
+        this.healthBar.setPercent(this.health / this.maxHealth * 100);
+        this.expBar.setPercent(this.experience / this.totalExpForLevel * 100);
     };
 
     die() {
@@ -107,4 +111,25 @@ export default class Player extends Phaser.Sprite {
             }
         }
     };
+
+    createBars() {
+        this.expBar = new HealthBar(game, {
+            width: 300,
+            height: 12,
+            x: 280,
+            y: 716,
+            bg: { color: '#ccc' },
+            bar: { color: '#f00' },
+            animationDuration: 200
+        });
+        this.healthBar = new HealthBar(game, {
+            width: 300,
+            height: 12,
+            x: 280,
+            y: 738,
+            bg: { color: '#651828' },
+            bar: { color: '#FEFF03' },
+            animationDuration: 100
+        });
+    }
 }

@@ -77,8 +77,7 @@ export const Level = {
         game.projectiles = [];
         basicBulletGroup = new Pool(BasicBullet, "bullet", 50);
         heavyBulletGroup = new Pool(HeavyBullet, "heavyBullet", 10);
-        game.projectiles.push(basicBulletGroup, heavyBulletGroup);
-        prepareBars();
+        game.projectiles.push(basicBulletGroup, heavyBulletGroup);        
         prepareInterFaceText();
     },
 
@@ -111,8 +110,6 @@ function checkControls() {
 }
 
 function renderInterfaceText() {
-    healthBar.setPercent(player.health / player.maxHealth * 100);
-    expBar.setPercent(player.experience / player.totalExpForLevel * 100);
     barsText.exp.text = `${player.experience}/${player.totalExpForLevel}`;
     barsText.hp.text = `${player.health.toFixed()}/${ player.maxHealth}`;
     InfoText.gold.text = `Gold: ${totalGoldForLevel}`;
@@ -128,25 +125,4 @@ function prepareInterFaceText() {
     barsText.hp = game.add.text(440, 730, "", basicTextStyle);
     basicBulletText = game.add.text(560, 653, "", basicTextStyle);
     heavyBulletText = game.add.text(620, 653, "", basicTextStyle);
-}
-
-function prepareBars() {
-    expBar = new HealthBar(game, {
-        width: 300,
-        height: 12,
-        x: 280,
-        y: 716,
-        bg: { color: '#ccc' },
-        bar: { color: '#f00' },
-        animationDuration: 200
-    });
-    healthBar = new HealthBar(game, {
-        width: 300,
-        height: 12,
-        x: 280,
-        y: 738,
-        bg: { color: '#651828' },
-        bar: { color: '#FEFF03' },
-        animationDuration: 100
-    });
 }
