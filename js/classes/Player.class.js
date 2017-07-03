@@ -1,4 +1,5 @@
 import game from "../game";
+import Text from "../text.plugin";
 
 export default class Player extends Phaser.Sprite {
     constructor(sprite) {
@@ -48,6 +49,7 @@ export default class Player extends Phaser.Sprite {
     die() {
         this.body.velocity.x = 0;
         this.alive = false;
+        Text.level("WASTED!", "red");
         this.kill();
     };
 
