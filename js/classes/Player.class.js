@@ -21,6 +21,7 @@ export default class Player extends Phaser.Sprite {
         this.jumpVelocity = -520
         this.timer = {};
         this.totalExpForLevel = 650;
+        this.weaponsCount = {};
     };
 
     create(x, y) {
@@ -42,7 +43,7 @@ export default class Player extends Phaser.Sprite {
             this.totalExpForLevel *= 2;
             this.level++;
             this.experience = 0;
-        }        
+        }
     };
 
     die() {
@@ -63,6 +64,7 @@ export default class Player extends Phaser.Sprite {
             const bullet = weapon.create(this.x, this.y);
             bullet.body.velocity.x = bullet.baseSpeed * this.direction;
             this.timer[weapon] = game.time.now + bullet.spacing;
+            this.weaponsCount[weapon] = weapon.instances--;
         }
     };
 }

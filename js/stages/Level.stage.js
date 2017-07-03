@@ -48,7 +48,7 @@ export const Level = {
         skillIcons['heavy'] = new GameObject('icon_heavy');
         skillIcons['basic'].spawnOne(572, 702);
         skillIcons['heavy'].spawnOne(636, 702);
-        
+
         for (let i = 1; i <= Object.keys(skillIcons).length; i++) {
             game.add.text(500 + 64 * i, 737, i, {
                 font: "16px Press Start 2P",
@@ -140,6 +140,7 @@ function renderInterfaceText() {
     barsText.hp.text = `${player.health.toFixed()}/${ player.maxHealth}`;
     InfoText.gold.text = `Gold: ${totalGoldForLevel}`;
     basicBulletText.text = basicBulletGroup.count();
+    heavyBulletText.text = heavyBulletGroup.count();
 }
 
 function prepareInterFaceText() {
@@ -162,8 +163,9 @@ function prepareInterFaceText() {
     barsText.exp = game.add.text(440, 710, `${player.experience}/${player.totalExpForLevel}`, basicTextStyle);
     barsText.hp = game.add.text(440, 730, `${player.health}/${player.maxHealth}`, basicTextStyle);
 
-    basicBulletText = game.add.text(560, 653, basicBulletGroup.count(), basicTextStyle);
-    heavyBulletText = game.add.text(620, 653, heavyBulletGroup.count(), basicTextStyle);
+    basicBulletText = game.add.text(560, 653, `${player.weaponsCount[basicBulletGroup]}/ ${basicBulletGroup.count()}`, basicTextStyle);
+
+    heavyBulletText = game.add.text(620, 653, `${player.weaponsCount[heavyBulletGroup]}/ ${heavyBulletGroup.count()}`, basicTextStyle);
 }
 
 function prepareBars() {
