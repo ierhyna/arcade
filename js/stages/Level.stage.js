@@ -48,7 +48,7 @@ export const Level = {
         skillIcons['heavy'] = new GameObject('icon_heavy');
         skillIcons['basic'].spawnOne(572, 702);
         skillIcons['heavy'].spawnOne(636, 702);
-
+        
         for (let i = 1; i <= Object.keys(skillIcons).length; i++) {
             game.add.text(500 + 64 * i, 737, i, {
                 font: "16px Press Start 2P",

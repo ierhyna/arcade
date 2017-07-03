@@ -22,4 +22,12 @@ export default class GameObject extends Phaser.Sprite {
         this.y = y;
         this.exists = true;
     }
+
+    enableGravity() {
+        this.body.allowGravity = true;
+    }
+
+    disableGravity() {
+        this.body.allowGravity = false;
+    }
 }
