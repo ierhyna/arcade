@@ -1,8 +1,8 @@
 import game from "../game";
 
 export default class Player extends Phaser.Sprite {
-    constructor(game) {
-        super(game, 0, 0, "hero");
+    constructor(sprite) {
+        super(game, 0, 0, sprite);
         this.game = game;
         this.exists = false;
         this.anchor.setTo(0.5, 0.5);
@@ -18,7 +18,9 @@ export default class Player extends Phaser.Sprite {
         this.name = "Player One";
         this.playerId = 1;
         this.direction = 1;
+        this.jumpVelocity = -520
         this.timer = {};
+        this.totalExpForLevel = 650;
     };
 
     create(x, y) {
@@ -29,7 +31,6 @@ export default class Player extends Phaser.Sprite {
         this.exists = true;
         this.frame = 1;
         this.game.add.existing(this)
-
     };
 
     update() {
@@ -37,13 +38,24 @@ export default class Player extends Phaser.Sprite {
             this.health += 0.1;
             if (this.health > this.maxHealth) this.health = this.maxHealth;
         }
-    }
+        if (this.experience > this.totalExpForLevel) {
+            this.totalExpForLevel *= 2;
+            this.level++;
+            this.experience = 0;
+        }        
+    };
 
     die() {
         this.body.velocity.x = 0;
         this.alive = false;
         this.kill();
-    }
+    };
+
+    jump() {
+        if (this.body.onFloor()) {
+            this.body.velocity.y = this.jumpVelocity;
+        }
+    };
 
     fire(weapon) {
         if (!this.alive) return;
@@ -52,5 +64,5 @@ export default class Player extends Phaser.Sprite {
             bullet.body.velocity.x = bullet.baseSpeed * this.direction;
             this.timer[weapon] = game.time.now + bullet.spacing;
         }
-    }
+    };
 }

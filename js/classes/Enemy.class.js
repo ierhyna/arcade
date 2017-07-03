@@ -2,7 +2,7 @@ import game from "../game";
 import Text from "../text.plugin";
 
 export default class Enemy extends Phaser.Sprite {
-    constructor(game, sprite) {
+    constructor(sprite) {
         super(game, 0, 0, sprite);
         this.game = game;
         this.exists = false;

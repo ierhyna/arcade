@@ -4,20 +4,19 @@ import Item from "./Item.class";
 
 export default class Chest extends Object {
 
-    constructor(game, data = {}) {
-        super(game, "treasure");
+    constructor(sprite, data = {}) {
+        super(sprite);
         this.game = game;
-        this.item = new Item(data);        
+        this.item = new Item(data);
     };
 
     spawn(x, y) {
-        this.classReset(x, y);        
+        this.classReset(x, y);
     };
 
     spawnOne(x, y, goldAmount) {
         this.goldAmount = goldAmount;
-        let sprite = this.game.add.sprite(x, y, this.sprite);
-        sprite.scale.setTo(0.25, 0.25);
-        return sprite;        
+        this.scale.setTo(0.25, 0.25);
+        this.game.add.existing(this);
     }
 }

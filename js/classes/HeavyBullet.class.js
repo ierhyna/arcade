@@ -3,8 +3,8 @@ import Projectile from "./Projectile.class";
 
 export default class HeavyBullet extends Projectile {
 
-    constructor(game, data = {}) {
-        super(game, "heavyBullet");
+    constructor(sprite, data = {}) {
+        super(sprite);
         this.game = game;
         this.baseCrit = 20;
         this.baseDamage = 40;
@@ -12,7 +12,7 @@ export default class HeavyBullet extends Projectile {
         this.critical = false;
         this.criticalMultiplier = 4;
         this.spacing = 550;
-        this.sound = game.add.audio('shotHeavy');
+        this.sound = this.game.add.audio('shotHeavy');
     };
 
     spawn(x, y) {
