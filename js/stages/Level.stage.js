@@ -6,7 +6,6 @@ import { SoundEngine } from "./Preload.stage";
 import { Pool, Blob, BasicBullet, HeavyBullet, Chest, Player } from "../classes";
 
 let player,
-    cursors,
     blobbyGroup,
     basicBulletGroup,
     heavyBulletGroup,
@@ -18,7 +17,6 @@ let player,
     levelText,
     basicBulletText,
     heavyBulletText;
-//playerDirection = 1;
 
 const EVENTS = {
     PLAYER_HIT: "playerHit",
@@ -72,7 +70,7 @@ export const Level = {
             });
         };
 
-        player = new Player(game);
+        player = new Player("hero");
         player.create(64, 64);
 
 
@@ -91,12 +89,12 @@ export const Level = {
             strokeThickness: 4
         });
 
-        blobbyGroup = new Pool(game, Blob, 50, { title: "Blob", description: "Tiny blob" });
+        blobbyGroup = new Pool(Blob, "blob-ani", 50);
         spawnEnenmy(blobbyGroup, { x: 600, y: 5, spacing: 2500, quantity: Store.enemiesInWave });
 
         game.projectiles = [];
-        basicBulletGroup = new Pool(game, BasicBullet, 50);
-        heavyBulletGroup = new Pool(game, HeavyBullet, 10);
+        basicBulletGroup = new Pool(BasicBullet, "bullet", 50);
+        heavyBulletGroup = new Pool(HeavyBullet, "heavyBullet", 10);
         game.projectiles.push(basicBulletGroup, heavyBulletGroup);
 
         prepareBars();

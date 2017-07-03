@@ -3,8 +3,8 @@ import Projectile from "./Projectile.class";
 
 export default class HeavyBullet extends Projectile {
 
-    constructor(game, data = {}) {
-        super(game, "heavyBullet");
+    constructor(sprite, data = {}) {
+        super(game, sprite);
         this.game = game;
         this.baseCrit = 20;
         this.baseDamage = 40;
