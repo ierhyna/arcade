@@ -1,6 +1,6 @@
 import game from "../game";
 export default class Object extends Phaser.Sprite {
-    constructor(game, sprite) {
+    constructor(sprite) {
         super(game, 0, 0, sprite);
         this.game = game;
         this.exists = false;
