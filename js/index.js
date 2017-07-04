@@ -3,10 +3,10 @@ import WebFont from 'webfontloader';
 
 const WebFontConfig = {
     active: function() {
-      Game;
+        Game;
     },
     google: {
-      families: ['Press Start 2P']
+        families: ['Press Start 2P']
     }
 };
 
