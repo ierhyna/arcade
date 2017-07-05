@@ -13,15 +13,16 @@ export default class GameObject extends Phaser.Sprite {
 
     classReset(x, y) {
         this.reset(x, y);
+        this.isCarried = false;
         this.exists = true;
     };
 
     spawnOne(x, y) {
         this.x = x;
         this.y = y;
+        this.isCarried = false;
         this.exists = true;
         this.game.add.existing(this);
-
     }
 
     enableGravity() {

@@ -25,6 +25,8 @@ export default class Enemy extends Phaser.Sprite {
         this.exists = true;
         this.gold = 0;
         this.carrying = false;
+        this.cargo = null;
+        this.cargoSprite = null;
         this.body.bounce.setTo(1, 0);
     };
 
@@ -61,13 +63,16 @@ export default class Enemy extends Phaser.Sprite {
         } else if (this.body.blocked.left) {
             this.scale.x = 1;
             this.body.velocity.x = this.speed;
-        }        
+        }
     };
 
-    pickUp(chest, item) {
+    pickUp(chest, type, sprite) {
         if (this.carrying) return;
         this.carrying = true;
+        this.cargo = type;
+        this.cargoSprite = sprite;
         this.gold += chest.goldToDrop;
+        const item = new type(sprite);
         item.spawnOne(0, -5);
         item.disableGravity();
         this.addChild(item);
@@ -77,7 +82,12 @@ export default class Enemy extends Phaser.Sprite {
     die() {
         this.body.velocity.x = 0;
         this.alive = false;
+        console.log(this.children)
+        const type = this.cargo
+        if (this.carrying) new type(this.cargoSprite).spawnOne(this.x, this.y);
+        this.children = [];
         this.play("die", 6, false, true);
+
     };
 
     attach(item) {
