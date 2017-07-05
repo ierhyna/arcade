@@ -22,6 +22,7 @@ export default class Player extends Phaser.Sprite {
         this.jumpVelocity = -520
         this.timer = {};
         this.totalExpForLevel = 650;
+        this.lives = 3;
         this.ammo = {
             BasicBullet: 500,
             HeavyBullet: 100,
@@ -61,6 +62,10 @@ export default class Player extends Phaser.Sprite {
         this.health = 0;
         this.alive = false;
         Text.level("WASTED!", "red");
+        if (this.lives > 0) {
+          this.lives -= 1;
+          console.log(this.lives);
+        }
         this.kill();
     };
 

@@ -71,7 +71,9 @@ export const Level = {
         if (game.Key.one.isDown) player.fire(basicWeapon);
         if (game.Key.two.isDown) player.fire(heavyWeapon);
 
-        if (!player.alive) this.reset();
+        if (!player.alive && player.lives === 0) {
+            this.reset();
+        }
     },
 
     reset: function() {
