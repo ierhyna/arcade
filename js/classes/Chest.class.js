@@ -33,6 +33,7 @@ export default class Chest extends GameObject {
         this.totalGold -= this.goldToDrop;
       } else {
         this.totalGold = 0;
+        this.kill();
       }
       console.log(this.totalGold);
     }

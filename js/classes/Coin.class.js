@@ -1,4 +1,4 @@
-import game from "../game";
+import game, { Text } from "../game";
 import GameObject from "./Object.class";
 import Item from "./Item.class";
 
@@ -20,11 +20,12 @@ export default class Coin extends GameObject {
         this.game.physics.arcade.collide(this, game.walls)
         this.game.physics.arcade.overlap(this, game.player, () => {
             console.log("ate coin worth of " + this.value);
+            Text.combat(this, `+${this.value} gold`, "info");
             this.kill();
         });
     };
 
-    spawnOne(x, y) {        
+    spawnOne(x, y) {
         this.x = x;
         this.y = y;
         this.value = 0;
