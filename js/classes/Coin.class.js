@@ -15,32 +15,34 @@ export default class Coin extends GameObject {
 
     spawn(x, y) {
         this.classReset(x, y);
-        this.active = true;
+        this.resetEverything();
     };
 
     update() {
+        if (!this.active) return;
         this.game.physics.arcade.collide(this, game.walls)
         this.game.physics.arcade.overlap(this, game.player, () => {
-            if (!this.active) return;
             Text.combat(this, `+${this.value} gold`, "info");
             this.die();
         });
     };
 
     spawnOne(x, y) {
-        this.x = x;
-        this.y = y;
-        this.value = 0;
-        this.scale.setTo(0.25, 0.25);
-        this.exists = true;
-        this.active = true;
-        this.game.add.existing(this);
+        this.classSpawnOne(x, y);
+        this.resetEverything();
     }
 
     die() {
         this.active = false;
         const direction = { y: this.y - 150, alpha: 0 }
         const tween = game.add.tween(this).to(direction, 1000, "Linear", true);
-        tween.onComplete.addOnce(() => this.destroy());
+        tween.onComplete.addOnce(() => this.kill());
+    }
+
+    resetEverything() {
+        this.body.allowGravity = true;
+        this.isCarried = false;
+        this.value = 0;
+        this.scale.setTo(0.25, 0.25);
     }
 }
