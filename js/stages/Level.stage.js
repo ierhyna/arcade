@@ -51,6 +51,7 @@ export const Level = {
         basicBulletText = game.add.text(560, 653, "", Text.styles.basic);
         heavyBulletText = game.add.text(620, 653, "", Text.styles.basic);
         Text.level("Wave 1", "#ffffff");
+        game.player = player;
     },
 
     update: function() {
@@ -60,7 +61,7 @@ export const Level = {
         game.physics.arcade.collide(player, game.walls);
         game.physics.arcade.overlap(game.projectiles, blobbyGroup, (bullet, enemy) => enemy.hit(bullet, player));
         game.physics.arcade.overlap(blobbyGroup, player, (player, enemy) => enemy.hitPlayer(player));
-        game.physics.arcade.overlap(blobbyGroup, chestGroup, (enemy, chest) => enemy.pickUp(chest, new Coin("coin")));
+        game.physics.arcade.overlap(blobbyGroup, chestGroup, (enemy, chest) => enemy.pickUp(chest, Coin, "coin"));
 
         if (game.Key.cursors.left.isDown) {
             player.move("left")
