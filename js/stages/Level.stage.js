@@ -7,7 +7,7 @@ let player,
     coinGroup,
     basicWeapon,
     heavyWeapon,
-    levelText,    
+    levelText,
     basicBulletText,
     heavyBulletText;
 
@@ -69,5 +69,11 @@ export const Level = {
         if (game.Key.cursors.up.isDown) player.move("jump");
         if (game.Key.one.isDown) player.fire(basicWeapon);
         if (game.Key.two.isDown) player.fire(heavyWeapon);
+
+        if (!player.alive) this.reset();
+    },
+
+    reset: function() {
+      game.state.start("Level");
     }
 }
