@@ -62,13 +62,21 @@ export default class Enemy extends Phaser.Sprite {
             this.scale.x = 1;
             this.body.velocity.x = this.speed;
         }
+        //this.childen && this.childen.forEach(c => { c.x = this.x, c.y = this.y });
     };
 
     pickUp(chest, item) {
         if (this.carrying) return;
         this.carrying = true;
-        this.attach(item);
         this.gold += chest.goldToDrop;
+        //const attachable = new item("coin")
+        item.spawnOne(this.x, this.y);
+        item.exists = true;
+        //this.game.add.existing(attachable);
+        //console.log(attachable);
+
+        this.addChild(item);
+        console.log(item)
         console.log("enemy stole gold!");
     };
 
@@ -80,8 +88,8 @@ export default class Enemy extends Phaser.Sprite {
 
     attach(item) {
         const attachable = new item("coin");
-        attachable.spawnOne(100,100);
+        // attachable.spawnOne(this.x, this.y);
         console.log(attachable);
-        //this.addChild(item);
+        this.addChild(attachable.spawnOne(this.x, this.y));
     };
 }
