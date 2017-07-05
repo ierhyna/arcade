@@ -23,9 +23,9 @@ export const Level = {
         map.setCollision([55], true, verticalWalls);
         game.walls.push(walls, verticalWalls);
 
-        new GameObject('avatar').spawnOne(66, 700);
-        new GameObject('icon_basic').spawnOne(572, 702);
-        new GameObject('icon_heavy').spawnOne(636, 702);
+        new GameObject('avatar').classSpawnOne(66, 700);
+        new GameObject('icon_basic').classSpawnOne(572, 702);
+        new GameObject('icon_heavy').classSpawnOne(636, 702);
         game.add.text(564, 740, 1, Text.styles.basic);
         game.add.text(628, 740, 2, Text.styles.basic);
 
