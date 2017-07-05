@@ -34,7 +34,7 @@ export const Level = {
         player.create(64, 64);
 
         blobbyGroup = new Pool(Blob, "blob", 50);
-        const spawner = new Spawner(blobbyGroup, 2500, 40).launch(600, 5);
+        const spawner = new Spawner(blobbyGroup, 2000, 60).launch(600, 5);
 
         basicWeapon = new Pool(BasicBullet, "bullet", 50);
         heavyWeapon = new Pool(HeavyBullet, "heavyBullet", 10);
@@ -51,7 +51,7 @@ export const Level = {
         basicBulletText = game.add.text(560, 653, "", Text.styles.basic);
         heavyBulletText = game.add.text(620, 653, "", Text.styles.basic);
         Text.level("Wave 1", "#ffffff");
-        game.player = player;
+        game.player = player; // exposing player object to global game object
     },
 
     update: function() {
@@ -78,6 +78,6 @@ export const Level = {
     },
 
     reset: function() {
-      game.state.start("Level");
+        game.state.start("Level");
     }
 }
