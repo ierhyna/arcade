@@ -81,6 +81,7 @@ export default class Enemy extends Phaser.Sprite {
           }
 
           chest.updateGoldAmount();
+          Text.combat(this, `-${this.gold} gold`, "hit");
           const item = new type(sprite);
           item.spawnOne(0, -5);
           item.disableGravity();
