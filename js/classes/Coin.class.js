@@ -21,6 +21,7 @@ export default class Coin extends GameObject {
     }
 
     spawnOne(x, y) {
+        console.log(x,y)
         this.x = x;
         this.y = y;
         this.scale.setTo(0.25, 0.25);
