@@ -35,7 +35,7 @@ export default class Enemy extends Phaser.Sprite {
         projectile.kill();
         this.animations.play("blink", 20);
         this.health -= projectile.damage;
-        this.sound.play();
+        this.hitSound.play();
         const event = projectile.critical ? "crit" : "hit";
         Text.combat(this, projectile.damage, event);
         if (this.health <= 0) {
@@ -63,51 +63,45 @@ export default class Enemy extends Phaser.Sprite {
         } else if (this.body.blocked.left) {
             this.scale.x = 1;
             this.body.velocity.x = this.speed;
-        }
+        };
     };
 
     pickUp(chest, type, sprite) {
-        if (this.carrying) return;
+        if (this.carrying || chest.goldAmount <= 0) return;
 
-        if (chest.totalGold !== 0) {
-          this.carrying = true;
-          this.cargo = type;
-          this.cargoSprite = sprite;
+            this.carrying = true;
+            this.cargo = type; //storing droppable Class
+            this.cargoSprite = sprite; //storing droppable sprite
 
-          if (chest.totalGold <= chest.goldToDrop) {
-            this.gold += chest.totalGold;
-          } else {
-            this.gold += chest.goldToDrop;
-          }
+            if (chest.totalGold <= chest.goldToDrop) {
+                this.gold += chest.totalGold;
+            } else {
+                this.gold += chest.goldToDrop;
+            };
 
-          chest.updateGoldAmount();
-          Text.combat(this, `-${this.gold} gold`, "hit");
-          const item = new type(sprite);
-          item.spawnOne(0, -5);
-          item.disableGravity();
-          this.addChild(item);
-          console.log("enemy stole gold!");
-        }
+            chest.updateGoldAmount(); // substracting resourse from the chest
+            Text.combat(this, `-${this.gold} gold`, "hit");
+            
+            // here we create a new droppable object and bind it to the carrier object
+            const droppable = new type(sprite);
+            droppable.spawnOne(0, -5);
+            droppable.disableGravity();
+            this.addChild(droppable);
+            console.log("enemy stole gold!");
     };
 
     die() {
         this.body.velocity.x = 0;
         this.alive = false;        
-        const type = this.cargo;
         if (this.carrying) {
-            const droppable = new type(this.cargoSprite)
-            droppable.spawnOne(this.x, this.y);            
-            droppable.value = this.gold;            
+            // here we clone the droppable object as a new one 
+            //and then we kill carrier and all its children
+            const type = this.cargo;
+            const droppable = new this.cargo(this.cargoSprite);
+            droppable.spawnOne(this.x, this.y);
+            droppable.value = this.gold;
         }
-        this.children = [];
+        this.children = []; // double check we leave no children alive
         this.play("die", 6, false, true);
-
-    };
-
-    attach(item) {
-        const attachable = new item("coin");
-        // attachable.spawnOne(this.x, this.y);
-        console.log(attachable);
-        this.addChild(attachable.spawnOne(this.x, this.y));
     };
 }
