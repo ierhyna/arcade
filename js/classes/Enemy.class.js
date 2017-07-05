@@ -91,10 +91,13 @@ export default class Enemy extends Phaser.Sprite {
 
     die() {
         this.body.velocity.x = 0;
-        this.alive = false;
-        console.log(this.children)
-        const type = this.cargo
-        if (this.carrying) new type(this.cargoSprite).spawnOne(this.x, this.y);
+        this.alive = false;        
+        const type = this.cargo;
+        if (this.carrying) {
+            const droppable = new type(this.cargoSprite)
+            droppable.spawnOne(this.x, this.y);            
+            droppable.value = this.gold;            
+        }
         this.children = [];
         this.play("die", 6, false, true);
 

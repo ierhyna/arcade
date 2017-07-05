@@ -14,6 +14,7 @@ export default class GameObject extends Phaser.Sprite {
     classReset(x, y) {
         this.reset(x, y);
         this.isCarried = false;
+        this.value = 0;
         this.exists = true;
     };
 
