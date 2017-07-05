@@ -2,15 +2,14 @@ import game from "../game";
 import GameObject from "./Object.class";
 import Item from "./Item.class";
 
-export default class Chest extends GameObject {
+export default class Coin extends GameObject {
 
     constructor(sprite, data = {}) {
         super(sprite);
         this.game = game;
         this.item = new Item(data);
         this.game.physics.enable(this);
-        this.body.allowGravity = true;
-        this.goldToDrop = 12;
+        this.body.allowGravity = true;        
     };
 
     spawn(x, y) {
@@ -21,9 +20,9 @@ export default class Chest extends GameObject {
         this.game.physics.arcade.collide(this, game.walls)
     }
 
-    spawnOne(x, y, goldAmount) {
-        this.goldAmount = goldAmount;
+    spawnOne(x, y) {        
         this.scale.setTo(0.25, 0.25);
+        this.exists = true;
         this.game.add.existing(this);
     }
 }
