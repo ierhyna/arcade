@@ -30,4 +30,9 @@ export default class GameObject extends Phaser.Sprite {
     disableGravity() {
         this.body.allowGravity = false;
     }
+
+    attach(object){
+        this.addChild(object);
+    }
+
 }

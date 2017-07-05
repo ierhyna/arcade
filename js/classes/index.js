@@ -8,7 +8,8 @@ import Spawner from "./Spawner.class";
 
 import Blob from "./Blob.class";
 import Chest from "./Chest.class";
+import Coin from "./Coin.class";
 import BasicBullet from "./BasicBullet.class";
 import HeavyBullet from "./HeavyBullet.class";
 
-export { Pool, Item, Enemy, Blob, BasicBullet, GameObject, Chest, HeavyBullet, Player, Spawner };
+export { Pool, Item, Enemy, Blob, BasicBullet, GameObject, Chest, HeavyBullet, Player, Spawner, Coin };

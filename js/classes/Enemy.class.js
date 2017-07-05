@@ -14,7 +14,7 @@ export default class Enemy extends Phaser.Sprite {
         this.alive = false;
         this.exp = 1;
         this.speed = 100;
-        
+
     };
 
     classReset(x, y) {
@@ -64,17 +64,24 @@ export default class Enemy extends Phaser.Sprite {
         }
     };
 
-    pickUp(chest) {
+    pickUp(chest, item) {
         if (this.carrying) return;
         this.carrying = true;
-        this.gold +=chest.goldToDrop;
+        this.attach(item);
+        this.gold += chest.goldToDrop;
         console.log("enemy stole gold!");
-
-    }
+    };
 
     die() {
         this.body.velocity.x = 0;
         this.alive = false;
         this.play("die", 6, false, true);
+    };
+
+    attach(item) {
+        const attachable = new item("coin");
+        attachable.spawnOne(100,100);
+        console.log(attachable);
+        //this.addChild(item);
     };
 }
