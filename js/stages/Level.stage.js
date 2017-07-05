@@ -3,8 +3,7 @@ import { GameObject, Pool, Blob, BasicBullet, HeavyBullet, Player, Spawner, Ches
 
 let player,
     blobbyGroup,
-    chestGroup,
-    coinGroup,
+    chestGroup,    
     basicWeapon,
     heavyWeapon,
     levelText,
@@ -43,8 +42,6 @@ export const Level = {
         chestGroup = new Pool(Chest, "treasure", 10);
         const chest = chestGroup.create(350, 100);
         chest.scale.setTo(0.25, 0.25);
-
-        coinGroup = new Pool(Coin, "coin", 100);
 
         game.add.text(130, 656, player.name, Text.styles.basic);
         levelText = game.add.text(130, 676, `Level ${player.level} Soldier`, Text.styles.basic);
