@@ -17,10 +17,11 @@ export default class GameObject extends Phaser.Sprite {
     };
 
     spawnOne(x, y) {
-        this.game.add.existing(this);
         this.x = x;
         this.y = y;
         this.exists = true;
+        this.game.add.existing(this);
+
     }
 
     enableGravity() {
@@ -31,8 +32,8 @@ export default class GameObject extends Phaser.Sprite {
         this.body.allowGravity = false;
     }
 
-    attach(object){
-        this.addChild(object);
-    }
+    // attach(object){
+    //     this.addChild(object);
+    // }
 
 }
