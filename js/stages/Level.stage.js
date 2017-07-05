@@ -1,12 +1,13 @@
 import game, { Text, HealthBar } from "../game";
-import { GameObject, Pool, Blob, BasicBullet, HeavyBullet, Player, Spawner, Chest } from "../classes";
+import { GameObject, Pool, Blob, BasicBullet, HeavyBullet, Player, Spawner, Chest, Coin } from "../classes";
 
 let player,
     blobbyGroup,
     chestGroup,
+    coinGroup,
     basicWeapon,
     heavyWeapon,
-    levelText,
+    levelText,    
     basicBulletText,
     heavyBulletText;
 
@@ -43,6 +44,8 @@ export const Level = {
         const chest = chestGroup.create(350, 100);
         chest.scale.setTo(0.25, 0.25);
 
+        coinGroup = new Pool(Coin, "coin", 100);
+
         game.add.text(130, 656, player.name, Text.styles.basic);
         levelText = game.add.text(130, 676, `Level ${player.level} Soldier`, Text.styles.basic);
         basicBulletText = game.add.text(560, 653, "", Text.styles.basic);
@@ -56,7 +59,7 @@ export const Level = {
         game.physics.arcade.collide(player, game.walls);
         game.physics.arcade.overlap(game.projectiles, blobbyGroup, (bullet, enemy) => enemy.hit(bullet, player));
         game.physics.arcade.overlap(blobbyGroup, player, (player, enemy) => enemy.hitPlayer(player));
-        game.physics.arcade.overlap(blobbyGroup, chestGroup, (enemy, chest) => enemy.pickUp(chest));
+        game.physics.arcade.overlap(blobbyGroup, chestGroup, (enemy, chest) => enemy.pickUp(chest, Coin));
 
         if (game.Key.cursors.left.isDown) {
             player.move("left")
