@@ -56,6 +56,7 @@ export const Level = {
     update: function() {
         basicBulletText.text = player.ammo.BasicBullet;
         heavyBulletText.text = player.ammo.HeavyBullet;
+        levelText.text = `Level ${player.level} Soldier`;
         game.physics.arcade.collide(player, game.walls);
         game.physics.arcade.overlap(game.projectiles, blobbyGroup, (bullet, enemy) => enemy.hit(bullet, player));
         game.physics.arcade.overlap(blobbyGroup, player, (player, enemy) => enemy.hitPlayer(player));
