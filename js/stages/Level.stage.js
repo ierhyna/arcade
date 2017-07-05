@@ -7,7 +7,7 @@ let player,
     coinGroup,
     basicWeapon,
     heavyWeapon,
-    levelText,    
+    levelText,
     basicBulletText,
     heavyBulletText;
 
@@ -57,6 +57,7 @@ export const Level = {
     update: function() {
         basicBulletText.text = player.ammo.BasicBullet;
         heavyBulletText.text = player.ammo.HeavyBullet;
+        levelText.text = `Level ${player.level} Soldier`;
         game.physics.arcade.collide(player, game.walls);
         game.physics.arcade.overlap(game.projectiles, blobbyGroup, (bullet, enemy) => enemy.hit(bullet, player));
         game.physics.arcade.overlap(blobbyGroup, player, (player, enemy) => enemy.hitPlayer(player));
@@ -70,5 +71,13 @@ export const Level = {
         if (game.Key.cursors.up.isDown) player.move("jump");
         if (game.Key.one.isDown) player.fire(basicWeapon);
         if (game.Key.two.isDown) player.fire(heavyWeapon);
+
+        if (!player.alive) {
+            this.reset();
+        }
+    },
+
+    reset: function() {
+      game.state.start("Level");
     }
 }

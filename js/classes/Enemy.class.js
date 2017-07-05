@@ -68,15 +68,25 @@ export default class Enemy extends Phaser.Sprite {
 
     pickUp(chest, type, sprite) {
         if (this.carrying) return;
-        this.carrying = true;
-        this.cargo = type;
-        this.cargoSprite = sprite;
-        this.gold += chest.goldToDrop;
-        const item = new type(sprite);
-        item.spawnOne(0, -5);
-        item.disableGravity();
-        this.addChild(item);
-        console.log("enemy stole gold!");
+
+        if (chest.totalGold !== 0) {
+          this.carrying = true;
+          this.cargo = type;
+          this.cargoSprite = sprite;
+
+          if (chest.totalGold <= chest.goldToDrop) {
+            this.gold += chest.totalGold;
+          } else {
+            this.gold += chest.goldToDrop;
+          }
+
+          chest.updateGoldAmount();
+          const item = new type(sprite);
+          item.spawnOne(0, -5);
+          item.disableGravity();
+          this.addChild(item);
+          console.log("enemy stole gold!");
+        }
     };
 
     die() {
