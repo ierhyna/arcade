@@ -18,14 +18,18 @@ export default class Coin extends GameObject {
 
     update() {
         this.game.physics.arcade.collide(this, game.walls)
+        this.game.physics.arcade.overlap(this, game.player, () => {
+            console.log("ate coin");
+            this.kill();
+        })
     }
 
     spawnOne(x, y) {
-        console.log(x,y)
+        console.log(x, y)
         this.x = x;
         this.y = y;
         this.scale.setTo(0.25, 0.25);
         this.exists = true;
-        this.game.add.existing(this);        
+        this.game.add.existing(this);
     }
 }
