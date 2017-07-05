@@ -14,8 +14,7 @@ export default class Blob extends Enemy {
         this.animations.add("blink", [7, 0], 10);
         this.scale.setTo(1, 2);
         this.maxHealth = 125;
-        this.damageOnContact = 125;
-        this.carrying = false;
+        this.damageOnContact = 125;        
         this.exp = 75;
         this.speed = 120;
     };

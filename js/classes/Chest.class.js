@@ -8,11 +8,18 @@ export default class Chest extends GameObject {
         super(sprite);
         this.game = game;
         this.item = new Item(data);
+        this.game.physics.enable(this);
+        this.body.allowGravity = true;
+        this.goldToDrop = 12;
     };
 
     spawn(x, y) {
         this.classReset(x, y);
     };
+
+    update() {
+        this.game.physics.arcade.collide(this, game.walls)
+    }
 
     spawnOne(x, y, goldAmount) {
         this.goldAmount = goldAmount;
