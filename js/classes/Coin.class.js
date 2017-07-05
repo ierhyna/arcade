@@ -9,7 +9,7 @@ export default class Coin extends GameObject {
         this.game = game;
         this.item = new Item(data);
         this.game.physics.enable(this);
-        this.body.allowGravity = true;        
+        this.body.allowGravity = true;
     };
 
     spawn(x, y) {
@@ -20,9 +20,11 @@ export default class Coin extends GameObject {
         this.game.physics.arcade.collide(this, game.walls)
     }
 
-    spawnOne(x, y) {        
+    spawnOne(x, y) {
+        this.x = x;
+        this.y = y;
         this.scale.setTo(0.25, 0.25);
         this.exists = true;
-        this.game.add.existing(this);
+        this.game.add.existing(this);        
     }
 }
