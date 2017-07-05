@@ -61,17 +61,27 @@ export default class Enemy extends Phaser.Sprite {
         } else if (this.body.blocked.left) {
             this.scale.x = 1;
             this.body.velocity.x = this.speed;
-        }        
+        }
     };
 
     pickUp(chest, item) {
         if (this.carrying) return;
-        this.carrying = true;
-        this.gold += chest.goldToDrop;
-        item.spawnOne(0, -5);
-        item.disableGravity();
-        this.addChild(item);
-        console.log("enemy stole gold!");
+
+        if (chest.totalGold !== 0) {
+          this.carrying = true;
+
+          if (chest.totalGold <= chest.goldToDrop) {
+            this.gold += chest.totalGold;
+          } else {
+            this.gold += chest.goldToDrop;
+          }
+
+          chest.updateGoldAmount();
+          item.spawnOne(0, -5);
+          item.disableGravity();
+          this.addChild(item);
+          console.log("enemy stole gold!");
+        }
     };
 
     die() {
