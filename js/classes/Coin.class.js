@@ -10,6 +10,7 @@ export default class Coin extends GameObject {
         this.item = new Item(data);
         this.game.physics.enable(this);
         this.body.allowGravity = true;
+        this.animations.add("spin", [0, 1, 2, 3, 4, 3, 2, 1], 10, true);
         this.active = true;
     };
 
@@ -43,6 +44,6 @@ export default class Coin extends GameObject {
         this.body.allowGravity = true;
         this.isCarried = false;
         this.value = 0;
-        this.scale.setTo(0.25, 0.25);
+        this.dropped = false;
     }
 }

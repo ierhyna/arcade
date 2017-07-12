@@ -13,15 +13,14 @@ let player,
 export const Level = {
     create: function() {
         const map = game.add.tilemap('level1');
-        map.addTilesetImage('tilea2', 'tileset');
-        const background = game.add.sprite(0, 0, 'background001');
-        background.width = game.width;
-        background.height = 640;
-        let walls = map.createLayer('walls')
-        let verticalWalls = map.createLayer('vertical')
-        map.setCollision([49, 63, 109], true, walls);
-        map.setCollision([55], true, verticalWalls);
-        game.walls.push(walls, verticalWalls);
+        map.addTilesetImage('wallmap', 'tileset');
+        //const background = game.add.sprite(0, 0, 'background001');
+        //background.width = game.width;
+        //background.height = 640;
+        game.stage.backgroundColor = "#222"
+        let walls = map.createLayer('walls')        
+        map.setCollision([193, 194, 195], true, walls);        
+        game.walls.push(walls);
 
         new GameObject('avatar').classSpawnOne(66, 700);
         new GameObject('icon_basic').classSpawnOne(572, 702);
@@ -40,8 +39,8 @@ export const Level = {
         game.projectiles.push(basicWeapon, heavyWeapon);
 
         chestGroup = new Pool(Chest, "treasure", 10);
-        const chest = chestGroup.create(350, 100);
-        chest.scale.setTo(0.25, 0.25);
+        const chest = chestGroup.create(350, 200);
+        
 
         game.add.text(130, 656, player.name, Text.styles.basic);
         levelText = game.add.text(130, 676, `Level ${player.level} Soldier`, Text.styles.basic);
@@ -58,7 +57,7 @@ export const Level = {
         game.physics.arcade.collide(player, game.walls);
         game.physics.arcade.overlap(game.projectiles, blobbyGroup, (bullet, enemy) => enemy.hit(bullet, player));
         game.physics.arcade.overlap(blobbyGroup, player, (player, enemy) => enemy.hitPlayer(player));
-        game.physics.arcade.overlap(blobbyGroup, chestGroup, (enemy, chest) => enemy.pickUp(chest, Coin, "coin"));
+        game.physics.arcade.overlap(blobbyGroup, chestGroup, (enemy, chest) => enemy.pickUp(chest, Coin, "coin-ani"));
 
         if (game.Key.cursors.left.isDown) {
             player.move("left")
