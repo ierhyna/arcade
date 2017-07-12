@@ -17,6 +17,7 @@ export const Level = {
         //const background = game.add.sprite(0, 0, 'background001');
         //background.width = game.width;
         //background.height = 640;
+        game.stage.backgroundColor = "#222"
         let walls = map.createLayer('walls')        
         map.setCollision([193, 194, 195], true, walls);        
         game.walls.push(walls);

@@ -8,7 +8,7 @@ export const Preload = {
         game.load.image('treasure', 'sprites/chest.png');
         game.load.image('coin', 'sprites/coin.png');
         game.load.image('bullet', 'sprites/bullet.png');
-        game.load.image('heavyBullet', 'sprites/heavyBullet.png');
+        game.load.image('heavyBullet', 'sprites/bullet-heavy.png');
         game.load.image('background001', 'sprites/bg001.png');
         game.load.image('avatar', 'sprites/avatar.png');
         game.load.image('buff_havoc', 'sprites/buffs/buff.havoc.png');
