@@ -84,7 +84,7 @@ export default class Enemy extends Phaser.Sprite {
             
             // here we create a new droppable object and bind it to the carrier object
             const droppable = new type(sprite);
-            droppable.spawnOne(0, -5);
+            droppable.spawnOne(0, -16);
             droppable.disableGravity();
             this.addChild(droppable);
             console.log("enemy stole gold!");
@@ -100,6 +100,7 @@ export default class Enemy extends Phaser.Sprite {
             const droppable = new this.cargo(this.cargoSprite);
             droppable.spawnOne(this.x, this.y);
             droppable.value = this.gold;
+            droppable.play("spin")
         }
         this.children = []; // double check we leave no children alive
         this.play("die", 6, false, true);

@@ -16,7 +16,8 @@ export const Preload = {
         game.load.image('icon_basic', 'sprites/icons/icon-001.png');
         game.load.image('icon_heavy', 'sprites/icons/icon-002.png');
         game.load.spritesheet('hero', 'sprites/hero.png', 110, 160);
-        game.load.spritesheet('blob', 'sprites/mob-ani01.png', 32, 32);
+        game.load.spritesheet('blob', 'sprites/blob-ani.png', 32, 32);
+        game.load.spritesheet('coin-ani', 'sprites/coin-ani.png', 32, 32);
         game.load.audio('mobHit', 'sounds/mob_hit.wav');
         game.load.audio('gunShot', 'sounds/gun_shot.mp3');
         game.load.audio('shotHeavy', 'sounds/shotHeavy.mp3');
