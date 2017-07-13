@@ -10,7 +10,7 @@ export default class Coin extends GameObject {
         this.item = new Item(data);
         this.game.physics.enable(this);
         this.body.allowGravity = true;
-        this.animations.add("spin", [0, 1, 2, 3, 4, 3, 2, 1], 10, true);
+        this.animations.add("spin", [0, 1, 2, 3, 4, 3, 2, 1], 6, true);
         this.sound = game.add.audio("coinPickUp");
         this.active = true;
     };
