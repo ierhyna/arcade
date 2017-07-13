@@ -25,7 +25,7 @@ export default class Player extends Phaser.Sprite {
         this.timer = {};
         this.totalExpForLevel = 650;
         this.stats = {
-            enemyCounter:0
+            enemyCounter: 0
         };
         this.ammo = {
             BasicBullet: 500,
@@ -146,9 +146,17 @@ export default class Player extends Phaser.Sprite {
     }
 
     checkAchievements() {
-        if (this.stats.enemyCounter === 10 && !this.stats.enemyCounterEarned) {
+        if (this.stats.enemyCounter === 5 && !this.stats.enemyCounter5Earned) {
+            this.achievementTracker.show("Kill 5 enemies!");
+            this.stats.enemyCounter5Earned = true;
+        }
+        if (this.stats.enemyCounter === 10 && !this.stats.enemyCounter10Earned) {
             this.achievementTracker.show("Kill 10 enemies!");
-            this.stats.enemyCounterEarned = true;
+            this.stats.enemyCounter10Earned = true;
+        }
+        if (this.stats.enemyCounter === 25 && !this.stats.enemyCounter25Earned) {
+            this.achievementTracker.show("Kill 25 enemies!");
+            this.stats.enemyCounter25Earned = true;
         }
     }
 }
