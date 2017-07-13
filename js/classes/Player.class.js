@@ -100,6 +100,7 @@ export default class Player extends Phaser.Sprite {
 
             case "jump":
                 if (this.body.onFloor()) this.body.velocity.y = this.jumpVelocity;
+                this.frame = 2;
                 break;
 
             case "stop":
