@@ -23,7 +23,7 @@ export default class Achievement extends Phaser.Sprite {
         const text = this.addChild(this.game.add.text(0, 8, message, Text.styles.basic));
         title.anchor.setTo(0.5, 0.5);
         text.anchor.setTo(0.5, 0.5);
-        const tween = game.add.tween(this).to({ y: this.y - 50, alpha: 0 }, 3500, "Linear", true);
+        const tween = game.add.tween(this).to({ y: this.y - 50, alpha: 0.5 }, 3500, "Linear", true);
         tween.onComplete.addOnce(() => {
             this.children = [];
             this.kill();
