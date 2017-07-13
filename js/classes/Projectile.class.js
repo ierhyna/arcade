@@ -16,7 +16,7 @@ export default class Projectile extends Phaser.Sprite {
         this.exists = true;
         this.critical = this.game.rnd.integerInRange(0, 100) <= this.baseCrit;        
         this.damage = this.calculateDamage();
-        this.sound.volume = 0.25;
+        this.sound.volume = 0.1;
         this.sound.play();
     };
 

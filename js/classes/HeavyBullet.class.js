@@ -12,10 +12,10 @@ export default class HeavyBullet extends Projectile {
         this.critical = false;
         this.criticalMultiplier = 4;
         this.spacing = 550;
-        this.sound = this.game.add.audio('shotHeavy');
+        this.sound = this.game.add.audio('shotHeavy');        
     };
 
     spawn(x, y) {
-        this.classReset(x, y);
+        this.classReset(x, y);        
     };
 }

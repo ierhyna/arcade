@@ -14,7 +14,6 @@ export default class Enemy extends Phaser.Sprite {
         this.alive = false;
         this.exp = 1;
         this.speed = 100;
-
     };
 
     classReset(x, y) {
@@ -27,7 +26,7 @@ export default class Enemy extends Phaser.Sprite {
         this.carrying = false;
         this.cargo = null;
         this.cargoSprite = null;
-        this.body.bounce.setTo(1, 0);
+        this.body.bounce.setTo(1, 0);        
     };
 
     hit(projectile, player) {
@@ -47,11 +46,12 @@ export default class Enemy extends Phaser.Sprite {
 
     hitPlayer(player) {
         if (!this.alive) return;
-        player.health -= this.damageOnContact;
+        player.health -= this.damageOnContact;        
         Text.combat(player, -this.damageOnContact, "playerHit");
         if (player.health <= 0) {
             player.die();
         }
+        this.hitPlayerSound.play();
         this.die();
     };
 
@@ -84,14 +84,14 @@ export default class Enemy extends Phaser.Sprite {
             
             // here we create a new droppable object and bind it to the carrier object
             const droppable = new type(sprite);
-            droppable.spawnOne(0, -5);
+            droppable.spawnOne(0, -16);
             droppable.disableGravity();
-            this.addChild(droppable);
-            console.log("enemy stole gold!");
+            this.addChild(droppable);            
     };
 
     die() {
         this.body.velocity.x = 0;
+        //this.hitPlayer.play();        
         this.alive = false;        
         if (this.carrying) {
             // here we clone the droppable object as a new one 
@@ -100,6 +100,7 @@ export default class Enemy extends Phaser.Sprite {
             const droppable = new this.cargo(this.cargoSprite);
             droppable.spawnOne(this.x, this.y);
             droppable.value = this.gold;
+            droppable.play("spin")
         }
         this.children = []; // double check we leave no children alive
         this.play("die", 6, false, true);

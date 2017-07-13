@@ -10,27 +10,42 @@ export default class Coin extends GameObject {
         this.item = new Item(data);
         this.game.physics.enable(this);
         this.body.allowGravity = true;
+        this.animations.add("spin", [0, 1, 2, 3, 4, 3, 2, 1], 10, true);
+        this.sound = game.add.audio("coinPickUp");
+        this.active = true;
     };
 
     spawn(x, y) {
         this.classReset(x, y);
+        this.resetEverything();
     };
 
     update() {
+        if (!this.active) return;
         this.game.physics.arcade.collide(this, game.walls)
         this.game.physics.arcade.overlap(this, game.player, () => {
-            console.log("ate coin worth of " + this.value);
+            this.sound.play();
             Text.combat(this, `+${this.value} gold`, "info");
-            this.kill();
+            this.die();
         });
     };
 
     spawnOne(x, y) {
-        this.x = x;
-        this.y = y;
+        this.classSpawnOne(x, y);
+        this.resetEverything();
+    }
+
+    die() {
+        this.active = false;
+        const direction = { y: this.y - 150, alpha: 0 }
+        const tween = game.add.tween(this).to(direction, 1000, "Linear", true);
+        tween.onComplete.addOnce(() => this.kill());
+    }
+
+    resetEverything() {
+        this.body.allowGravity = true;
+        this.isCarried = false;
         this.value = 0;
-        this.scale.setTo(0.25, 0.25);
-        this.exists = true;
-        this.game.add.existing(this);
+        this.dropped = false;
     }
 }

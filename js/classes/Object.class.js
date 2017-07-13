@@ -12,30 +12,24 @@ export default class GameObject extends Phaser.Sprite {
     };
 
     classReset(x, y) {
-        this.reset(x, y);
-        this.isCarried = false;
-        this.value = 0;
+        this.reset(x, y);        
         this.exists = true;
+        this.active = true;
     };
 
-    spawnOne(x, y) {
+    classSpawnOne(x, y) {
         this.x = x;
-        this.y = y;
-        this.isCarried = false;
+        this.y = y;        
         this.exists = true;
+        this.active = true;
         this.game.add.existing(this);
-    }
+    };
 
     enableGravity() {
         this.body.allowGravity = true;
-    }
+    };
 
     disableGravity() {
         this.body.allowGravity = false;
-    }
-
-    // attach(object){
-    //     this.addChild(object);
-    // }
-
+    };
 }
