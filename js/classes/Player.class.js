@@ -1,9 +1,11 @@
 import game, { Text, HealthBar } from "../game";
+import Achievement from "./Achievement.class";
 
 export default class Player extends Phaser.Sprite {
     constructor(sprite, name) {
         super(game, 0, 0, sprite);
         this.game = game;
+        this.achievementTracker = new Achievement();
         this.exists = false;
         this.anchor.setTo(0.5, 0.5);
         this.game.physics.enable(this);
@@ -22,6 +24,9 @@ export default class Player extends Phaser.Sprite {
         this.jumpVelocity = -520
         this.timer = {};
         this.totalExpForLevel = 650;
+        this.stats = {
+            enemyCounter:0
+        };
         this.ammo = {
             BasicBullet: 500,
             HeavyBullet: 100,
@@ -54,6 +59,8 @@ export default class Player extends Phaser.Sprite {
         this.expBar.setPercent(this.experience / this.totalExpForLevel * 100);
         this.barsExp.text = `${this.experience}/${this.totalExpForLevel}`;
         this.barsHp.text = `${this.health.toFixed()}/${ this.maxHealth}`;
+
+        this.checkAchievements();
     };
 
     die() {
@@ -136,5 +143,12 @@ export default class Player extends Phaser.Sprite {
         });
         this.barsExp = this.game.add.text(440, 710, "", Text.styles.basic);
         this.barsHp = this.game.add.text(440, 730, "", Text.styles.basic);
+    }
+
+    checkAchievements() {
+        if (this.stats.enemyCounter === 10 && !this.stats.enemyCounterEarned) {
+            this.achievementTracker.show("Kill 10 enemies!");
+            this.stats.enemyCounterEarned = true;
+        }
     }
 }
