@@ -164,19 +164,17 @@ export default class Player extends Phaser.Sprite {
             this.achievementTracker.show("Your first level up!");
             this.stats.earnLevel2 = true;
         }
-
         if (this.stats.critCounter === 25 && !this.stats.crit25Earned) {
             this.achievementTracker.show("Score 25 crits!");
             this.stats.crit25Earned = true;
         }
-
         if (this.stats.goldRecoverCounter >= 50 && !this.stats.goldRecovered50) {
             this.achievementTracker.show("Recover 50 gold!");
             this.stats.goldRecovered50 = true;
         }
-        if (this.y < 0 && !this.stats.jumpAbove) {
+        if (this.y < 0 && !this.stats.jumpedAbove) {
             this.achievementTracker.show("Reach for the stars!");
-            this.stats.jumpAbove = true;
+            this.stats.jumpedAbove = true;
         }
     }
 }
