@@ -158,5 +158,9 @@ export default class Player extends Phaser.Sprite {
             this.achievementTracker.show("Kill 25 enemies!");
             this.stats.enemyCounter25Earned = true;
         }
+        if (this.level ===2 && !this.stats.earnLevel2) {
+                  this.achievementTracker.show("Your first level up!");
+            this.stats.earnLevel2 = true;
+        }
     }
 }
