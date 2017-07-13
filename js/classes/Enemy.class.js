@@ -40,6 +40,7 @@ export default class Enemy extends Phaser.Sprite {
         if (this.health <= 0) {
             player.experience += this.exp;
             Text.combat(this, this.exp + " exp", "info");
+            player.stats.enemyCounter++;            
             this.die();
         };
     };
@@ -51,7 +52,7 @@ export default class Enemy extends Phaser.Sprite {
         if (player.health <= 0) {
             player.die();
         }
-        this.hitPlayerSound.play();
+        this.hitPlayerSound.play();        
         this.die();
     };
 

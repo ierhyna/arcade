@@ -11,6 +11,7 @@ export const Preload = {
         game.load.image('heavyBullet', 'sprites/bullet-heavy.png');
         game.load.image('background001', 'sprites/bg001.png');
         game.load.image('avatar', 'sprites/avatar.png');
+        game.load.image('achiBg', 'sprites/achi_bg.png');
         game.load.image('buff_havoc', 'sprites/buffs/buff.havoc.png');
         game.load.image('buff_enrage', 'sprites/buffs/buff.enrage.png');
         game.load.image('icon_basic', 'sprites/icons/icon-001.png');
