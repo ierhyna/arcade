@@ -86,8 +86,7 @@ export default class Enemy extends Phaser.Sprite {
             const droppable = new type(sprite);
             droppable.spawnOne(0, -16);
             droppable.disableGravity();
-            this.addChild(droppable);
-            console.log("enemy stole gold!");
+            this.addChild(droppable);            
     };
 
     die() {
