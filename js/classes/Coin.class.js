@@ -26,6 +26,7 @@ export default class Coin extends GameObject {
         this.game.physics.arcade.overlap(this, game.player, () => {
             this.sound.play();
             Text.combat(this, `+${this.value} gold`, "info");
+            game.player.stats.goldRecoverCounter += this.value;
             this.die();
         });
     };
