@@ -12,10 +12,10 @@ export default class BasicBullet extends Projectile {
         this.critical = false;
         this.criticalMultiplier = 3;
         this.spacing = 100;
-        this.sound = this.game.add.audio('gunShot');
+        this.sound = this.game.add.audio('gunShot');        
     };
 
     spawn(x, y) {
-        this.classReset(x, y);
+        this.classReset(x, y);        
     };
 }

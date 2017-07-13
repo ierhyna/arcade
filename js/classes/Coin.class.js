@@ -11,6 +11,7 @@ export default class Coin extends GameObject {
         this.game.physics.enable(this);
         this.body.allowGravity = true;
         this.animations.add("spin", [0, 1, 2, 3, 4, 3, 2, 1], 10, true);
+        this.sound = game.add.audio("coinPickUp");
         this.active = true;
     };
 
@@ -23,6 +24,7 @@ export default class Coin extends GameObject {
         if (!this.active) return;
         this.game.physics.arcade.collide(this, game.walls)
         this.game.physics.arcade.overlap(this, game.player, () => {
+            this.sound.play();
             Text.combat(this, `+${this.value} gold`, "info");
             this.die();
         });
