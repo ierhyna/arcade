@@ -14,9 +14,6 @@ export const Level = {
     create: function() {
         const map = game.add.tilemap('level1');
         map.addTilesetImage('wallmap', 'tileset');
-        //const background = game.add.sprite(0, 0, 'background001');
-        //background.width = game.width;
-        //background.height = 640;
         game.stage.backgroundColor = "#222"
         let walls = map.createLayer('walls')        
         map.setCollision([193, 194, 195], true, walls);        
@@ -41,7 +38,6 @@ export const Level = {
         chestGroup = new Pool(Chest, "treasure", 10);
         const chest = chestGroup.create(350, 200);
         
-
         game.add.text(130, 656, player.name, Text.styles.basic);
         levelText = game.add.text(130, 676, `Level ${player.level} Soldier`, Text.styles.basic);
         basicBulletText = game.add.text(560, 653, "", Text.styles.basic);
