@@ -36,6 +36,7 @@ export const Preload = {
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.arcade.gravity.y = 1000;
         game.songs.music_01.play();
+        game.songs.music_01.loopFull();
         game.projectiles = [];
         game.walls = [];
         game.state.start("Level");

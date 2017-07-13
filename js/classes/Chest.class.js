@@ -8,7 +8,7 @@ export default class Chest extends GameObject {
         super(sprite);
         this.game = game;
         this.item = new Item(data);
-        this.game.physics.enable(this);        
+        this.game.physics.enable(this);
     };
 
     spawn(x, y) {
@@ -30,9 +30,10 @@ export default class Chest extends GameObject {
             this.totalGold -= this.goldToDrop;
         } else {
             this.totalGold = 0;
-            this.kill();
-        }
-        console.log(this.totalGold);
+            const direction = { y: this.y - 150, alpha: 0 }
+            const tween = game.add.tween(this).to(direction, 1000, "Linear", true);
+            tween.onComplete.addOnce(() => this.kill());
+        }        
     };
 
     resetEverything() {
