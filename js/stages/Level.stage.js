@@ -16,7 +16,7 @@ export const Level = {
         map.addTilesetImage('wallmap', 'tileset');
         game.stage.backgroundColor = "#222"
         let walls = map.createLayer('walls')
-        map.setCollision([193, 194, 195], true, walls);
+        map.setCollision([1, 2], true, walls);
         game.walls.push(walls);
 
         new GameObject('avatar').classSpawnOne(66, 700);
