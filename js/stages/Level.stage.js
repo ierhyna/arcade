@@ -1,9 +1,9 @@
 import game, { Text, HealthBar } from "../game";
-import { GameObject, Pool, Blob, BasicBullet, HeavyBullet, Player, Spawner, Chest, Coin } from "../classes";
+import { GameObject, Pool, Blob, BasicBullet, HeavyBullet, Player, Spawner, Chest, Coin, Achievement } from "../classes";
 
 let player,
     blobbyGroup,
-    chestGroup,    
+    chestGroup,
     basicWeapon,
     heavyWeapon,
     levelText,
@@ -15,8 +15,8 @@ export const Level = {
         const map = game.add.tilemap('level1');
         map.addTilesetImage('wallmap', 'tileset');
         game.stage.backgroundColor = "#222"
-        let walls = map.createLayer('walls')        
-        map.setCollision([193, 194, 195], true, walls);        
+        let walls = map.createLayer('walls')
+        map.setCollision([193, 194, 195], true, walls);
         game.walls.push(walls);
 
         new GameObject('avatar').classSpawnOne(66, 700);
@@ -37,7 +37,7 @@ export const Level = {
 
         chestGroup = new Pool(Chest, "treasure", 10);
         const chest = chestGroup.create(350, 200);
-        
+
         game.add.text(130, 656, player.name, Text.styles.basic);
         levelText = game.add.text(130, 676, `Level ${player.level} Soldier`, Text.styles.basic);
         basicBulletText = game.add.text(560, 653, "", Text.styles.basic);
