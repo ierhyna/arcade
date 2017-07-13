@@ -16,7 +16,7 @@ export const Preload = {
         game.load.image('buff_enrage', 'sprites/buffs/buff.enrage.png');
         game.load.image('icon_basic', 'sprites/icons/icon-001.png');
         game.load.image('icon_heavy', 'sprites/icons/icon-002.png');
-        game.load.spritesheet('hero', 'sprites/hero.png', 110, 160);
+        game.load.spritesheet('hero', 'sprites/hero.png', 40, 48);
         game.load.spritesheet('blob', 'sprites/blob-ani.png', 32, 32);
         game.load.spritesheet('coin-ani', 'sprites/coin-ani.png', 32, 32);
         game.load.audio('coinPickUp', 'sounds/coinPickUp.wav');

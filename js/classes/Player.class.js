@@ -11,8 +11,7 @@ export default class Player extends Phaser.Sprite {
         this.game.physics.enable(this);
         this.body.allowGravity = true;
         this.body.immovable = false;
-        this.animations.add('move', [0, 1, 2, 3], 10, true);
-        this.scale.setTo(0.2, 0.2);
+        this.animations.add('move', [1, 2], 10, true);
         this.maxHealth = 500;
         this.speed = 100;
         this.level = 1;
@@ -78,24 +77,24 @@ export default class Player extends Phaser.Sprite {
             case "left":
                 this.direction = -1;
                 this.body.velocity.x = -220;
-                this.scale.x = this.direction * 0.2;
+                this.scale.x = this.direction;
                 if (this.body.onFloor()) {
                     this.animations.play('move');
                 } else {
                     this.animations.stop();
-                    this.frame = 2;
+                    this.frame = 0;
                 }
                 break;
 
             case "right":
                 this.direction = 1;
-                this.scale.x = this.direction * 0.2;
+                this.scale.x = this.direction;
                 this.body.velocity.x = 220;
                 if (this.body.onFloor()) {
                     this.animations.play('move');
                 } else {
                     this.animations.stop();
-                    this.frame = 2;
+                    this.frame = 0;
                 }
                 break;
 
@@ -106,7 +105,7 @@ export default class Player extends Phaser.Sprite {
             case "stop":
                 this.body.velocity.x = 0;
                 this.animations.stop();
-                this.frame = 1;
+                this.frame = 0;
                 break;
         }
     };
