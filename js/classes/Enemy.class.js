@@ -27,7 +27,7 @@ export default class Enemy extends Phaser.Sprite {
         this.carrying = false;
         this.cargo = null;
         this.cargoSprite = null;
-        this.body.bounce.setTo(1, 0);
+        this.body.bounce.setTo(1, 0);        
     };
 
     hit(projectile, player) {
