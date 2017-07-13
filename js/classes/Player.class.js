@@ -25,7 +25,9 @@ export default class Player extends Phaser.Sprite {
         this.timer = {};
         this.totalExpForLevel = 650;
         this.stats = {
-            enemyCounter: 0
+            enemyCounter: 0,
+            critCounter: 0,
+            goldRecoverCounter: 0
         };
         this.ammo = {
             BasicBullet: 500,
@@ -158,9 +160,19 @@ export default class Player extends Phaser.Sprite {
             this.achievementTracker.show("Kill 25 enemies!");
             this.stats.enemyCounter25Earned = true;
         }
-        if (this.level ===2 && !this.stats.earnLevel2) {
-                  this.achievementTracker.show("Your first level up!");
+        if (this.level === 2 && !this.stats.earnLevel2) {
+            this.achievementTracker.show("Your first level up!");
             this.stats.earnLevel2 = true;
+        }
+
+        if (this.stats.critCounter === 25 && !this.stats.crit25Earned) {
+            this.achievementTracker.show("Score 25 crits!");
+            this.stats.crit25Earned = true;
+        }
+
+        if (this.stats.goldRecoverCounter >= 50 && !this.stats.goldRecovered50) {
+            this.achievementTracker.show("Recover 50 gold!");
+            this.stats.goldRecovered50 = true;
         }
     }
 }
