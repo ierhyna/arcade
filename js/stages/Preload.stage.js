@@ -20,6 +20,7 @@ export const Preload = {
         game.load.spritesheet('coin-ani', 'sprites/coin-ani.png', 32, 32);
         game.load.audio('coinPickUp', 'sounds/coinPickUp.wav');
         game.load.audio('mobHit', 'sounds/mob_hit.wav');
+        game.load.audio('blip', 'sounds/blip.wav');
         game.load.audio('gunShot', 'sounds/gun_shot.mp3');
         game.load.audio('shotHeavy', 'sounds/shotHeavy.mp3');
         game.load.audio('music_01', 'sounds/rutgermuller.mp3');

@@ -14,7 +14,6 @@ export default class Enemy extends Phaser.Sprite {
         this.alive = false;
         this.exp = 1;
         this.speed = 100;
-
     };
 
     classReset(x, y) {
@@ -47,11 +46,12 @@ export default class Enemy extends Phaser.Sprite {
 
     hitPlayer(player) {
         if (!this.alive) return;
-        player.health -= this.damageOnContact;
+        player.health -= this.damageOnContact;        
         Text.combat(player, -this.damageOnContact, "playerHit");
         if (player.health <= 0) {
             player.die();
         }
+        this.hitPlayerSound.play();
         this.die();
     };
 
@@ -91,6 +91,7 @@ export default class Enemy extends Phaser.Sprite {
 
     die() {
         this.body.velocity.x = 0;
+        //this.hitPlayer.play();        
         this.alive = false;        
         if (this.carrying) {
             // here we clone the droppable object as a new one 
