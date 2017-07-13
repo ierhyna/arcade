@@ -174,5 +174,9 @@ export default class Player extends Phaser.Sprite {
             this.achievementTracker.show("Recover 50 gold!");
             this.stats.goldRecovered50 = true;
         }
+        if (this.y < 0 && !this.stats.jumpAbove) {
+            this.achievementTracker.show("Reach for the stars!");
+            this.stats.jumpAbove = true;
+        }
     }
 }
