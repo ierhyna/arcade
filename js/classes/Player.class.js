@@ -1,8 +1,10 @@
+// @flow
+import Phaser from "phaser-ce";
 import game, { Text, HealthBar } from "../game";
 import Achievement from "./Achievement.class";
 
 export default class Player extends Phaser.Sprite {
-    constructor(sprite, name) {
+    constructor(sprite: string, name: string) {
         super(game, 0, 0, sprite);
         this.game = game;
         this.achievementTracker = new Achievement();
@@ -34,7 +36,7 @@ export default class Player extends Phaser.Sprite {
         };
     };
 
-    create(x, y) {
+    create(x: number, y: number) {
         this.x = x;
         this.y = y;
         this.health = 500;
@@ -73,7 +75,7 @@ export default class Player extends Phaser.Sprite {
         this.kill();
     };
 
-    move(direction) {
+    move(direction: "left" | "right" | "jump" | "stop") {
         switch (direction) {
             case "left":
                 this.direction = -1;
@@ -112,7 +114,7 @@ export default class Player extends Phaser.Sprite {
         }
     };
 
-    fire(weapon) {
+    fire(weapon: Object) {
         if (!this.alive) return;
         if (game.time.now > (this.timer[weapon] || 0)) {
             const weaponName = weapon.spriteType.name;
