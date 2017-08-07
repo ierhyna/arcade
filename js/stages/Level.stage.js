@@ -1,6 +1,7 @@
 import game, {Text} from "../game";
 import {GameObject, Pool, Blob, BasicBullet, HeavyBullet, Player, Spawner, Chest, Coin} from "../classes";
 
+
 let player,
     blobbyGroup,
     chestGroup,
@@ -31,7 +32,8 @@ export class Level {
         blobbyGroup = new Pool(Blob, {
             sprites: ["blob"],
             size: 50,
-            data: {}
+            data: {},
+            name: "blobs pool"
         });
 
         const spawner = new Spawner({
@@ -42,11 +44,11 @@ export class Level {
         });
         spawner.launch(600, 5);
 
-        basicWeapon = new Pool(BasicBullet, {sprites: ["bullet"], size: 50});
-        heavyWeapon = new Pool(HeavyBullet, {sprites: ["heavyBullet"], size: 10});
+        basicWeapon = new Pool(BasicBullet, {sprites: ["bullet"], size: 50, name: "basic bullets"});
+        heavyWeapon = new Pool(HeavyBullet, {sprites: ["heavyBullet"], size: 10, name: "heavy bullets"});
         game.projectiles.push(basicWeapon, heavyWeapon);
 
-        chestGroup = new Pool(Chest, {sprites: ["treasure"], size: 10});
+        chestGroup = new Pool(Chest, {sprites: ["treasure"]});
         chestGroup.create(350, 200);
 
         game.add.text(130, 656, player.name, Text.styles.basic);
