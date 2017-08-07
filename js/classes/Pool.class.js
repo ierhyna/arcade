@@ -1,18 +1,20 @@
 import game from "../game";
+
 export default class Pool extends Phaser.Group {
-    constructor(spriteType, sprite, instances, data) {
+    constructor(type, props) {
         super(game, game.world);
         this.game = game;
-        this.spriteType = spriteType;
-        this.sprite = sprite;
-        this.data =data;
-        this.instances = instances;
-        if (instances) {
+        this.spriteType = type;
+        this.sprite = props.sprite;
+        this.data = props.data;
+        this.size = props.size;
+        if (props.size) {
             let sprite;
-            for (var i = 0; i < instances; i++) {
-                sprite = this.add(new spriteType(this.sprite, data));
+            for (let i = 0; i < props.size; i++) {
+                sprite = this.add(new type(props.sprite, props.data));
             }
         }
+        game.log(`creating new pool of ${props.size} elements with sprite ${props.sprite}`);
         return this;
     }
 

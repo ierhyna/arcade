@@ -22,7 +22,7 @@ export default class Coin extends GameObject {
 
     update() {
         if (!this.active) return;
-        this.game.physics.arcade.collide(this, game.walls)
+        this.game.physics.arcade.collide(this, game.walls);
         this.game.physics.arcade.overlap(this, game.player, () => {
             this.sound.play();
             Text.combat(this, `+${this.value} gold`, "info");
@@ -38,9 +38,10 @@ export default class Coin extends GameObject {
 
     die() {
         this.active = false;
-        const direction = { y: this.y - 150, alpha: 0 }
+        const direction = { y: this.y - 150, alpha: 0 };
         const tween = game.add.tween(this).to(direction, 1000, "Linear", true);
         tween.onComplete.addOnce(() => this.kill());
+        game.log(`coin picked up by a player`);
     }
 
     resetEverything() {

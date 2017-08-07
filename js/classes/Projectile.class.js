@@ -20,10 +20,6 @@ export default class Projectile extends Phaser.Sprite {
         this.sound.play();        
     };
 
-    hit(object) {
-
-    }
-
     calculateDamage(){
         const multplier = this.critical ? this.criticalMultiplier : 1;
         const d = this.baseDamage;
