@@ -1,5 +1,5 @@
 import Phaser from "phaser-ce";
-import game, { Text, HealthBar } from "../game";
+import game, {Text, HealthBar} from "../game";
 import Achievement from "./Achievement.class";
 
 export default class Player extends Phaser.Sprite {
@@ -132,8 +132,8 @@ export default class Player extends Phaser.Sprite {
             height: 12,
             x: 280,
             y: 716,
-            bg: { color: '#ccc' },
-            bar: { color: '#f00' },
+            bg: {color: '#ccc'},
+            bar: {color: '#f00'},
             animationDuration: 200
         });
         this.healthBar = new HealthBar(game, {
@@ -141,13 +141,13 @@ export default class Player extends Phaser.Sprite {
             height: 12,
             x: 280,
             y: 738,
-            bg: { color: '#651828' },
-            bar: { color: '#FEFF03' },
+            bg: {color: '#651828'},
+            bar: {color: '#FEFF03'},
             animationDuration: 100
         });
         this.barsExp = this.game.add.text(440, 710, "", Text.styles.basic);
         this.barsHp = this.game.add.text(440, 730, "", Text.styles.basic);
-    }
+    };
 
     checkAchievements() {
         if (this.stats.enemyCounter === 5 && !this.stats.enemyCounter5Earned) {
@@ -178,5 +178,5 @@ export default class Player extends Phaser.Sprite {
             this.achievementTracker.show("Reach for the stars!");
             this.stats.jumpedAbove = true;
         }
-    }
+    };
 }

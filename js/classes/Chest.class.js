@@ -40,5 +40,5 @@ export default class Chest extends GameObject {
         this.body.allowGravity = true;
         this.goldToDrop = 12; // amount of gold to give to receiver
         this.totalGold = 50; // total gold in the chest
-    }
+    };
 }

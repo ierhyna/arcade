@@ -2,7 +2,7 @@ import Game from './game';
 import WebFont from 'webfontloader';
 
 const WebFontConfig = {
-    active: function() {
+    active: function () {
         Game;
     },
     google: {

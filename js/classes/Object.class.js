@@ -1,4 +1,5 @@
 import game from "../game";
+
 export default class GameObject extends Phaser.Sprite {
     constructor(sprite) {
         super(game, 0, 0, sprite);
@@ -12,14 +13,14 @@ export default class GameObject extends Phaser.Sprite {
     };
 
     classReset(x, y) {
-        this.reset(x, y);        
+        this.reset(x, y);
         this.exists = true;
         this.active = true;
     };
 
     classSpawnOne(x, y) {
         this.x = x;
-        this.y = y;        
+        this.y = y;
         this.exists = true;
         this.active = true;
         this.game.add.existing(this);

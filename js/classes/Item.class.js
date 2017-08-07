@@ -10,5 +10,7 @@ export default class Item {
         this.type = data.type || "object";
     }
 
-    props(data) { return data ? Object.assign(this, data) : this };
+    props(data) {
+        return data ? Object.assign(this, data) : this
+    };
 }
