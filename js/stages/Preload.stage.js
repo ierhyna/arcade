@@ -1,7 +1,9 @@
 import game from "../game";
 
-export const Preload = {
-    preload: function() {
+export class Preload {
+    preload() {
+        /* Enabling dev mode */ game.devMode = true;
+
         game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
         game.load.tilemap('level1', 'maps/level1.json', null, Phaser.Tilemap.TILED_JSON);
         game.load.image('tileset', 'maps/wallmap.png');
@@ -26,15 +28,15 @@ export const Preload = {
         game.load.audio('gunShot', 'sounds/gun_shot.mp3');
         game.load.audio('shotHeavy', 'sounds/shotHeavy.mp3');
         game.load.audio('music_01', 'sounds/rutgermuller.mp3');
-    },
-    create: function() {
+    }
+
+    create() {
         const cursors = game.input.keyboard.createCursorKeys();
         const one = game.input.keyboard.addKey(Phaser.KeyCode.ONE);
         const two = game.input.keyboard.addKey(Phaser.KeyCode.TWO);
         const three = game.input.keyboard.addKey(Phaser.KeyCode.THREE);
-        game.Key = { cursors, one, two, three };
-
-        game.songs = { music_01: game.add.audio('music_01') };
+        game.Key = {cursors, one, two, three};
+        game.songs = {music_01: game.add.audio('music_01')};
         game.songs.music_01.volume = 0.5;
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.arcade.gravity.y = 1000;
@@ -43,6 +45,6 @@ export const Preload = {
         game.projectiles = [];
         game.walls = [];
         game.state.start("Level");
-    },
-    update: function() {}
+    }
+
 }
