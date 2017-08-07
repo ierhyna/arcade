@@ -30,7 +30,7 @@ export default class Chest extends GameObject {
             this.totalGold -= this.goldToDrop;
         } else {
             this.totalGold = 0;
-            const direction = { y: this.y - 150, alpha: 0 }
+            const direction = { y: this.y - 150, alpha: 0 };
             const tween = game.add.tween(this).to(direction, 1000, "Linear", true);
             tween.onComplete.addOnce(() => this.kill());
         }        

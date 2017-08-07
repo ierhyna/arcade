@@ -14,13 +14,13 @@ Creating spawner:
 
 ```$xslt
 const mySpawner = new Spawner({
-    pool: Pool myPool,
+    pool: Pool variable,
     spacing: Integer milliseconds,
     size: Integer numberOfInstances,
-    name: "my baddies" // just for reference, optional
+    name: String name // just for reference, optional
 });
 
-mySpawner.launch(x,y);
+mySpawner.launch(Integer x, Integer y);
 
 ```
 
@@ -33,5 +33,13 @@ _physics is disabled by default_
 Creating player:
 
 ```$xslt
-const player = new Player(String sprite, Stringname);
+const player = new Player(String sprite, String name);
+player.create(Integer x, Integer y);
 ```
+_physics is enabled by default
+
+
+Log to console by `game.log(String message);`
+
+to make this work turn dev mode in Preload class: `game.devMode = true;`   
+_dev mode is enabled by default_

@@ -45,7 +45,7 @@ export class Level {
         heavyWeapon = new Pool(HeavyBullet, {sprite: "heavyBullet", size: 10});
         game.projectiles.push(basicWeapon, heavyWeapon);
 
-        chestGroup = new Pool(Chest, "treasure", 10);
+        chestGroup = new Pool(Chest, {sprite: "treasure", size: 10});
         const chest = chestGroup.create(350, 200);
 
         game.add.text(130, 656, player.name, Text.styles.basic);
@@ -74,9 +74,7 @@ export class Level {
         if (game.Key.one.isDown) player.fire(basicWeapon);
         if (game.Key.two.isDown) player.fire(heavyWeapon);
 
-        if (!player.alive) {
-            this.reset();
-        }
+        if (!player.alive) this.reset();
     }
 
     reset() {

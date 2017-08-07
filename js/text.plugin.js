@@ -1,7 +1,7 @@
 import game from "./game";
 
 export const Text = {
-    level: function(t, color) {
+    level: function (t, color) {
         const text = game.add.text(game.width / 2, game.height / 2, t, {
             font: "Press Start 2P",
             fontSize: "30px",
@@ -11,15 +11,15 @@ export const Text = {
             strokeThickness: 4
         });
         text.anchor.set(0.5);
-        game.add.tween(text.scale).to({ x: 2, y: 2 }, 2000, "Linear", true);
-        const textTween = game.add.tween(text).to({ alpha: 0 }, 2000, "Linear", true);
+        game.add.tween(text.scale).to({x: 2, y: 2}, 2000, "Linear", true);
+        game.add.tween(text).to({alpha: 0}, 2000, "Linear", true);
     },
 
-    combat: function(object, message, event) {
+    combat: function (object, message, event) {
         let style;
         let direction;
-        let x = object.body.x
-        let y = object.body.y
+        let x = object.body.x;
+        let y = object.body.y;
         switch (event) {
             case "crit":
                 style = {
@@ -29,7 +29,7 @@ export const Text = {
                     stroke: '#000000',
                     strokeThickness: 6
                 };
-                direction = { y: y - 160, alpha: 0 }
+                direction = {y: y - 160, alpha: 0};
                 break;
 
             case "hit":
@@ -39,8 +39,8 @@ export const Text = {
                     align: "center",
                     stroke: '#000000',
                     strokeThickness: 3
-                }
-                direction = { y: y - 120, alpha: 0 }
+                };
+                direction = {y: y - 120, alpha: 0};
                 break;
 
             case "playerHit":
@@ -51,7 +51,7 @@ export const Text = {
                     stroke: '#000000',
                     strokeThickness: 3
                 };
-                direction = { y: y - 100, alpha: 0 }
+                direction = {y: y - 100, alpha: 0};
                 break;
             case "info":
                 style = {
@@ -61,7 +61,7 @@ export const Text = {
                     stroke: '#000000',
                     strokeThickness: 3
                 };
-                direction = { y: y + 100, alpha: 0 }
+                direction = {y: y + 100, alpha: 0};
 
                 break;
         }
@@ -70,7 +70,7 @@ export const Text = {
         const tween = game.add.tween(text).to(direction, 1000, "Linear", true);
         tween.onComplete.addOnce(() => text.destroy());
     },
-    styles: { 
-        basic: { font: "12px Press Start 2P", fill: "#fff", align: "center" } 
+    styles: {
+        basic: {font: "12px Press Start 2P", fill: "#fff", align: "center"}
     }
-}
+};
