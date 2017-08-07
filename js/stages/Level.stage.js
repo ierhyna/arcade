@@ -1,5 +1,5 @@
-import game, { Text, HealthBar } from "../game";
-import { GameObject, Pool, Blob, BasicBullet, HeavyBullet, Player, Spawner, Chest, Coin, Achievement } from "../classes";
+import game, {Text} from "../game";
+import {GameObject, Pool, Blob, BasicBullet, HeavyBullet, Player, Spawner, Chest, Coin} from "../classes";
 
 let player,
     blobbyGroup,
@@ -11,11 +11,11 @@ let player,
     heavyBulletText;
 
 export const Level = {
-    create: function() {
+    create: function () {
         const map = game.add.tilemap('level1');
         map.addTilesetImage('wallmap', 'tileset');
-        game.stage.backgroundColor = "#222"
-        let walls = map.createLayer('walls')
+        game.stage.backgroundColor = "#222";
+        let walls = map.createLayer('walls');
         map.setCollision([1, 2], true, walls);
         game.walls.push(walls);
 
@@ -28,11 +28,21 @@ export const Level = {
         player = new Player("hero", "Jackson Martinez");
         player.create(64, 64);
 
-        blobbyGroup = new Pool(Blob, "blob", 50);
-        const spawner = new Spawner(blobbyGroup, 2000, 60).launch(600, 5);
+        blobbyGroup = new Pool(Blob, {
+            sprite: "blob",
+            size: 50,
+            data: {}
+        });
+        const spawner = new Spawner({
+            pool: blobbyGroup,
+            spacing: 2000,
+            size: 60,
+            name: "blobs"
+        });
+        spawner.launch(600, 5);
 
-        basicWeapon = new Pool(BasicBullet, "bullet", 50);
-        heavyWeapon = new Pool(HeavyBullet, "heavyBullet", 10);
+        basicWeapon = new Pool(BasicBullet, {sprite: "bullet", size: 50});
+        heavyWeapon = new Pool(HeavyBullet, {sprite: "heavyBullet", size: 10});
         game.projectiles.push(basicWeapon, heavyWeapon);
 
         chestGroup = new Pool(Chest, "treasure", 10);
@@ -46,7 +56,7 @@ export const Level = {
         game.player = player; // exposing player object to global game object
     },
 
-    update: function() {
+    update: function () {
         basicBulletText.text = player.ammo.BasicBullet;
         heavyBulletText.text = player.ammo.HeavyBullet;
         levelText.text = `Level ${player.level} Soldier`;
@@ -69,7 +79,7 @@ export const Level = {
         }
     },
 
-    reset: function() {
+    reset: function () {
         game.state.start("Level");
     }
 }
