@@ -2,13 +2,15 @@ Creating pools:
 ```$xslt
 const myPool = new Pool(Class type, // class name 
 {
-    sprite: String name,
+    sprites: String[] names,
     size: Integer numberOfInstances,
     data: Item data //optional
 });
 
 myPool.create(Integer x, Integer y); // spawns one instance
 ```
+_even if you provide only one sprite image you should pass it as an array_
+_if you provide multiple sprite images they will be randomly picked during creation phase_   
 
 Creating spawner:
 
