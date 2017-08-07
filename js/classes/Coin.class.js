@@ -1,4 +1,4 @@
-import game, { Text } from "../game";
+import game, {Text} from "../game";
 import GameObject from "./Object.class";
 import Item from "./Item.class";
 
@@ -38,7 +38,7 @@ export default class Coin extends GameObject {
 
     die() {
         this.active = false;
-        const direction = { y: this.y - 150, alpha: 0 };
+        const direction = {y: this.y - 150, alpha: 0};
         const tween = game.add.tween(this).to(direction, 1000, "Linear", true);
         tween.onComplete.addOnce(() => this.kill());
         game.log(`coin picked up by a player`);

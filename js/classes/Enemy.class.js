@@ -91,7 +91,6 @@ export default class Enemy extends Phaser.Sprite {
         droppable.spawnOne(0, -16);
         droppable.disableGravity();
         this.addChild(droppable);
-        game.log(`Enemy has dropped a cargo`);
     };
 
     die() {
@@ -99,11 +98,12 @@ export default class Enemy extends Phaser.Sprite {
         this.alive = false;
         if (this.carrying) {
             // here we clone the droppable object as a new one 
-            //and then we kill carrier and all its children
+            // and then we kill carrier and all its children
             const droppable = new this.cargo(this.cargoSprite);
             droppable.spawnOne(this.x, this.y);
             droppable.value = this.gold;
-            droppable.play("spin")
+            droppable.play("spin");
+            game.log(`Enemy has dropped a cargo`);
         }
         this.children = []; // double check we leave no children alive
         this.play("die", 6, false, true);

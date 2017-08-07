@@ -2,7 +2,6 @@ import game from "../game";
 
 export default class Spawner {
     constructor(props) {
-
         try {
             this.game = game;
             this.enemyCounter = 0;
@@ -20,7 +19,7 @@ export default class Spawner {
             game.log(`Spawner warning: size of Spawner ${this.name} is larger than pool size by ${this.size - this.pool.children.length} elements`)
             game.log("This can be okay if you manually destroy objects from your Pool");
         }
-    }
+    };
 
     launch(x, y) {
         this.pool.create(x, y);
@@ -28,5 +27,5 @@ export default class Spawner {
         if (this.enemyCounter < this.size) {
             this.game.time.events.add(this.spacing, () => this.launch(x, y));
         }
-    }
+    };
 }

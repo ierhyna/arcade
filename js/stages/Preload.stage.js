@@ -38,7 +38,7 @@ export class Preload {
         const three = game.input.keyboard.addKey(Phaser.KeyCode.THREE);
         game.Key = {cursors, one, two, three};
         game.songs = {music_01: game.add.audio('music_01')};
-        game.songs.music_01.volume = 0;
+        game.songs.music_01.volume = 0.1;
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.physics.arcade.gravity.y = 1000;
         game.songs.music_01.play();
