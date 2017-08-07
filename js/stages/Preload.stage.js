@@ -46,9 +46,7 @@ export class Preload {
         game.projectiles = [];
         game.walls = [];
         game.state.start("Level");
-        game.log = (message) => {
-            game.devMode && console.log(message);
-        }
+        game.log = (message) => game.devMode && console.log(message);
     }
 
 }
