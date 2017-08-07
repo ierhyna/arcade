@@ -11,7 +11,7 @@ export default class Pool extends Phaser.Group {
         if (props.size) {
             let sprite;
             for (let i = 0; i < props.size; i++) {
-                sprite = this.add(new type(props.sprites, props.data));
+                sprite = this.add(new type(this.getRandomSprite(), props.data));
             }
         }
         game.log(`creating new pool of ${props.size} elements with sprite ${props.sprite}`);
@@ -20,10 +20,9 @@ export default class Pool extends Phaser.Group {
 
     create(x, y) {
 
-        const sprite = this.sprites.length > 1 ? this.getRandomSprite() : this.sprites[0];
         let obj = this.getFirstExists(false);
         if (!obj) {
-            obj = new this.spriteType(sprite, this.data);
+            obj = new this.spriteType(this.getRandomSprite(), this.data);
             this.add(obj, true);
         }
         obj.spawn(x, y);
