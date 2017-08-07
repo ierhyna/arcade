@@ -1,4 +1,4 @@
-import game, { Text } from "../game";
+import game, {Text} from "../game";
 
 export default class Enemy extends Phaser.Sprite {
     constructor(sprite) {
@@ -33,7 +33,9 @@ export default class Enemy extends Phaser.Sprite {
         if (!this.alive) return;
         projectile.kill();
         this.animations.play("blink", 20);
-        if (projectile.critical) { player.stats.critCounter++ };
+        if (projectile.critical) {
+            player.stats.critCounter++
+        }
         this.health -= projectile.damage;
         this.hitSound.play();
         const event = projectile.critical ? "crit" : "hit";
@@ -42,18 +44,18 @@ export default class Enemy extends Phaser.Sprite {
             player.experience += this.exp;
             Text.combat(this, this.exp + " exp", "info");
             player.stats.enemyCounter++;
+            game.log(`Enemy death caused by player weapon`);
             this.die();
-        };
+        }
     };
 
     hitPlayer(player) {
         if (!this.alive) return;
         player.health -= this.damageOnContact;
         Text.combat(player, -this.damageOnContact, "playerHit");
-        if (player.health <= 0) {
-            player.die();
-        }
+        if (player.health <= 0) player.die();
         this.hitPlayerSound.play();
+        game.log(`Enemy death caused by player collision`);
         this.die();
     };
 
@@ -65,7 +67,7 @@ export default class Enemy extends Phaser.Sprite {
         } else if (this.body.blocked.left) {
             this.scale.x = 1;
             this.body.velocity.x = this.speed;
-        };
+        }
     };
 
     pickUp(chest, type, sprite) {
@@ -79,7 +81,7 @@ export default class Enemy extends Phaser.Sprite {
             this.gold += chest.totalGold;
         } else {
             this.gold += chest.goldToDrop;
-        };
+        }
 
         chest.updateGoldAmount(); // substracting resourse from the chest
         Text.combat(this, `-${this.gold} gold`, "hit");
@@ -89,16 +91,15 @@ export default class Enemy extends Phaser.Sprite {
         droppable.spawnOne(0, -16);
         droppable.disableGravity();
         this.addChild(droppable);
+        game.log(`Enemy has dropped a cargo`);
     };
 
     die() {
         this.body.velocity.x = 0;
-        //this.hitPlayer.play();        
         this.alive = false;
         if (this.carrying) {
             // here we clone the droppable object as a new one 
             //and then we kill carrier and all its children
-            const type = this.cargo;
             const droppable = new this.cargo(this.cargoSprite);
             droppable.spawnOne(this.x, this.y);
             droppable.value = this.gold;

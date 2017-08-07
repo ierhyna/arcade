@@ -31,6 +31,6 @@ export default class Achievement extends Phaser.Sprite {
         this.exists = true;
         this.game.add.existing(this);
         this.sound.play();
-    }
+    };
 
 }

@@ -14,6 +14,7 @@ export default class Pool extends Phaser.Group {
                 sprite = this.add(new type(props.sprite, props.data));
             }
         }
+        game.log(`creating new pool of ${props.size} elements with sprite ${props.sprite}`);
         return this;
     }
 

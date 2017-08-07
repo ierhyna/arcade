@@ -1,5 +1,3 @@
-import game from "../game";
-
 export default class Item {
     constructor(data) {
         if (data && typeof data !== "object") {

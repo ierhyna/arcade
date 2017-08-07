@@ -2,7 +2,8 @@ import game from "../game";
 
 export class Preload {
     preload() {
-        /* Enabling dev mode */ game.devMode = true;
+        /* Enabling dev mode */
+        game.devMode = true;
 
         game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
         game.load.tilemap('level1', 'maps/level1.json', null, Phaser.Tilemap.TILED_JSON);
@@ -45,6 +46,9 @@ export class Preload {
         game.projectiles = [];
         game.walls = [];
         game.state.start("Level");
+        game.log = (message) => {
+            game.devMode && console.log(message);
+        }
     }
 
 }

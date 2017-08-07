@@ -43,6 +43,7 @@ export default class Player extends Phaser.Sprite {
         this.frame = 1;
         this.createBars();
         this.game.add.existing(this);
+        game.log(`player ${this.name} created`);
     };
 
     update() {

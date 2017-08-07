@@ -15,7 +15,6 @@ export default class Spawner {
         this.group.create(x, y);
         this.enemyCounter++;
         if (this.enemyCounter < this.amount) {
-            game.devMode && console.log(`Launching ${this.enemyCounter} out of ${this.amount} ${this.name}`);
             this.game.time.events.add(this.spacing, () => this.launch(x, y));
         }
     }
