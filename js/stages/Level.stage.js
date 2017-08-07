@@ -29,10 +29,11 @@ export class Level {
         player.create(64, 64);
 
         blobbyGroup = new Pool(Blob, {
-            sprite: "blob",
+            sprites: ["blob"],
             size: 50,
             data: {}
         });
+
         const spawner = new Spawner({
             pool: blobbyGroup,
             spacing: 2000,
@@ -41,12 +42,12 @@ export class Level {
         });
         spawner.launch(600, 5);
 
-        basicWeapon = new Pool(BasicBullet, {sprite: "bullet", size: 50});
-        heavyWeapon = new Pool(HeavyBullet, {sprite: "heavyBullet", size: 10});
+        basicWeapon = new Pool(BasicBullet, {sprites: ["bullet"], size: 50});
+        heavyWeapon = new Pool(HeavyBullet, {sprites: ["heavyBullet"], size: 10});
         game.projectiles.push(basicWeapon, heavyWeapon);
 
-        chestGroup = new Pool(Chest, {sprite: "treasure", size: 10});
-        const chest = chestGroup.create(350, 200);
+        chestGroup = new Pool(Chest, {sprites: ["treasure"], size: 10});
+        chestGroup.create(350, 200);
 
         game.add.text(130, 656, player.name, Text.styles.basic);
         levelText = game.add.text(130, 676, `Level ${player.level} Soldier`, Text.styles.basic);
