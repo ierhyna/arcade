@@ -4,7 +4,8 @@ const myPool = new Pool(Class type, // class name
 {
     sprites: String[] names,
     size: Integer numberOfInstances,
-    data: Item data //optional
+    data: Item data //optional,
+    name: String name // just for reference, optional
 });
 
 myPool.create(Integer x, Integer y); // spawns one instance

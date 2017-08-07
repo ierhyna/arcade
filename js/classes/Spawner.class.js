@@ -9,8 +9,9 @@ export default class Spawner {
         this.spacing = props.spacing || 2000;
         this.name = props.name || "unnamed group";
         game.log(`Creating a new group of ${this.size} ${this.name} with a spacing of ${this.spacing}ms`);
-        if (this.size > this.pool.children.length){
-            game.log(`Spawner warning: size of Spawner ${this.name} is larger than pool size by ${this.size - this.pool.children.length} elements`);
+        if (this.size > this.pool.children.length) {
+            game.log(`Spawner warning: size of Spawner ${this.name} is larger than pool size by ${this.size - this.pool.children.length} elements`)
+            game.log("This can be okay if you manually destroy objects from your Pool");
         }
     }
 
