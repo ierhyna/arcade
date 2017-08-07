@@ -1,6 +1,7 @@
 import game, {Text} from "../game";
 import {GameObject, Pool, Blob, BasicBullet, HeavyBullet, Player, Spawner, Chest, Coin} from "../classes";
 
+
 let player,
     blobbyGroup,
     chestGroup,
@@ -34,8 +35,6 @@ export class Level {
             data: {},
             name: "blobs pool"
         });
-
-        new Pool()
 
         const spawner = new Spawner({
             pool: blobbyGroup,
