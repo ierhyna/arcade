@@ -33,6 +33,7 @@ export class Level {
             size: 50,
             data: {}
         });
+
         const spawner = new Spawner({
             pool: blobbyGroup,
             spacing: 2000,

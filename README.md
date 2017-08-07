@@ -36,7 +36,7 @@ Creating player:
 const player = new Player(String sprite, String name);
 player.create(Integer x, Integer y);
 ```
-_physics is enabled by default
+_physics is enabled by default_
 
 
 Log to console by `game.log(String message);`
