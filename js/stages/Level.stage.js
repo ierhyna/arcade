@@ -10,8 +10,8 @@ let player,
     basicBulletText,
     heavyBulletText;
 
-export const Level = {
-    create: function () {
+export class Level {
+    create() {
         const map = game.add.tilemap('level1');
         map.addTilesetImage('wallmap', 'tileset');
         game.stage.backgroundColor = "#222";
@@ -54,9 +54,9 @@ export const Level = {
         heavyBulletText = game.add.text(620, 653, "", Text.styles.basic);
         Text.level("Wave 1", "#ffffff");
         game.player = player; // exposing player object to global game object
-    },
+    }
 
-    update: function () {
+    update() {
         basicBulletText.text = player.ammo.BasicBullet;
         heavyBulletText.text = player.ammo.HeavyBullet;
         levelText.text = `Level ${player.level} Soldier`;
@@ -77,9 +77,9 @@ export const Level = {
         if (!player.alive) {
             this.reset();
         }
-    },
+    }
 
-    reset: function () {
+    reset() {
         game.state.start("Level");
     }
 }
