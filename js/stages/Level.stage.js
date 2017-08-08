@@ -48,7 +48,7 @@ export class Level {
         heavyWeapon = new Pool(HeavyBullet, {sprites: ["heavyBullet"], size: 10, name: "heavy bullets"});
         game.projectiles.push(basicWeapon, heavyWeapon);
 
-        chestGroup = new Pool(Chest, {sprites: ["treasure"]});
+        chestGroup = new Pool(Chest, {sprites: ["treasure"], size: 10});
         chestGroup.create(350, 200);
 
         game.add.text(130, 656, player.name, Text.styles.basic);
