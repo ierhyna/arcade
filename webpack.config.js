@@ -21,7 +21,7 @@ const common = {
       // 'babel-polyfill',
       path.resolve(__dirname, 'js/index.js')
     ],
-    vendor: ['pixi', 'p2', 'phaser']
+    vendor: ['pixi', 'p2', 'phaser-ce']
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -51,7 +51,7 @@ const common = {
   },
   resolve: {
     alias: {
-      'phaser': phaser,
+      'phaser-ce': phaser,
       'pixi': pixi,
       'p2': p2
     }
