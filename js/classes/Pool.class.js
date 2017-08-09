@@ -23,14 +23,14 @@ export default class Pool extends Phaser.Group {
         return this;
     };
 
-    create(x, y) {
+    create(x, y, options) {
 
         let obj = this.getFirstExists(false);
         if (!obj) {
             obj = new this.spriteType(this.getRandomSprite(), this.data);
             this.add(obj, true);
         }
-        obj.spawn(x, y);
+        obj.spawn(x, y, options);
         return obj;
     };
 

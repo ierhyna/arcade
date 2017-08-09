@@ -7,11 +7,12 @@ export default class Chest extends GameObject {
         super(sprite);
         this.game = game;
         this.item = new Item(data);
-        this.game.physics.enable(this);
     };
 
-    spawn(x, y) {
+    spawn(x, y, gold = {}) {
         this.classReset(x, y);
+        this.goldToDrop = gold.drop || 12;
+        this.totalGold = gold.total || 250;
         this.resetEverything();
     };
 
@@ -19,8 +20,10 @@ export default class Chest extends GameObject {
         this.game.physics.arcade.collide(this, game.walls)
     };
 
-    spawnOne(x, y, goldAmount) {
+    spawnOne(x, y, gold = {}) {
         this.classSpawnOne(x, y);
+        this.goldToDrop = gold.drop || 12;
+        this.totalGold = gold.total || 250;
         this.resetEverything();
     };
 
@@ -37,7 +40,7 @@ export default class Chest extends GameObject {
 
     resetEverything() {
         this.body.allowGravity = true;
-        this.goldToDrop = 12; // amount of gold to give to receiver
-        this.totalGold = 250; // total gold in the chest
+        game.log(`spawning a chest of ${this.totalGold} gold than drops ${this.goldToDrop} coins`);
+
     };
 }

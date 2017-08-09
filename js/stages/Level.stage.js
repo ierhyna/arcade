@@ -45,14 +45,14 @@ export class Level {
         spawner.launch(600, 5);
 
         this.flag = new Flag('flag');
-        this.flag.spawnOne(600,500);
+        this.flag.spawnOne(600, 500);
 
         basicWeapon = new Pool(BasicBullet, {sprites: ["bullet"], size: 50, name: "basic bullets"});
         heavyWeapon = new Pool(HeavyBullet, {sprites: ["heavyBullet"], size: 10, name: "heavy bullets"});
         game.projectiles.push(basicWeapon, heavyWeapon);
 
         chestGroup = new Pool(Chest, {sprites: ["treasure"], size: 10});
-        chestGroup.create(350, 200);
+        chestGroup.create(350, 200, {total: 300, drop: 16});
 
         game.add.text(130, 656, player.name, Text.styles.basic);
         levelText = game.add.text(130, 676, `Level ${player.level} Soldier`, Text.styles.basic);

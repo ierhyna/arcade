@@ -110,7 +110,6 @@ export default class Enemy extends Phaser.Sprite {
     };
 
     escape(){
-        game.log(`enemy disappeared upon reaching a flag`);
         this.body.velocity.x = 0;
         if (this.carrying){
             game.log(`enemy stole ${this.gold} gold`);
