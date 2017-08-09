@@ -1,10 +1,9 @@
 import game from "../game";
 import GameObject from "./Object.class";
-import Item from "./Item.class";
+import {Item} from "./index";
 
 export default class Chest extends GameObject {
-
-    constructor(sprite, data = {}) {
+    constructor(sprite, data) {
         super(sprite);
         this.game = game;
         this.item = new Item(data);
@@ -30,15 +29,15 @@ export default class Chest extends GameObject {
             this.totalGold -= this.goldToDrop;
         } else {
             this.totalGold = 0;
-            const direction = { y: this.y - 150, alpha: 0 };
+            const direction = {y: this.y - 150, alpha: 0};
             const tween = game.add.tween(this).to(direction, 1000, "Linear", true);
             tween.onComplete.addOnce(() => this.kill());
-        }        
+        }
     };
 
     resetEverything() {
         this.body.allowGravity = true;
         this.goldToDrop = 12; // amount of gold to give to receiver
-        this.totalGold = 50; // total gold in the chest
+        this.totalGold = 250; // total gold in the chest
     };
 }

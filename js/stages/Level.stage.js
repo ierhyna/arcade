@@ -1,5 +1,5 @@
 import game, {Text} from "../game";
-import {GameObject, Pool, Blob, BasicBullet, HeavyBullet, Player, Spawner, Chest, Coin} from "../classes";
+import {GameObject, Flag, Pool, Blob, BasicBullet, HeavyBullet, Player, Spawner, Chest, Coin} from "../classes";
 
 
 let player,
@@ -27,7 +27,7 @@ export class Level {
         game.add.text(628, 740, 2, Text.styles.basic);
 
         player = new Player("hero", "Jackson Martinez");
-        player.create(64, 64);
+        player.create(600, 120);
 
         blobbyGroup = new Pool(Blob, {
             sprites: ["blob"],
@@ -38,11 +38,14 @@ export class Level {
 
         const spawner = new Spawner({
             pool: blobbyGroup,
-            spacing: 2000,
+            spacing: 1000,
             size: 60,
             name: "blobs"
         });
         spawner.launch(600, 5);
+
+        this.flag = new Flag('flag');
+        this.flag.spawnOne(600,500);
 
         basicWeapon = new Pool(BasicBullet, {sprites: ["bullet"], size: 50, name: "basic bullets"});
         heavyWeapon = new Pool(HeavyBullet, {sprites: ["heavyBullet"], size: 10, name: "heavy bullets"});
@@ -67,6 +70,7 @@ export class Level {
         game.physics.arcade.overlap(game.projectiles, blobbyGroup, (bullet, enemy) => enemy.hit(bullet, player));
         game.physics.arcade.overlap(blobbyGroup, player, (player, enemy) => enemy.hitPlayer(player));
         game.physics.arcade.overlap(blobbyGroup, chestGroup, (enemy, chest) => enemy.pickUp(chest, Coin, "coin-ani"));
+        game.physics.arcade.overlap(blobbyGroup, this.flag, (flag, enemy) => this.flag.reactToEnemy(enemy));
 
         if (game.Key.cursors.left.isDown) {
             player.move("left")

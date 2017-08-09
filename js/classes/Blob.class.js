@@ -14,10 +14,10 @@ export default class Blob extends Enemy {
         this.animations.add("live", [0, 1], 10, true);
         this.animations.add("die", [2, 3, 4, 5, 6], 10, true);
         this.animations.add("blink", [7, 0], 10);        
-        this.maxHealth = 100;
+        this.maxHealth = 25;
         this.damageOnContact = 150;
         this.exp = 75;
-        this.speed = 180;
+        this.speed = 200;
     };
 
     spawn(x, y) {
