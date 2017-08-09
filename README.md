@@ -43,6 +43,11 @@ player.create(Integer x, Integer y);
 ```
 _physics is enabled by default_
 
+Creating Chest:
+
+both **Pool** and **GameObject** spawns (`chest.create(x, y, options) / chest.spawnOne(x, y, options)`) utilize options data:
+`{drop: Integer, total: Integer}` which set amount of gold inside and amount of coins picked up
+
 
 Log to console by `game.log(String message);`
 

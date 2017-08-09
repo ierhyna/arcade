@@ -7,8 +7,8 @@ export default class BasicBullet extends Projectile {
         super(sprite);
         this.game = game;
         this.baseCrit = 25;
-        this.baseDamage = 7;
-        this.baseSpeed = 1200;
+        this.baseDamage = 9;
+        this.baseSpeed = 1125;
         this.critical = false;
         this.criticalMultiplier = 3;
         this.spacing = 100;
