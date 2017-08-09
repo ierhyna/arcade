@@ -8,10 +8,12 @@ const myPool = new Pool(Class type, // class name
     name: String name // just for reference, optional
 });
 
-myPool.create(Integer x, Integer y); // spawns one instance
+myPool.create(Integer x, Integer y, Object options); // spawns one instance
 ```
 _even if you provide only one sprite image you should pass it as an array_
-_if you provide multiple sprite images they will be randomly picked during creation phase_   
+_if you provide multiple sprite images they will be randomly picked during creation phase_
+**options** is the param you use to pass to class instance's `create()` method. You can use it to set up a spawning object.
+It is up to you how you process those options.
 
 Creating spawner:
 

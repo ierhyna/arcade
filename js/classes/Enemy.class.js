@@ -108,4 +108,15 @@ export default class Enemy extends Phaser.Sprite {
         this.children = []; // double check we leave no children alive
         this.play("die", 6, false, true);
     };
+
+    escape(){
+        this.body.velocity.x = 0;
+        if (this.carrying){
+            game.log(`enemy stole ${this.gold} gold`);
+        }
+        this.alive = false;
+        this.children = [];
+        this.destroy();
+
+    };
 }
