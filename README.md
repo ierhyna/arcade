@@ -37,7 +37,7 @@ _physics is disabled by default_
 
 Creating player:
 
-```$xslt
+```
 const player = new Player(String sprite, String name);
 player.create(Integer x, Integer y);
 ```
@@ -48,6 +48,17 @@ Creating Chest:
 both **Pool** and **GameObject** spawns (`chest.create(x, y, options) / chest.spawnOne(x, y, options)`) utilize options data:
 `{drop: Integer, total: Integer}` which set amount of gold inside and amount of coins picked up
 
+Setting up Flag (level lose conditions):
+```
+flag = new Flag(String sprite, {gold?: Integer val, enemy?: Integer val});
+flag.spawnOne(Integer x, Integer y);
+```
+Sets amount of gold stolen or enemies escaped to lose the level.
+If no paramateres are provided then they are defaulted to gold: 250 / enemy: 20  
+You can dynamically update the level conditions:
+```
+flag.updateRules({gold: Integer val, enemy: Integer val});
+```
 
 Log to console by `game.log(String message);`
 
