@@ -44,7 +44,7 @@ export class Level {
         });
         spawner.launch(600, 5);
 
-        this.flag = new Flag('flag');
+        this.flag = new Flag('flag', {gold: 75, enemy: 20});
         this.flag.spawnOne(600, 500);
 
         basicWeapon = new Pool(BasicBullet, {sprites: ["bullet"], size: 50, name: "basic bullets"});
